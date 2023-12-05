@@ -121,34 +121,34 @@ function importSettings(settings) {
     });
     
     // Function to convert triggers to steps
-    function convertTriggersToSteps(triggers) {
-        // Implement the logic to convert triggers to steps
-        // This is a placeholder function and needs to be implemented based on your application's logic
-        // For example, if triggers are simply boolean values, the conversion might be direct
-        return triggers.map(trigger => {
-            // Convert each trigger to a step
-            // This is a simple example and may need to be adjusted based on your actual data structure
-            return trigger ? 1 : 0; // Assuming 1 represents a triggered step and 0 represents an untriggered step
-        });
-    }
+    // function convertTriggersToSteps(triggers) {
+    //     // Implement the logic to convert triggers to steps
+    //     // This is a placeholder function and needs to be implemented based on your application's logic
+    //     // For example, if triggers are simply boolean values, the conversion might be direct
+    //     return triggers.map(trigger => {
+    //         // Convert each trigger to a step
+    //         // This is a simple example and may need to be adjusted based on your actual data structure
+    //         return trigger ? 1 : 0; // Assuming 1 represents a triggered step and 0 represents an untriggered step
+    //     });
+    // }
     
 
     // Update the project name in the text box
     document.getElementById('project-name').value = projectName;
 
-    if (parsedSettings && Array.isArray(parsedSettings)) {
-        collectedURLsForSequences = parsedSettings.map(seq => {
-            let urlsForSequence = seq.channels.map(ch => ch.url || "");
-           // console.log("URLs for this sequence:", urlsForSequence);
-            while (urlsForSequence.length < 16) {
-                urlsForSequence.push("");
-            }
-            return urlsForSequence;
-        });
-        window.unifiedSequencerSettings.updateSetting('projectURLs', collectedURLsForSequences.flat());
-
-       // console.log("Final collectedURLsForSequences:", collectedURLsForSequences);
-    }
+    // if (parsedSettings && Array.isArray(parsedSettings)) {
+    //     collectedURLsForSequences = parsedSettings.map(seq => {
+    //         let urlsForSequence = seq.channels.map(ch => ch.url || "");
+    //        // console.log("URLs for this sequence:", urlsForSequence);
+    //         while (urlsForSequence.length < 16) {
+    //             urlsForSequence.push("");
+    //         }
+    //         return urlsForSequence;
+    //     });
+    //     window.unifiedSequencerSettings.updateSetting('projectURLs', collectedURLsForSequences.flat());
+// 
+    //    // console.log("Final collectedURLsForSequences:", collectedURLsForSequences);
+    // }
 
     function isValidSequence(seq) {
         const isValid = seq && Array.isArray(seq.channels) && typeof seq.name === 'string';
@@ -156,7 +156,7 @@ function importSettings(settings) {
         return isValid;
     }
 
-    console.log("Initial sequenceBPMs:", sequenceBPMs);
+    // console.log("Initial sequenceBPMs:", sequenceBPMs);
 
     // Build the sequences array first
     sequences = parsedSettings.map((seqSettings, index) => {
