@@ -2,6 +2,7 @@
 
 // Function to fetch MP3 and WAV audio data
 const fetchAudioMp3AndWav = async (url, channelIndex, loadSampleButtonElement = null) => {
+  console.log(`[fetchAudioMp3AndWav] Fetching audio from URL: ${url} for channel index: ${channelIndex}`);
   try {
       const response = await fetch(url);
       const arrayBuffer = await response.arrayBuffer(); // Fetch the audio file as an array buffer
@@ -22,15 +23,15 @@ const fetchAudioMp3AndWav = async (url, channelIndex, loadSampleButtonElement = 
 
       // Update AudioTrimmer instance
       const audioTrimmer = getAudioTrimmerInstanceForChannel(channelIndex);
-      if (audioTrimmer) {
-          audioTrimmer.audioBuffer = audioBuffer;
-          audioTrimmer.totalSampleDuration = audioBuffer.duration;
-          audioTrimmer.drawWaveform(); // Redraw the waveform with the new audio buffer
-      }
-  } catch (error) {
-      console.error('Error fetching MP3/WAV audio:', error);
-  }
-};
+        if (audioTrimmer) {
+            audioTrimmer.audioBuffer = audioBuffer;
+            audioTrimmer.totalSampleDuration = audioBuffer.duration;
+            audioTrimmer.drawWaveform(); // Redraw the waveform with the new audio buffer
+        }
+    } catch (error) {
+        console.error('Error fetching MP3/WAV audio:', error);
+    }
+  };
 
   
   // Function to play auditioned MP3 and WAV samples

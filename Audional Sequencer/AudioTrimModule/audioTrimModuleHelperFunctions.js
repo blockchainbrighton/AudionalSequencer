@@ -34,23 +34,34 @@ function openAudioTrimmerModal(channelIndex) {
                 } else {
                     console.error('Required elements not found in the DOM');
                 }
-            });
-
-            document.getElementById('audio-trimmer-modal').style.display = 'block';
+                // Call the function to update the trimmer with the audio buffer
+                // Update the trimmer with the audio buffer
+                const channel = document.querySelector(`.channel[data-id="Channel-${channelIndex + 1}"]`);
+                const url = channel.dataset.originalUrl;
+                updateAudioTrimmerWithBufferHelper(url, channelIndex);
+                });           
+                document.getElementById('audio-trimmer-modal').style.display = 'block';
         })
         .catch(error => {
             console.error('Error loading audio trimmer module:', error);
         });
 }
 
-
-
+// Helper function to update the audio trimmer with the buffer
+function updateAudioTrimmerWithBufferHelper(url, channelIndex) {
+    if (audioBuffers.has(url)) {
+        const audioBuffer = audioBuffers.get(url);
+        updateAudioTrimmerWithBuffer(audioBuffer, channelIndex);
+    } else {
+        console.error(`Audio buffer not found for URL: ${url}`);
+    }
+}
 
 function updateAudioTrimmerWithBuffer(audioBuffer) {
-    if (currentTrimmerChannelIndex) {
-        currentTrimmerChannelIndex.setAudioBuffer(audioBuffer);
-        currentTrimmerChannelIndex.drawWaveform();
-        currentTrimmerChannelIndex.updateDimmedAreas();
+    if (currentTrimmerInstance) {
+        currentTrimmerInstance.setAudioBuffer(audioBuffer);
+        currentTrimmerInstance.drawWaveform();
+        currentTrimmerInstance.updateDimmedAreas();
     }
 }
 
@@ -58,8 +69,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.open-audio-trimmer').forEach((button, channelIndex) => {
         button.addEventListener('click', () => {
             console.log('Clicked button with channelIndex:', channelIndex); // Log the channel index
-            openAudioTrimmerModal(channelIndex);
-        });
+        // Get the URL for the audio sample
+        const channel = document.querySelector(`.channel[data-id="Channel-${channelIndex + 1}"]`);
+        const url = channel.dataset.originalUrl;
+
+        // Call the helper function to update the audio trimmer with the buffer
+        updateAudioTrimmerWithBufferHelper(url, channelIndex);
+
+        openAudioTrimmerModal(channelIndex);        });
     });
 });
 
