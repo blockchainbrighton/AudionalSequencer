@@ -83,15 +83,41 @@ class AudioTrimmer {
         updateDimmedAreas() {
             console.log("[Class Functions] updateDimmedAreas");
         
-            const maxDuration = this.audioBuffer ? this.audioBuffer.duration : 100;
-            const startDimmedWidth = `${(this.trimSettings.startSliderValue / maxDuration) * 100}%`;
-            const endDimmedWidth = `${(1 - (this.trimSettings.endSliderValue / maxDuration)) * 100}%`;
-            const endDimmedLeft = `${(this.trimSettings.endSliderValue / maxDuration) * 100}%`;
+            const startSliderValue = parseFloat(this.startSlider.value);
+            const endSliderValue = parseFloat(this.endSlider.value);
+        
+            const startDimmedWidth = `${startSliderValue}%`;
+            const endDimmedWidth = `${100 - endSliderValue}%`;
         
             this.startDimmed.style.width = startDimmedWidth;
             this.startDimmed.style.left = '0';
             this.endDimmed.style.width = endDimmedWidth;
-            this.endDimmed.style.left = endDimmedLeft;
+            this.endDimmed.style.left = `${endSliderValue}%`; // Position the end dimmed area correctly
+        }
+        
+        updateSliderValues() {
+            this.startSliderValue = parseFloat(this.startSlider.value);
+            this.endSliderValue = parseFloat(this.endSlider.value);
+            this.updateDimmedAreas(); // This will update the dimmed areas based on the sliders
+            this.updateTrimmedSampleDuration();
+            this.debounceDisplayValues();
+        }
+
+        updateTrimmedSampleDuration() {
+            const startValue = this.startSliderValue;
+            const endValue = this.endSliderValue;
+            this.trimmedSampleDuration = Math.max(0, endValue - startValue);
+            this.debounceDisplayValues();
+        }
+    
+        // Method to get the current value of the start slider
+        getStartSliderValue() {
+            return this.startSliderValue;
+        }
+    
+        // Method to get the current value of the end slider
+        getEndSliderValue() {
+            return this.endSliderValue;
         }
     
         
@@ -147,8 +173,7 @@ class AudioTrimmer {
             });
         }
         
-    
-    
+      
 
     async loadSample() {
         console.log("[Class Functions] loadSample");
@@ -175,30 +200,7 @@ class AudioTrimmer {
         return { min, max };
         }
 
-        updateSliderValues() {
-            this.startSliderValue = parseFloat(this.startSlider.value);
-            this.endSliderValue = parseFloat(this.endSlider.value);
-            this.updateDimmedAreas(); // This will update the dimmed areas based on the sliders
-            this.updateTrimmedSampleDuration();
-            this.debounceDisplayValues();
-        }
-
-        updateTrimmedSampleDuration() {
-            const startValue = this.startSliderValue;
-            const endValue = this.endSliderValue;
-            this.trimmedSampleDuration = Math.max(0, endValue - startValue);
-            this.debounceDisplayValues();
-        }
-    
-        // Method to get the current value of the start slider
-        getStartSliderValue() {
-            return this.startSliderValue;
-        }
-    
-        // Method to get the current value of the end slider
-        getEndSliderValue() {
-            return this.endSliderValue;
-        }
+       
     
          // Method to get the current value of the isLooping flag
          getIsLooping() {
