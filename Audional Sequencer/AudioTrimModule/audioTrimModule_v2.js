@@ -2,7 +2,7 @@
 // Assuming fetchAudio, setTrimSettingsForChannel, getTrimSettingsForChannel, and playSound are imported from their respective modules
 
 class AudioTrimmer {
-    constructor() {
+    constructor(channelIndex) {
         this.channelIndex = channelIndex;
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
         this.audioBuffer = null;

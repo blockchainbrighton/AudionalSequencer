@@ -2,6 +2,7 @@
 
 class AudioTrimmer {
     constructor() {
+        this.channelIndex = channelIndex;
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
         this.audioBuffer = null;
         this.sourceNode = null;
@@ -128,7 +129,7 @@ class AudioTrimmer {
             this[slider].addEventListener('input', () => {
                 this.updateSliderValues();
                 // Call to update the global settings with the new slider values
-                setTrimSettings(channelIndex, this.startSliderValue, this.endSliderValue);
+                setTrimSettings(this.channelIndex, this.startSliderValue, this.endSliderValue);
             });
         });
     }
