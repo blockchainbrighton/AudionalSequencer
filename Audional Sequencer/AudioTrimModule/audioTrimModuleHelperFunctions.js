@@ -65,6 +65,14 @@ function updateAudioTrimmerWithBuffer(audioBuffer) {
     }
 }
 
+function playTrimmedAudioForChannel(channelIndex) {
+    if (currentTrimmerInstance && currentTrimmerChannelIndex === channelIndex) {
+        currentTrimmerInstance.playTrimmedAudio();
+    } else {
+        console.error('No active trimmer instance for the channel or channel index mismatch');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.open-audio-trimmer').forEach((button, channelIndex) => {
         button.addEventListener('click', () => {
