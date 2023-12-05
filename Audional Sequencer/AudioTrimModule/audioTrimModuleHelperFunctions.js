@@ -96,3 +96,9 @@ document.querySelector('.close-button').addEventListener('click', function() {
     currentTrimmerInstance = null;
     currentTrimmerChannelIndex = null;
 });
+
+function createAudioTrimmer(channelIndex) {
+    const trimmer = new AudioTrimmer(channelIndex);
+    trimmer.initialize();
+    return trimmer;
+}

@@ -23,11 +23,15 @@ class AudioTrimmer {
         this.playbackCtx = this.playbackCanvas.getContext('2d');
         this.addEventListeners();
 
-        // Initialize slider values and event listeners
-        this.initializeSliders();
+        // Initialize slider values based on global settings
+        const trimSettings = getTrimSettings(this.channelIndex);
+        this.startSlider.value = trimSettings.startSliderValue;
+        this.endSlider.value = trimSettings.endSliderValue;
+        this.isLooping = trimSettings.isLooping;
+        this.updateLoopButtonState();
 
-        // Update the dimmed areas based on the initial slider values
-        this.updateDimmedAreas(); // Ensure dimmed areas are correctly set on page load
+        // Update slider values to reflect the initial positions
+        this.updateSliderValues();
     }
 
     initializeSliders() {
@@ -61,6 +65,23 @@ class AudioTrimmer {
         this.debounceDisplayValues();
     }
 
+
+    updateDimmedAreas() {
+        console.log("[Class Functions] updateDimmedAreas");
+
+        // Calculate the width and position of the dimmed areas based on slider values
+        const maxDuration = this.audioBuffer ? this.audioBuffer.duration : 100;
+        const startDimmedWidth = `${(this.startSliderValue / maxDuration) * 100}%`;
+        const endDimmedWidth = `${(1 - (this.endSliderValue / maxDuration)) * 100}%`;
+        const endDimmedLeft = `${(this.endSliderValue / maxDuration) * 100}%`;
+
+        this.startDimmed.style.width = startDimmedWidth;
+        this.startDimmed.style.left = '0';
+        this.endDimmed.style.width = endDimmedWidth;
+        this.endDimmed.style.left = endDimmedLeft;
+    }
+
+
     // Method to get the current value of the start slider
     getStartSliderValue() {
         return this.startSliderValue;
@@ -76,24 +97,6 @@ class AudioTrimmer {
         return this.isLooping;
     }
 
-
-    updateDimmedAreas() {
-        // Assuming maxDuration represents the total duration or range for the sliders
-        const maxDuration = this.audioBuffer ? this.audioBuffer.duration : 100;
-
-        // Calculate the width and position of the start and end dimmed areas based on slider values
-        const startDimmedWidth = `${this.startSliderValue / maxDuration * 100}%`;
-        const endDimmedWidth = `${(1 - this.endSliderValue / maxDuration) * 100}%`;
-        const endDimmedLeft = `${this.endSliderValue / maxDuration * 100}%`;
-
-        // Adjust the start and end dimmed areas
-        this.startDimmed.style.width = startDimmedWidth;
-        this.startDimmed.style.left = '0';
-
-        // Calculate the position of the end dimmed area from the left
-        this.endDimmed.style.width = endDimmedWidth;
-        this.endDimmed.style.left = endDimmedLeft;
-    }
 
     updateTrimmedSampleDuration() {
         const startValue = this.startSliderValue;
