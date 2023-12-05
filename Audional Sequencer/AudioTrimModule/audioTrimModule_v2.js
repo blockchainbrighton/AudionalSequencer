@@ -3,6 +3,8 @@
 
 class AudioTrimmer {
     constructor(channelIndex) {
+        console.log("[Class Functions] constructor", { channelIndex });
+
         this.channelIndex = channelIndex;
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
         this.audioBuffer = null;
@@ -13,13 +15,19 @@ class AudioTrimmer {
 
     // Method to set the audio buffer and update the waveform
     setAudioBuffer(audioBuffer) {
+        console.log("[Class Functions] setAudioBuffer", { audioBuffer });
+
         this.audioBuffer = audioBuffer;
         this.drawWaveform();
         this.updateDimmedAreas();
     }
 
     drawWaveform() {
-        if (!this.audioBuffer) return;
+        console.log("[Class Functions] drawWaveform");
+        if (!this.audioBuffer) {
+            console.log("[Class Functions] drawWaveform - No audio buffer");
+            return;
+        }
         const width = this.waveformCanvas.width;
         const height = this.waveformCanvas.height;
         const channelData = this.audioBuffer.getChannelData(0);
@@ -38,6 +46,8 @@ class AudioTrimmer {
         }
 
     async initialize() {
+        console.log("[Class Functions] initialize");
+
         ['ordinalIdInput', 'loadSampleButton', 'waveformCanvas', 'playbackCanvas', 'playButton', 'stopButton', 'loopButton', 'startDimmed', 'endDimmed']
             .forEach(id => this[id] = document.getElementById(id));
         this.ctx = this.waveformCanvas.getContext('2d');
@@ -46,13 +56,43 @@ class AudioTrimmer {
     }
 
     addEventListeners() {
-        this.loadSampleButton.addEventListener('click', () => this.loadSample());
-        this.playButton.addEventListener('click', () => this.playAudio());
-        this.stopButton.addEventListener('click', () => this.stopAudio());
-        this.loopButton.addEventListener('click', () => this.toggleLoop());
+        console.log("[Class Functions] addEventListeners");
+    
+        const elements = [
+            { id: 'loadSampleButton', element: this.loadSampleButton },
+            { id: 'playButton', element: this.playButton },
+            { id: 'stopButton', element: this.stopButton },
+            { id: 'loopButton', element: this.loopButton },
+            { id: 'startSlider', element: this.startSlider },
+            { id: 'endSlider', element: this.endSlider }
+        ];
+    
+        elements.forEach(({ id, element }) => {
+            if (element) {
+                console.log(`[Class Functions] addEventListeners - Found element: ${id}`);
+                if (id === 'startSlider' || id === 'endSlider') {
+                    element.addEventListener('input', () => {
+                        console.log(`[Class Functions] ${id} Input Changed`);
+                        this.updateSliderValues();
+                        setTrimSettings(this.channelIndex, this.startSliderValue, this.endSliderValue);
+                    });
+                } else {
+                    element.addEventListener('click', () => {
+                        console.log(`[Class Functions] ${id} Clicked`);
+                        this[id.replace('Button', '')](); // Calls the corresponding method
+                    });
+                }
+            } else {
+                console.error(`[Class Functions] addEventListeners - Element not found: ${id}`);
+            }
+        });
     }
+    
+    
 
     async loadSample() {
+        console.log("[Class Functions] loadSample");
+
         if (!this.ordinalIdInput.value) return;
         try {
             this.audioBuffer = await fetchAudio(`https://ordinals.com/content/${this.ordinalIdInput.value}`);
@@ -100,10 +140,14 @@ class AudioTrimmer {
         
 
     playAudio() {
+        console.log("[Class Functions] playAudio");
+
         playSound(this.audioBuffer, this.trimSettings.start, this.trimSettings.end, this.isLooping);
     }
 
     stopAudio() {
+        console.log("[Class Functions] stopAudio");
+
         if (this.isPlaying && this.sourceNode) {
             this.sourceNode.stop(); // Stop the audio playback
             this.sourceNode.disconnect();
@@ -114,12 +158,16 @@ class AudioTrimmer {
     }
 
     toggleLoop() {
+        console.log("[Class Functions] toggleLoop");
+
         this.isLooping = !this.isLooping;
         this.loopButton.classList.toggle('on', this.isLooping);
         this.loopButton.classList.toggle('off', !this.isLooping);
     }
 
     updateDimmedAreas() {
+        console.log("[Class Functions] updateDimmedAreas");
+
         const maxDuration = this.audioBuffer ? this.audioBuffer.duration : 100;
         const startDimmedWidth = `${this.trimSettings.start / maxDuration * 100}%`;
         const endDimmedWidth = `${(1 - this.trimSettings.end / maxDuration) * 100}%`;

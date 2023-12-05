@@ -602,7 +602,7 @@ const loadPreset = (preset) => {
                         audioTrimmer.setEndSliderValue(endSliderValue);
 
                         // Update global settings
-                        window.unifiedSequencerSettings.setTrimSettings(startSliderValue, endSliderValue, index);
+                        window.unifiedSequencerSettings.setTrimSettings(index, startSliderValue, endSliderValue);
                     });
                 }
             });

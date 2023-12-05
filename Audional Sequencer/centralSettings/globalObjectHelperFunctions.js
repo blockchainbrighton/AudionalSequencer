@@ -3,8 +3,8 @@
 let currentChannelIndex = null; // Define at a higher scope
 
 // Function to save trim settings
-function setTrimSettings(channelIndex, startSliderValue, endSliderValue, isLooping) {
-    window.unifiedSequencerSettings.setTrimSettingsForChannel(channelIndex, startSliderValue, endSliderValue, isLooping);
+function setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
+    window.unifiedSequencerSettings.setTrimSettingsForChannel(channelIndex, startSliderValue, endSliderValue);
 }
 
 // Function to get trim settings

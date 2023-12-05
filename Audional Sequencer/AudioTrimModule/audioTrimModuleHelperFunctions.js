@@ -1,10 +1,10 @@
-// audioTrimmerHelperFunctions.js
-let currentTrimmerInstance = null; // Define at a higher scope
-let currentTrimChannelIndex = null; // Define at a higher scope to store the current channel index
+// audioTrimmerModuleHelperFunctions.js
+let currentTrimmerInstance = null;
+let currentTrimmerChannelIndex = null; // Define at a higher scope
 
 function openAudioTrimmerModal(channelIndex) {
     console.log('channelIndex:', channelIndex); // Log the channel index
-    currentTrimChannelIndex = channelIndex; // Store the channel index
+    currentTrimmerChannelIndex = channelIndex; // Store the channel index
 
     fetch('AudioTrimModule/audioTrimModule.html')
         .then(response => response.text())
@@ -12,15 +12,15 @@ function openAudioTrimmerModal(channelIndex) {
             const container = document.getElementById('audio-trimmer-container');
             container.innerHTML = html;
 
-            currentTrimmerInstance = new AudioTrimmer(channelIndex); // Create and store the AudioTrimmer instance
+            currentTrimmerInstance = new AudioTrimmer(channelIndex);
             setTimeout(() => {
                 currentTrimmerInstance.initialize();
-
+        
                 const trimSettings = getTrimSettings(channelIndex);
                 if (trimSettings) {
-                    setStartSliderValue(currentTrimmerInstance, trimSettings.startSliderValue);
-                    setEndSliderValue(currentTrimmerInstance, trimSettings.endSliderValue);
-                    setIsLooping(currentTrimmerInstance, trimSettings.isLooping);
+                    setStartSliderValue(currentTrimmerChannelIndex, trimSettings.startSliderValue);
+                    setEndSliderValue(currentTrimmerChannelIndex, trimSettings.endSliderValue);
+                    setIsLooping(currentTrimmerChannelIndex, trimSettings.isLooping);
                 }
             }, 0);
 
@@ -33,10 +33,10 @@ function openAudioTrimmerModal(channelIndex) {
 
 
 function updateAudioTrimmerWithBuffer(audioBuffer) {
-    if (currentTrimmerInstance) {
-        currentTrimmerInstance.setAudioBuffer(audioBuffer);
-        currentTrimmerInstance.drawWaveform();
-        currentTrimmerInstance.updateDimmedAreas();
+    if (currentTrimmerChannelIndex) {
+        currentTrimmerChannelIndex.setAudioBuffer(audioBuffer);
+        currentTrimmerChannelIndex.drawWaveform();
+        currentTrimmerChannelIndex.updateDimmedAreas();
     }
 }
 
@@ -52,16 +52,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Close modal functionality
 document.querySelector('.close-button').addEventListener('click', function() {
-    if (currentTrimmerInstance && currentTrimChannelIndex !== null) {
+    if (currentTrimmerChannelIndex && currentTrimmerChannelIndex !== null) {
         const settings = {
-            startSliderValue: currentTrimmerInstance.getStartSliderValue(),
-            endSliderValue: currentTrimmerInstance.getEndSliderValue(),
-            isLooping: currentTrimmerInstance.getIsLooping()
+            startSliderValue: currentTrimmerChannelIndex.getStartSliderValue(),
+            endSliderValue: currentTrimmerChannelIndex.getEndSliderValue(),
+            isLooping: currentTrimmerChannelIndex.getIsLooping()
         };
-        setTrimSettings(currentTrimChannelIndex, settings.startSliderValue, settings.endSliderValue, settings.isLooping);
+        setTrimSettings(currentTrimmerChannelIndex, settings.startSliderValue, settings.endSliderValue);
     }
 
     document.getElementById('audio-trimmer-modal').style.display = 'none';
-    currentTrimmerInstance = null;
-    currentTrimChannelIndex = null; // Reset the channel index
+    currentTrimmerChannelIndex = null;
 });
