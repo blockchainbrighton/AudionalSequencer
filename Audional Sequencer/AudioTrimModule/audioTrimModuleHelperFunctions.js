@@ -11,18 +11,30 @@ function openAudioTrimmerModal(channelIndex) {
         .then(html => {
             const container = document.getElementById('audio-trimmer-container');
             container.innerHTML = html;
+            console.log("[HTML Injection] Content injected into audio-trimmer-container:", container.innerHTML);
 
-            currentTrimmerInstance = new AudioTrimmer(channelIndex);
-            setTimeout(() => {
-                currentTrimmerInstance.initialize();
+            // Wait for the browser to render the injected HTML
+            requestAnimationFrame(() => {
+                currentTrimmerInstance = new AudioTrimmer(channelIndex);
         
-                const trimSettings = getTrimSettings(channelIndex);
-                if (trimSettings) {
-                    setStartSliderValue(currentTrimmerChannelIndex, trimSettings.startSliderValue);
-                    setEndSliderValue(currentTrimmerChannelIndex, trimSettings.endSliderValue);
-                    setIsLooping(currentTrimmerChannelIndex, trimSettings.isLooping);
+                if (document.getElementById('waveformCanvas')) {
+                    currentTrimmerInstance.initialize();
+        
+                    // Retrieve trim settings for the channel from the global object
+                    const trimSettings = getTrimSettings(channelIndex);
+                    if (trimSettings) {
+                        // Apply the trim settings to the current trimmer instance
+                        currentTrimmerInstance.startSlider.value = trimSettings.startSliderValue;
+                        currentTrimmerInstance.endSlider.value = trimSettings.endSliderValue;
+                        currentTrimmerInstance.setIsLooping(trimSettings.isLooping); // Set looping state
+        
+                        // Update the trimmer instance with the new slider values
+                        currentTrimmerInstance.updateSliderValues();
+                    }
+                } else {
+                    console.error('Required elements not found in the DOM');
                 }
-            }, 0);
+            });
 
             document.getElementById('audio-trimmer-modal').style.display = 'block';
         })
@@ -30,6 +42,8 @@ function openAudioTrimmerModal(channelIndex) {
             console.error('Error loading audio trimmer module:', error);
         });
 }
+
+
 
 
 function updateAudioTrimmerWithBuffer(audioBuffer) {
@@ -52,15 +66,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Close modal functionality
 document.querySelector('.close-button').addEventListener('click', function() {
-    if (currentTrimmerChannelIndex && currentTrimmerChannelIndex !== null) {
+    if (currentTrimmerInstance) {
         const settings = {
-            startSliderValue: currentTrimmerChannelIndex.getStartSliderValue(),
-            endSliderValue: currentTrimmerChannelIndex.getEndSliderValue(),
-            isLooping: currentTrimmerChannelIndex.getIsLooping()
+            startSliderValue: currentTrimmerInstance.getStartSliderValue(),
+            endSliderValue: currentTrimmerInstance.getEndSliderValue(),
+            isLooping: currentTrimmerInstance.getIsLooping()
         };
-        setTrimSettings(currentTrimmerChannelIndex, settings.startSliderValue, settings.endSliderValue);
+        setTrimSettings(currentTrimmerChannelIndex, settings.startSliderValue, settings.endSliderValue, settings.isLooping);
     }
 
     document.getElementById('audio-trimmer-modal').style.display = 'none';
+    currentTrimmerInstance = null;
     currentTrimmerChannelIndex = null;
 });

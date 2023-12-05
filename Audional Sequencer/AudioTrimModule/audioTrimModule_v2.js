@@ -11,6 +11,25 @@ class AudioTrimmer {
         this.isPlaying = false;
         this.isLooping = false;
         this.trimSettings = getTrimSettings(this.channelIndex);
+
+        this.displayTimeout = null;
+
+    }
+
+    // Method to debounce the display of values
+    debounceDisplayValues() {
+        if (this.displayTimeout) {
+            clearTimeout(this.displayTimeout);
+        }
+        this.displayTimeout = setTimeout(() => this.displayValues(), 300); // Adjust the delay as needed
+    }
+
+    // Method to display values (for debugging or UI update)
+    displayValues() {
+        console.log("Start Slider Value:", this.startSliderValue);
+        console.log("End Slider Value:", this.endSliderValue);
+        console.log("Trimmed Sample Duration:", this.trimmedSampleDuration);
+        // Add any other values you wish to display
     }
 
     // Method to set the audio buffer and update the waveform
@@ -45,48 +64,65 @@ class AudioTrimmer {
         this.ctx.stroke();
         }
 
-    async initialize() {
-        console.log("[Class Functions] initialize");
-
-        ['ordinalIdInput', 'loadSampleButton', 'waveformCanvas', 'playbackCanvas', 'playButton', 'stopButton', 'loopButton', 'startDimmed', 'endDimmed']
-            .forEach(id => this[id] = document.getElementById(id));
-        this.ctx = this.waveformCanvas.getContext('2d');
-        this.addEventListeners();
-        this.updateDimmedAreas();
-    }
-
-    addEventListeners() {
-        console.log("[Class Functions] addEventListeners");
-    
-        const elements = [
-            { id: 'loadSampleButton', element: this.loadSampleButton },
-            { id: 'playButton', element: this.playButton },
-            { id: 'stopButton', element: this.stopButton },
-            { id: 'loopButton', element: this.loopButton },
-            { id: 'startSlider', element: this.startSlider },
-            { id: 'endSlider', element: this.endSlider }
-        ];
-    
-        elements.forEach(({ id, element }) => {
-            if (element) {
-                console.log(`[Class Functions] addEventListeners - Found element: ${id}`);
-                if (id === 'startSlider' || id === 'endSlider') {
-                    element.addEventListener('input', () => {
-                        console.log(`[Class Functions] ${id} Input Changed`);
-                        this.updateSliderValues();
-                        setTrimSettings(this.channelIndex, this.startSliderValue, this.endSliderValue);
-                    });
-                } else {
-                    element.addEventListener('click', () => {
-                        console.log(`[Class Functions] ${id} Clicked`);
-                        this[id.replace('Button', '')](); // Calls the corresponding method
-                    });
+        async initialize() {
+            console.log("[Class Functions] initialize");
+        
+            const elementIds = ['ordinalIdInput', 'loadSampleButton', 'waveformCanvas', 'playbackCanvas', 'playButton', 'stopButton', 'loopButton', 'startDimmed', 'endDimmed', 'startSlider', 'endSlider'];
+            let allElementsAvailable = true;
+        
+            elementIds.forEach(id => {
+                this[id] = document.getElementById(id);
+                if (!this[id]) {
+                    console.error(`[Class Functions] initialize - Element not found: ${id}`);
+                    allElementsAvailable = false;
                 }
+            });
+        
+            if (allElementsAvailable) {
+                this.ctx = this.waveformCanvas.getContext('2d');
+                this.addEventListeners();
+                this.updateDimmedAreas();
             } else {
-                console.error(`[Class Functions] addEventListeners - Element not found: ${id}`);
+                console.log("[Class Functions] initialize - Waiting for elements to be available");
+                setTimeout(() => this.initialize(), 500); // Retry initialization after a delay
             }
-        });
-    }
+        }
+        
+        
+
+        addEventListeners() {
+            console.log("[Class Functions] addEventListeners");
+        
+            const elements = [
+                { id: 'loadSampleButton', element: this.loadSampleButton },
+                { id: 'playButton', element: this.playButton },
+                { id: 'stopButton', element: this.stopButton },
+                { id: 'loopButton', element: this.loopButton },
+                { id: 'startSlider', element: this.startSlider },
+                { id: 'endSlider', element: this.endSlider }
+            ];
+        
+            elements.forEach(({ id, element }) => {
+                if (element) {
+                    console.log(`[Class Functions] addEventListeners - Found element: ${id}`);
+                    if (id === 'startSlider' || id === 'endSlider') {
+                        element.addEventListener('input', () => {
+                            console.log(`[Class Functions] ${id} Input Changed`);
+                            this.updateSliderValues();
+                            setTrimSettings(this.channelIndex, this.startSliderValue, this.endSliderValue);
+                        });
+                    } else {
+                        element.addEventListener('click', () => {
+                            console.log(`[Class Functions] ${id} Clicked`);
+                            this[id.replace('Button', '')](); // Calls the corresponding method
+                        });
+                    }
+                } else {
+                    console.error(`[Class Functions] addEventListeners - Element not found: ${id}`);
+                }
+            });
+        }
+        
     
     
 
@@ -122,6 +158,13 @@ class AudioTrimmer {
             this.updateTrimmedSampleDuration();
             this.debounceDisplayValues();
         }
+
+        updateTrimmedSampleDuration() {
+            const startValue = this.startSliderValue;
+            const endValue = this.endSliderValue;
+            this.trimmedSampleDuration = Math.max(0, endValue - startValue);
+            this.debounceDisplayValues();
+        }
     
         // Method to get the current value of the start slider
         getStartSliderValue() {
@@ -136,6 +179,20 @@ class AudioTrimmer {
          // Method to get the current value of the isLooping flag
          getIsLooping() {
             return this.isLooping;
+        }
+
+        // Method to set the isLooping flag
+        setIsLooping(isLooping) {
+            this.isLooping = isLooping;
+            this.updateLoopButtonState();
+        }
+
+        // Method to update the loop button's visual state based on isLooping flag
+        updateLoopButtonState() {
+            if (this.loopButton) {
+                this.loopButton.classList.toggle('on', this.isLooping);
+                this.loopButton.classList.toggle('off', !this.isLooping);
+            }
         }
         
 
