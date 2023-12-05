@@ -18,6 +18,14 @@ class UnifiedSequencerSettings {
         };
     }
 
+    getBPM() {
+        return this.settings.masterSettings.projectBPM;
+    }
+
+    setBPM(newBPM) {
+        this.settings.masterSettings.projectBPM = newBPM;
+    }
+
     initializeSequences(numSequences, numChannels, numSteps) {
         let sequences = {};
         for (let seq = 1; seq <= numSequences; seq++) {

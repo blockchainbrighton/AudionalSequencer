@@ -11,29 +11,18 @@ function loadSequence(sequenceNumber) {
     }
 
     // Assertion to ensure valid indexing
-    if (sequenceNumber - 1 < 0 || sequenceNumber - 1 >= sequenceBPMs.length) {
+    if (sequenceNumber - 1 < 0 || sequenceNumber - 1 >= sequences.length) {
         console.error(`Invalid sequenceNumber: ${sequenceNumber}`);
         return;
-    }   
+    }
 
-    // Set the BPM slider and display to match the current sequence's BPM
-    let bpm = sequenceBPMs[sequenceNumber - 1];  // Get the BPM for the current sequence
-    let bpmSlider = document.getElementById('bpm-slider');
-    let bpmDisplay = document.getElementById('bpm-display');
-    bpmSlider.value = bpm;
-    bpmDisplay.innerText = bpm;
-// Add event listener to BPM slider to update sequence data when BPM changes
-    bpmSlider.addEventListener('input', function() {
-        let newBpm = parseInt(bpmSlider.value);
-        updateSequenceData({
-            sequenceIndex: currentSequence - 1, // Assuming 0-based indexing
-            bpm: newBpm
-        });
-    });
+    // Load the sequence data here
+    // Note: The code to load sequence data (e.g., steps, channel settings) should be added here
 
-    bpmSlider.dispatchEvent(new Event('input')); // Update the sequencer's BPM
+    // Removed the code that updates the BPM as it's a master setting
+    // The BPM should remain constant and managed by a separate control
 
-    
+ 
     const sequenceChannels = sequences[sequenceNumber - 1];
     if (!sequenceChannels) {
         console.error(`Sequence ${sequenceNumber} is not found in sequences.`, sequences);
@@ -102,40 +91,40 @@ function loadNextSequence() {
 }
 
 function updateUIForSequence(sequenceNumber) {
-    if (sequenceNumber > 0 && sequenceNumber <= sequences.length) {
-        channelSettings = sequences[sequenceNumber - 1];
-        saveCurrentSequence(currentSequence);
+    const masterSettings = window.unifiedSequencerSettings.getSetting('masterSettings');
+    const sequenceSettings = masterSettings.projectSequences[`Sequence${sequenceNumber}`];
+
+    if (sequenceNumber > 0 && sequenceNumber <= masterSettings.projectSequences.length) {
+        saveCurrentSequence(currentSequence); // Assuming this function saves the current sequence state
 
         // Mark the sequence as active
         markSequenceAsLive(sequenceNumber - 1);
 
-        // Rest of the function remains unchanged...
+        channels.forEach((channel, index) => {
+            const stepButtons = channel.querySelectorAll('.step-button');
+            const toggleMuteButtons = channel.querySelectorAll('.toggle-mute');
+
+            // Clear all step buttons and toggle mute states
+            stepButtons.forEach(button => button.classList.remove('selected'));
+            toggleMuteButtons.forEach(button => button.classList.remove('toggle-mute'));
+
+            // Update the steps based on the sequence settings
+            sequenceSettings[index].forEach((stepState, pos) => {
+                // Skip the 0th position (our placeholder)
+                if (pos === 0) return;
+
+                if (stepState) {
+                    stepButtons[pos - 1].classList.add('selected');
+                }
+            });
+
+            // Additional logic for updating other UI elements like toggle mute states, volume, etc.
+        });
     } else {
         console.error("Invalid sequence number:", sequenceNumber);
     }
-
-    const sequenceSettings = sequences[sequenceNumber - 1];
-    channels.forEach((channel, index) => {
-        const stepButtons = channel.querySelectorAll('.step-button');
-        const toggleMuteButtons = channel.querySelectorAll('.toggle-mute');
-
-        // Clear all step buttons and toggle mute states
-        stepButtons.forEach(button => button.classList.remove('selected'));
-        toggleMuteButtons.forEach(button => button.classList.remove('toggle-mute'));
-
-        // Update the steps based on the sequence settings
-        sequenceSettings[index].forEach((stepState, pos) => {
-            // Skip the 0th position (our placeholder)
-            if (pos === 0) return;
-
-            if (stepState) {
-                stepButtons[pos - 1].classList.add('selected');
-            }
-        });
-
-        // You can add similar logic for updating other UI elements like toggle mute states, volume, etc.
-    });
 }
+
 
 // Call this function whenever the sequence changes
 function changeSequence(seq) {
