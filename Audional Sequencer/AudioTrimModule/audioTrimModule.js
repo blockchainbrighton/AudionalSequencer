@@ -128,7 +128,7 @@ class AudioTrimmer {
             this[slider].addEventListener('input', () => {
                 this.updateSliderValues();
                 // Call to update the global settings with the new slider values
-                setTrimSettings(this.startSliderValue, this.endSliderValue);
+                setTrimSettings(channelIndex, this.startSliderValue, this.endSliderValue);
             });
         });
     }
