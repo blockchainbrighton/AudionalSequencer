@@ -1,4 +1,4 @@
-// audioTrimUtils.js
+// globalObjectHelperFunctions.js
 
 document.addEventListener('DOMContentLoaded', function() {
     // Add event listener to all "T" buttons
@@ -12,16 +12,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // Function to save trim settings
-function setTrimSettings(startSliderValue, endSliderValue) {
-    // Assuming unifiedSequencerSettings is the global object
-    window.unifiedSequencerSettings.updateTrimSettings(startSliderValue, endSliderValue);
+function setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
+    window.unifiedSequencerSettings.setTrimSettingsForChannel(channelIndex, startSliderValue, endSliderValue);
 }
 
+
 // Function to get trim settings
-function getTrimSettings() {
-    // Assuming unifiedSequencerSettings is the global object
-    return window.unifiedSequencerSettings.getTrimSettings();
+function getTrimSettings(channelIndex) {
+    return window.unifiedSequencerSettings.getTrimSettingsForChannel(channelIndex);
 }
+
 
 function setStartSliderValue(value) {
     this.startSliderValue = value;

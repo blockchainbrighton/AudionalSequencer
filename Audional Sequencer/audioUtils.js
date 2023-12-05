@@ -131,7 +131,7 @@ function playSound(channel, currentStep) {
       console.log("[playSound] Channel index:", channelIndex);
 
       // Retrieve trim settings using the global object
-      const trimSettings = window.unifiedSequencerSettings.getTrimSettings();
+      const trimSettings = window.unifiedSequencerSettings.getTrimSettingsForChannel();
       let trimStart = trimSettings.startSliderValue;
       let trimEnd = trimSettings.endSliderValue;
       console.log("[playSound] Retrieved trimStart and trimEnd:", trimStart, trimEnd);

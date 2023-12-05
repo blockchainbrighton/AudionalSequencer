@@ -1,4 +1,4 @@
-// centralSettings/unifiedCentralisedSequencerSettings.js
+// globalObjectClassAndInit.js
 
 class UnifiedSequencerSettings {
     constructor() {
@@ -8,8 +8,8 @@ class UnifiedSequencerSettings {
                 projectBPM: 120,
                 projectURLs: new Array(16).fill(''),
                 trimSettings: new Array(16).fill().map(() => ({
-                    startSliderValue: 0.01,
-                    endSliderValue: 10.00,
+                    startSliderValue: 0.01, // Default start value
+                    endSliderValue: 100.00, // Default end value (100%)
                     totalSampleDuration: 0
                 })),
                 projectURLNames: new Array(16).fill(''),
@@ -17,7 +17,14 @@ class UnifiedSequencerSettings {
             },
             // Add other settings as needed
         };
+
+        // Log the initial values of startSliderValue and endSliderValue for each channel
+        this.settings.masterSettings.trimSettings.forEach((setting, index) => {
+            console.log(`Channel ${index + 1} - startSliderValue = ${setting.startSliderValue}, endSliderValue = ${setting.endSliderValue}`);
+        });
     }
+
+    
 
     // Initialize sequences with the specified structure
     initializeSequences(numSequences, numChannels, numSteps) {
@@ -64,14 +71,25 @@ class UnifiedSequencerSettings {
     }
 
    // Method to update trim settings
-    updateTrimSettings(startSliderValue, endSliderValue) {
-        this.settings.masterSettings.trimSettings.startSliderValue = startSliderValue;
-        this.settings.masterSettings.trimSettings.endSliderValue = endSliderValue;
+    setTrimSettingsForChannel(channelIndex, startSliderValue, endSliderValue) {
+        this.settings.masterSettings.trimSettings[channelIndex] = {
+            startSliderValue: startSliderValue,
+            endSliderValue: endSliderValue,
+            totalSampleDuration: this.settings.masterSettings.trimSettings[channelIndex].totalSampleDuration
+        };
     }
 
-    // Method to get trim settings
-    getTrimSettings() {
-        return this.settings.masterSettings.trimSettings;
+
+      // Method to get the trim settings for a specific channel
+      getTrimSettingsForChannel(channelIndex) {
+        const trimSettings = this.settings.masterSettings.trimSettings[channelIndex];
+        return trimSettings ? {
+            startSliderValue: trimSettings.startSliderValue,
+            endSliderValue: trimSettings.endSliderValue
+        } : {
+            startSliderValue: 0.01, // Default value if not set
+            endSliderValue: 100.00 // Default end value if not set
+        };
     }
 
     // Method to update the state of a specific step
@@ -95,18 +113,7 @@ class UnifiedSequencerSettings {
         return this.settings.masterSettings.projectURLs[channelIndex];
     }
 
-    // Method to get the trim settings for a specific channel
-    getTrimSettingsForChannel(channelIndex) {
-        // Assuming channelIndex is 0-based and corresponds directly to the array index
-        const trimSettings = this.settings.masterSettings.trimSettings[channelIndex];
-        return trimSettings ? {
-            startSliderValue: trimSettings.startSliderValue,
-            endSliderValue: trimSettings.endSliderValue
-        } : {
-            startSliderValue: 0.01, // Default value if not set
-            endSliderValue: this.totalSampleDuration // Default to total sample duration
-        };
-    }
+  
 
     // Method to get a specific setting
     getSetting(key) {
