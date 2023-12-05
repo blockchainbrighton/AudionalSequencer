@@ -120,7 +120,9 @@ class AudioTrimmer {
             return this.endSliderValue;
         }
     
-        
+        sliderValueToTimecode(sliderValue, totalDuration) {
+            return (sliderValue / 100) * totalDuration;
+        }
 
     // Method to debounce the display of values
     debounceDisplayValues() {
@@ -140,38 +142,36 @@ class AudioTrimmer {
 
   
 
-        addEventListeners() {
-            console.log("[Class Functions] addEventListeners");
-        
-            const elements = [
-                { id: 'loadSampleButton', element: this.loadSampleButton },
-                { id: 'playButton', element: this.playButton },
-                { id: 'stopButton', element: this.stopButton },
-                { id: 'loopButton', element: this.loopButton },
-                { id: 'startSlider', element: this.startSlider },
-                { id: 'endSlider', element: this.endSlider }
-            ];
-        
-            elements.forEach(({ id, element }) => {
-                if (element) {
-                    console.log(`[Class Functions] addEventListeners - Found element: ${id}`);
-                    if (id === 'startSlider' || id === 'endSlider') {
-                        element.addEventListener('input', () => {
-                            console.log(`[Class Functions] ${id} Input Changed`);
-                            this.updateSliderValues();
-                            setTrimSettings(this.channelIndex, this.startSliderValue, this.endSliderValue);
-                        });
-                    } else {
-                        element.addEventListener('click', () => {
-                            console.log(`[Class Functions] ${id} Clicked`);
-                            this[id.replace('Button', '')](); // Calls the corresponding method
-                        });
-                    }
-                } else {
-                    console.error(`[Class Functions] addEventListeners - Element not found: ${id}`);
+    addEventListeners() {
+        console.log("[Class Functions] addEventListeners");
+    
+        const elements = [
+            { id: 'loadSampleButton', element: this.loadSampleButton, action: this.loadSample },
+            { id: 'playButton', element: this.playButton, action: this.playTrimmedAudio.bind(this) },
+            { id: 'stopButton', element: this.stopButton, action: this.stopAudio.bind(this) },
+            { id: 'loopButton', element: this.loopButton, action: this.toggleLoop },
+            { id: 'startSlider', element: this.startSlider },
+            { id: 'endSlider', element: this.endSlider }
+        ];
+    
+        elements.forEach(({ id, element, action }) => {
+            if (element) {
+                console.log(`[Class Functions] addEventListeners - Found element: ${id}`);
+                if (id === 'startSlider' || id === 'endSlider') {
+                    element.addEventListener('input', () => {
+                        console.log(`[Class Functions] ${id} Input Changed`);
+                        this.updateSliderValues();
+                        setTrimSettings(this.channelIndex, this.startSliderValue, this.endSliderValue);
+                    });
+                } else if (action) {
+                    element.addEventListener('click', action);
                 }
-            });
-        }
+            } else {
+                console.error(`[Class Functions] addEventListeners - Element not found: ${id}`);
+            }
+        });
+    }
+    
         
       
 
@@ -221,24 +221,53 @@ class AudioTrimmer {
             }
         }
         
-
-    playAudio() {
-        console.log("[Class Functions] playAudio");
-
-        playSound(this.audioBuffer, this.trimSettings.start, this.trimSettings.end, this.isLooping);
-    }
-
-    stopAudio() {
-        console.log("[Class Functions] stopAudio");
-
-        if (this.isPlaying && this.sourceNode) {
-            this.sourceNode.stop(); // Stop the audio playback
-            this.sourceNode.disconnect();
-            this.sourceNode = null;
-            this.isPlaying = false;
+        playTrimmedAudio() {
+            console.log("[Class Functions] playTrimmedAudio");
+        
+            if (!this.audioBuffer) {
+                console.error("No audio buffer loaded");
+                return;
+            }
+        
+            // Convert slider values to timecodes
+            const startTime = this.sliderValueToTimecode(this.startSlider.value, this.audioBuffer.duration);
+            const endTime = this.sliderValueToTimecode(this.endSlider.value, this.audioBuffer.duration);
+        
+            // Create and configure the audio source node
+            this.sourceNode = this.audioContext.createBufferSource();
+            this.sourceNode.buffer = this.audioBuffer;
+            this.sourceNode.connect(this.audioContext.destination);
+        
+            // Set looping if enabled
+            this.sourceNode.loop = this.isLooping;
+            if (this.isLooping) {
+                this.sourceNode.loopStart = startTime;
+                this.sourceNode.loopEnd = endTime;
+            }
+        
+            // Start playback
+            this.sourceNode.start(0, startTime, endTime - startTime);
+            this.isPlaying = true;
+        
+            // Handle the end of playback
+            this.sourceNode.onended = () => {
+                this.isPlaying = false;
+                if (this.isLooping) this.playTrimmedAudio(); // Restart if looping
+            };
         }
-        this.isLooping = false;
-    }
+
+        stopAudio() {
+            console.log("[Class Functions] stopAudio");
+        
+            if (this.isPlaying && this.sourceNode) {
+                this.sourceNode.stop(); // Stop the audio playback
+                this.sourceNode.disconnect();
+                this.sourceNode = null;
+                this.isPlaying = false;
+            }
+            // Reset looping state if needed
+            this.isLooping = false;
+        }
 
     toggleLoop() {
         console.log("[Class Functions] toggleLoop");
