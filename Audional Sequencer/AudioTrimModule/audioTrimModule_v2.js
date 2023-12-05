@@ -86,6 +86,15 @@ class AudioTrimmer {
                 console.log("[Class Functions] initialize - Waiting for elements to be available");
                 setTimeout(() => this.initialize(), 500); // Retry initialization after a delay
             }
+
+            // Initialize slider values based on global settings
+            const trimSettings = getTrimSettings(this.channelIndex);
+            this.startSlider.value = trimSettings.startSliderValue;
+            this.endSlider.value = trimSettings.endSliderValue;
+            this.isLooping = trimSettings.isLooping;
+            this.updateLoopButtonState();
+            this.updateDimmedAreas();
+        
         }
         
         
