@@ -348,31 +348,35 @@ channels.forEach((channel, index) => {
                         if (audionalInput.value) {
                             const audionalUrl = 'https://ordinals.com/content/' + getIDFromURL(audionalInput.value);
                             console.log(`index.js loadButton: Setting URL for channel ${index + 1}:`, audionalUrl);
-                            collectedURLs[index] = audionalUrl; 
-                             // Update the global object with the new URL
-                             window.unifiedSequencerSettings.updateSetting('projectURLs', collectedURLs);
-    
+                            collectedURLs[index] = audionalUrl;
+                            window.unifiedSequencerSettings.updateSetting('projectURLs', collectedURLs);
+
                             fetchAudio(audionalUrl, index, loadSampleButton);
-                            // Add the orange margin to the channel container
-                            const channelContainer = channel.querySelector('.channel-container');
-                            channelContainer.classList.add('ordinal-loaded');
+                            
+                            // Update the class of the channel container
+                            const channelContainer = document.querySelector(`.channel:nth-child(${index + 1}) .channel-container`);
+                            if (channelContainer) {
+                                channelContainer.classList.add('ordinal-loaded');
+                            }
                         } else if (ipfsInput.value) {
                             const ipfsUrl = 'https://ipfs.io/ipfs/' + ipfsInput.value;
                             console.log(ipfsUrl);
                             collectedURLs[index] = ipfsUrl;
-                              // Update the global object with the new URL
-                              window.unifiedSequencerSettings.updateSetting('projectURLs', collectedURLs);
-    
+                            window.unifiedSequencerSettings.updateSetting('projectURLs', collectedURLs);
+
                             fetchAudio(ipfsUrl, index, loadSampleButton);
                             console.log(`index.js loadButton: Setting IPFS URL for channel ${index + 1}:`, ipfsUrl);
-                            const channelContainer = channel.querySelector('.channel-container');
-                            channelContainer.classList.remove('ordinal-loaded');
+                            const channelContainer = document.querySelector(`.channel:nth-child(${index + 1}) .channel-container`);
+                            if (channelContainer) {
+                                channelContainer.classList.remove('ordinal-loaded');
+                            }
                         }
-                        updateCollectedURLsForSequences();  // Call the update function here
+                        updateCollectedURLsForSequences();
                         document.body.removeChild(idModal);
                         console.log(`loadButton: Updated collectedURLs after adding URL for channel ${index + 1}:`, collectedURLs);
                     });
                     idModalContent.appendChild(loadButton);
+
 
                     // Cancel button implementation
                     const cancelButton = document.createElement('button');

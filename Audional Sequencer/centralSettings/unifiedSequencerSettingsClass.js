@@ -1,4 +1,4 @@
-// globalObjectClassAndInit.js
+// unifiedSequencerSettingsClass.js
 
 class UnifiedSequencerSettings {
     constructor() {

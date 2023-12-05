@@ -47,6 +47,21 @@ document.addEventListener("DOMContentLoaded", function() {
         loadOptions.style.display = "none"; // Hide the menu after selection
     });
 
+      
+  
+  loadFileInput.addEventListener('change', () => {
+    let file = loadFileInput.files[0];
+    let reader = new FileReader();
+    reader.onload = function(e) {
+        let settings = e.target.result;
+        importSettings(settings);
+        console.log("Loaded file content:", settings);
+
+    };
+    reader.readAsText(file);
+});
+
+
     function loadPresetFromFile(filePath) {
         console.log(`Loading preset from: ${filePath}`);
         fetch(filePath)
@@ -72,21 +87,8 @@ document.addEventListener("DOMContentLoaded", function() {
     loadInternalPreset5.addEventListener('click', () => loadPresetFromFile('Preset_Json_Files/Koto2.json'));
 
 
-
-    
-  
-  loadFileInput.addEventListener('change', () => {
-      let file = loadFileInput.files[0];
-      let reader = new FileReader();
-      reader.onload = function(e) {
-          let settings = e.target.result;
-          importSettings(settings);
-          console.log("Loaded file content:", settings);
-
-      };
-      reader.readAsText(file);
-  });
 });
+  
 
   // Listen for messages
   window.addEventListener('message', function(event) {
@@ -108,6 +110,32 @@ document.addEventListener("DOMContentLoaded", function() {
     else if (event.data.command === 'pause') {
         pauseScheduler();
     }
+});
+
+// Close the modal when the user clicks on <span> (x)
+document.querySelector('.close-button').addEventListener('click', function() {
+    console.log('Close button clicked');
+    document.getElementById('audio-trimmer-modal').style.display = 'none';
+    console.log('Modal closed');
+});
+
+// Close the modal when the user clicks anywhere outside of the modal
+window.onclick = function(event) {
+    const modal = document.getElementById('audio-trimmer-modal');
+    if (event.target === modal) {
+        console.log('Clicked outside the modal');
+        modal.style.display = 'none';
+        console.log('Modal closed');
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const projectNameInput = document.getElementById('project-name');
+
+    projectNameInput.addEventListener('input', () => {
+        const projectName = projectNameInput.value;
+        window.unifiedSequencerSettings.updateSetting('projectName', projectName);
+    });
 });
 
 
