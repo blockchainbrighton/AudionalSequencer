@@ -63,21 +63,32 @@ class UnifiedSequencerSettings {
 
     // Method to update audio data for a specific channel
     updateSampleDuration(duration, channelIndex) {
-        if (this.settings.masterSettings.trimSettings[channelIndex]) {
+        if (channelIndex >= 0 && channelIndex < this.settings.masterSettings.trimSettings.length) {
             this.settings.masterSettings.trimSettings[channelIndex].totalSampleDuration = duration;
+            console.log(`[UnifiedSequencerSettings] Duration updated for channel ${channelIndex}: ${duration}`);
         } else {
-            console.error(`Trim settings not found for channel index: ${channelIndex}`);
+            console.error(`[UnifiedSequencerSettings] Invalid channel index: ${channelIndex}`);
         }
     }
 
    // Method to update trim settings
     setTrimSettingsForChannel(channelIndex, startSliderValue, endSliderValue) {
-        this.settings.masterSettings.trimSettings[channelIndex] = {
-            startSliderValue: startSliderValue,
-            endSliderValue: endSliderValue,
-            totalSampleDuration: this.settings.masterSettings.trimSettings[channelIndex].totalSampleDuration
-        };
+        if (channelIndex >= 0 && channelIndex < this.settings.masterSettings.trimSettings.length) {
+            const currentSettings = this.settings.masterSettings.trimSettings[channelIndex];
+            if (currentSettings) {
+                this.settings.masterSettings.trimSettings[channelIndex] = {
+                    startSliderValue: startSliderValue,
+                    endSliderValue: endSliderValue,
+                    totalSampleDuration: currentSettings.totalSampleDuration
+                };
+            } else {
+                console.error(`[setTrimSettingsForChannel] Trim settings not initialized for channel index: ${channelIndex}`);
+            }
+        } else {
+            console.error(`Invalid channel index: ${channelIndex}`);
+        }
     }
+
 
 
       // Method to get the trim settings for a specific channel

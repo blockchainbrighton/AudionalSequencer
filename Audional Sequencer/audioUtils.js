@@ -47,10 +47,10 @@ async function fetchAndParseContentType(url) {
 // Function to fetch audio data
 const fetchAudio = async (url, channelIndex, loadSampleButtonElement = null) => {
   try {
+    console.log(`[fetchAudio] Fetching audio from URL: ${url} for channel index: ${channelIndex}`);
+
     const response = await fetch(url);
-    let data;
     let audioData;
-    let isBinaryData = false;
     let filename;
 
     // Clone the response for a second read attempt if the first one fails
@@ -58,16 +58,17 @@ const fetchAudio = async (url, channelIndex, loadSampleButtonElement = null) => 
 
     try {
       // Try to read the response as JSON
-      data = await response.json();
+      const data = await response.json();
       // If this succeeds, extract the audio data from the JSON
       audioData = base64ToArrayBuffer(data.audioData.split(',')[1]);
       filename = data.filename || data.fileName; // Get filename from JSON if available
     } catch (e) {
+      console.log("[fetchAudio] Response is not JSON, trying to read as arrayBuffer");
+
       // If JSON parsing fails, try reading as binary data
       console.log("Response is not JSON, trying to read as arrayBuffer");
       try {
         audioData = await clonedResponse.arrayBuffer();
-        isBinaryData = true;
         filename = url.split('/').pop(); // Use the URL to get the filename for binary data
       } catch (e) {
         console.error("Response could not be processed as JSON or as an ArrayBuffer.", e);
@@ -90,7 +91,7 @@ const fetchAudio = async (url, channelIndex, loadSampleButtonElement = null) => 
 
     // Update the global object with the audio sample's duration for the specific channel
     window.unifiedSequencerSettings.updateSampleDuration(audioBuffer.duration, channelIndex);
-
+    console.log(`[fetchAudio] Updated global object with URL: ${url} and duration: ${audioBuffer.duration} for channel index: ${channelIndex}`);
 
 
     if (loadSampleButtonElement) {
@@ -104,6 +105,7 @@ const fetchAudio = async (url, channelIndex, loadSampleButtonElement = null) => 
     console.error('Error fetching audio:', error);
   }
 };
+
 // Helper function to convert an ArrayBuffer to a Base64 string
 function bufferToBase64(buffer) {
   let binary = '';
@@ -115,46 +117,48 @@ function bufferToBase64(buffer) {
   return window.btoa(binary);
 }
 
+
 function playSound(channel, currentStep) {
   if (channel.querySelectorAll('.step-button')[currentStep].classList.contains('selected')) {
-    const url = channel.dataset.originalUrl;
-    console.log("[playSound] URL of the audio:", url);
+      const url = channel.dataset.originalUrl;
+      console.log("[playSound] URL of the audio:", url);
 
-    const audioBuffer = audioBuffers.get(url);
-    if (audioBuffer) {
-      console.log("[playSound] Audio buffer found for URL:", url);
+      const audioBuffer = audioBuffers.get(url);
+      if (audioBuffer) {
+          console.log("[playSound] Audio buffer found for URL:", url);
 
-      const source = audioContext.createBufferSource();
-      source.buffer = audioBuffer;
+          const source = audioContext.createBufferSource();
+          source.buffer = audioBuffer;
 
-      const channelIndex = parseInt(channel.dataset.id.split('-')[1]);
-      console.log("[playSound] Channel index:", channelIndex);
+          const channelIndex = parseInt(channel.dataset.id.split('-')[1]) - 1;
+          console.log("[playSound] Channel index:", channelIndex);
 
-      // Retrieve trim settings using the global object
-      const trimSettings = window.unifiedSequencerSettings.getTrimSettingsForChannel();
-      let trimStart = trimSettings.startSliderValue;
-      let trimEnd = trimSettings.endSliderValue;
-      console.log("[playSound] Retrieved trimStart and trimEnd:", trimStart, trimEnd);
+          // Retrieve trim settings using the global object
+          const trimSettings = window.unifiedSequencerSettings.getTrimSettingsForChannel(channelIndex);
+          let trimStart = (trimSettings.startSliderValue / 100) * audioBuffer.duration;
+          let trimEnd = (trimSettings.endSliderValue / 100) * audioBuffer.duration;
+          console.log("[playSound] Retrieved trimStart and trimEnd:", trimStart, trimEnd);
 
-      trimStart = Math.max(0, Math.min(trimStart, audioBuffer.duration));
-      trimEnd = Math.max(trimStart, Math.min(trimEnd, audioBuffer.duration));
-      console.log("[playSound] Validated and applied trimStart and trimEnd:", trimStart, trimEnd);
+          trimStart = Math.max(0, Math.min(trimStart, audioBuffer.duration));
+          trimEnd = Math.max(trimStart, Math.min(trimEnd, audioBuffer.duration));
+          console.log("[playSound] Validated and applied trimStart and trimEnd:", trimStart, trimEnd);
 
-      const duration = trimEnd - trimStart;
-      console.log("[playSound] Duration to play:", duration);
+          const duration = trimEnd - trimStart;
+          console.log("[playSound] Duration to play:", duration);
 
-      source.connect(gainNodes[channelIndex - 1]);
-      gainNodes[channelIndex - 1].connect(audioContext.destination);
+          source.connect(gainNodes[channelIndex]);
+          gainNodes[channelIndex].connect(audioContext.destination);
 
-      console.log("[playSound] Starting playback from:", trimStart, "for duration:", duration);
-      source.start(0, trimStart, duration);
-    } else {
-      console.log("[playSound] No audio buffer found for URL:", url);
-    }
+          console.log("[playSound] Starting playback from:", trimStart, "for duration:", duration);
+          source.start(0, trimStart, duration);
+      } else {
+          console.log("[playSound] No audio buffer found for URL:", url);
+      }
   } else {
-    console.log("[playSound] Current step is not selected. Skipping playback.");
+      console.log("[playSound] Current step is not selected. Skipping playback.");
   }
 }
+
 
 
 
