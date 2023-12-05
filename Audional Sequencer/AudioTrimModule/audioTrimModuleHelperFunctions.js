@@ -2,8 +2,8 @@
 let currentTrimmerInstance = null; // Define at a higher scope
 let currentTrimChannelIndex = null; // Define at a higher scope to store the current channel index
 
-
 function openAudioTrimmerModal(channelIndex) {
+    console.log('channelIndex:', channelIndex); // Log the channel index
     currentTrimChannelIndex = channelIndex; // Store the channel index
 
     fetch('AudioTrimModule/audioTrimModule.html')
@@ -31,15 +31,28 @@ function openAudioTrimmerModal(channelIndex) {
         });
 }
 
+
+function updateAudioTrimmerWithBuffer(audioBuffer) {
+    if (currentTrimmerInstance) {
+        currentTrimmerInstance.setAudioBuffer(audioBuffer);
+        currentTrimmerInstance.drawWaveform();
+        currentTrimmerInstance.updateDimmedAreas();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.open-audio-trimmer').forEach((button, channelIndex) => {
-        button.addEventListener('click', () => openAudioTrimmerModal(channelIndex));
+        button.addEventListener('click', () => {
+            console.log('Clicked button with channelIndex:', channelIndex); // Log the channel index
+            openAudioTrimmerModal(channelIndex);
+        });
     });
 });
 
+
 // Close modal functionality
 document.querySelector('.close-button').addEventListener('click', function() {
-    if (currentTrimmerInstance && currenttrimChannelIndex !== null) {
+    if (currentTrimmerInstance && currentTrimChannelIndex !== null) {
         const settings = {
             startSliderValue: currentTrimmerInstance.getStartSliderValue(),
             endSliderValue: currentTrimmerInstance.getEndSliderValue(),

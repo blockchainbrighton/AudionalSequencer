@@ -11,6 +11,32 @@ class AudioTrimmer {
         this.trimSettings = getTrimSettings(this.channelIndex);
     }
 
+    // Method to set the audio buffer and update the waveform
+    setAudioBuffer(audioBuffer) {
+        this.audioBuffer = audioBuffer;
+        this.drawWaveform();
+        this.updateDimmedAreas();
+    }
+
+    drawWaveform() {
+        if (!this.audioBuffer) return;
+        const width = this.waveformCanvas.width;
+        const height = this.waveformCanvas.height;
+        const channelData = this.audioBuffer.getChannelData(0);
+        const step = Math.ceil(channelData.length / width);
+        const amp = height / 2;
+        this.ctx.clearRect(0, 0, width, height);
+        this.ctx.beginPath();
+        
+        for (let i = 0; i < width; i++) {
+            const { min, max } = this.getMinMax(channelData, i * step, step);
+            this.ctx.moveTo(i, amp * (1 + min));
+            this.ctx.lineTo(i, amp * (1 + max));
+        }
+        
+        this.ctx.stroke();
+        }
+
     async initialize() {
         ['ordinalIdInput', 'loadSampleButton', 'waveformCanvas', 'playbackCanvas', 'playButton', 'stopButton', 'loopButton', 'startDimmed', 'endDimmed']
             .forEach(id => this[id] = document.getElementById(id));
@@ -38,24 +64,6 @@ class AudioTrimmer {
         }
     }
 
-    drawWaveform() {
-        if (!this.audioBuffer) return;
-        const width = this.waveformCanvas.width;
-        const height = this.waveformCanvas.height;
-        const channelData = this.audioBuffer.getChannelData(0);
-        const step = Math.ceil(channelData.length / width);
-        const amp = height / 2;
-        this.ctx.clearRect(0, 0, width, height);
-        this.ctx.beginPath();
-        
-        for (let i = 0; i < width; i++) {
-            const { min, max } = this.getMinMax(channelData, i * step, step);
-            this.ctx.moveTo(i, amp * (1 + min));
-            this.ctx.lineTo(i, amp * (1 + max));
-        }
-        
-        this.ctx.stroke();
-        }
         
         getMinMax(channelData, startIndex, step) {
         let min = 1.0, max = -1.0;
