@@ -1,85 +1,72 @@
 // globalObjectHelperFunctions.js
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Add event listener to all "T" buttons
-    document.querySelectorAll('.open-audio-trimmer').forEach((button, index) => {
-        button.addEventListener('click', function() {
-            openAudioTrimmerModal(index); // Pass the channel index
-        });
-    });
-});
-
-
+let currentChannelIndex = null; // Define at a higher scope
 
 // Function to save trim settings
-function setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
-    window.unifiedSequencerSettings.setTrimSettingsForChannel(channelIndex, startSliderValue, endSliderValue);
+function setTrimSettings(channelIndex, startSliderValue, endSliderValue, isLooping) {
+    window.unifiedSequencerSettings.setTrimSettingsForChannel(channelIndex, startSliderValue, endSliderValue, isLooping);
 }
-
 
 // Function to get trim settings
 function getTrimSettings(channelIndex) {
     return window.unifiedSequencerSettings.getTrimSettingsForChannel(channelIndex);
 }
 
-
-function setStartSliderValue(value) {
-    this.startSliderValue = value;
-    if (this.startSlider) {
-        this.startSlider.value = value;
+function setStartSliderValue(trimmer, value) {
+    trimmer.startSliderValue = value;
+    if (trimmer.startSlider) {
+        trimmer.startSlider.value = value;
     }
 }
 
-function setEndSliderValue(value) {
-    this.endSliderValue = value;
-    if (this.endSlider) {
-        this.endSlider.value = value;
+function setEndSliderValue(trimmer, value) {
+    trimmer.endSliderValue = value;
+    if (trimmer.endSlider) {
+        trimmer.endSlider.value = value;
     }
 }
 
-function setIsLooping(isLooping) {
-    this.isLooping = isLooping;
+function setIsLooping(trimmer, isLooping) {
+    trimmer.isLooping = isLooping;
     // Additional logic to handle the looping state if needed
 }
 
 // Close modal functionality
 document.querySelector('.close-button').addEventListener('click', function() {
-    // Save current settings before closing the modal
-    const trimmer = new AudioTrimmer();
+    const trimmer = new AudioTrimmer(channelIndex); // Ensure channelIndex is defined or retrieved
+
     const settings = {
         startSliderValue: trimmer.getStartSliderValue(),
         endSliderValue: trimmer.getEndSliderValue(),
         isLooping: trimmer.getIsLooping()
     };
-    setTrimSettings(settings);
+
+    setTrimSettings(trimmer.channelIndex, settings.startSliderValue, settings.endSliderValue, settings.isLooping);
 
     document.getElementById('audio-trimmer-modal').style.display = 'none';
 });
 
-
 function openAudioTrimmerModal(channelIndex) {
+    currentChannelIndex = channelIndex; // Store the channel index
+
     fetch('AudioTrimModule/audioTrimModule.html')
         .then(response => response.text())
         .then(html => {
             const container = document.getElementById('audio-trimmer-container');
             container.innerHTML = html;
 
-            const trimmer = new AudioTrimmer();
+            const trimmer = new AudioTrimmer(channelIndex);
             if (typeof AudioTrimmer === 'function') {
                 setTimeout(() => {
                     trimmer.initialize();
 
                     // Retrieve audio sample URL and trim settings for the channel
-                    const audioUrl = window.unifiedSequencerSettings.getAudioUrlForChannel(channelIndex);
-                    const trimSettings = window.unifiedSequencerSettings.getTrimSettingsForChannel(channelIndex);
+                    const trimSettings = getTrimSettings(channelIndex);
 
-                    if (audioUrl) {
-                        trimmer.loadSample(audioUrl); // Load the audio sample
-                    }
                     if (trimSettings) {
-                        setStartSliderValue(trimSettings.startSliderValue);
-                        setEndSliderValue(trimSettings.endSliderValue);
-                        setIsLooping(trimSettings.isLooping);
+                        setStartSliderValue(trimmer, trimSettings.startSliderValue);
+                        setEndSliderValue(trimmer, trimSettings.endSliderValue);
+                        setIsLooping(trimmer, trimSettings.isLooping);
                     }
                 }, 0);
             }
