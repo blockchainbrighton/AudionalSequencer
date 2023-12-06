@@ -20,7 +20,7 @@ let playButton = document.getElementById('play');
 let stopButton = document.getElementById('stop');
 let saveButton = document.getElementById('save-button');
 let loadButton = document.getElementById('load-button');
-let bpm ;
+// let bpm ;
 let audioContext;
 let currentStepTime;
 let startTime;
@@ -345,34 +345,34 @@ channels.forEach((channel, index) => {
                     const loadButton = document.createElement('button');
                     loadButton.textContent = 'Load';
                     loadButton.addEventListener('click', () => {
+                        let url;
                         if (audionalInput.value) {
-                            const audionalUrl = 'https://ordinals.com/content/' + getIDFromURL(audionalInput.value);
-                            console.log(`index.js loadButton: Setting URL for channel ${index + 1}:`, audionalUrl);
-                            collectedURLs[index] = audionalUrl; 
-                             // Update the global object with the new URL
-                             window.unifiedSequencerSettings.updateSetting('projectURLs', collectedURLs);
-    
-                            fetchAudio(audionalUrl, index, loadSampleButton);
-                            // Add the orange margin to the channel container
-                            const channelContainer = channel.querySelector('.channel-container');
-                            channelContainer.classList.add('ordinal-loaded');
+                            url = 'https://ordinals.com/content/' + getIDFromURL(audionalInput.value);
+                            console.log(`index.js loadButton: Setting URL for channel ${index + 1}:`, url);
                         } else if (ipfsInput.value) {
-                            const ipfsUrl = 'https://ipfs.io/ipfs/' + ipfsInput.value;
-                            console.log(ipfsUrl);
-                            collectedURLs[index] = ipfsUrl;
-                              // Update the global object with the new URL
-                              window.unifiedSequencerSettings.updateSetting('projectURLs', collectedURLs);
-    
-                            fetchAudio(ipfsUrl, index, loadSampleButton);
-                            console.log(`index.js loadButton: Setting IPFS URL for channel ${index + 1}:`, ipfsUrl);
-                            const channelContainer = channel.querySelector('.channel-container');
-                            channelContainer.classList.remove('ordinal-loaded');
+                            url = 'https://ipfs.io/ipfs/' + ipfsInput.value;
+                            console.log(`index.js loadButton: Setting IPFS URL for channel ${index + 1}:`, url);
                         }
-                        updateCollectedURLsForSequences();  // Call the update function here
+                    
+                        if (url) {
+                            // Update the URL in the global settings object
+                            window.unifiedSequencerSettings.updateSetting('projectURLs', url, index);
+                    
+                            // Fetch and load the audio
+                            fetchAudio(url, index, loadSampleButton);
+                    
+                            // Update the class of the channel container
+                            const channelContainer = document.querySelector(`.channel:nth-child(${index + 1}) .channel-container`);
+                            if (channelContainer) {
+                                channelContainer.classList.toggle('ordinal-loaded', audionalInput.value !== undefined);
+                            }
+                        }
+                    
                         document.body.removeChild(idModal);
-                        console.log(`loadButton: Updated collectedURLs after adding URL for channel ${index + 1}:`, collectedURLs);
+                        console.log(`loadButton: Updated URL for channel ${index + 1}:`, url);
                     });
                     idModalContent.appendChild(loadButton);
+                    
 
                     // Cancel button implementation
                     const cancelButton = document.createElement('button');
@@ -494,14 +494,14 @@ channels.forEach((channel, index) => {
         
         
         
-        function updateCollectedURLsForSequences() {
-            // Assuming collectedURLsForSequences is a 2D array where each inner array represents URLs for a sequence.
-            if (!collectedURLsForSequences[currentSequence - 1]) {
-                collectedURLsForSequences[currentSequence - 1] = [];
-            }
-            collectedURLsForSequences[currentSequence - 1] = [...collectedURLs];
-            console.log(`index.js loadButton: Updated collectedURLsForSequences for sequence ${currentSequence}:`, collectedURLsForSequences[currentSequence - 1]);
-        }
+        // function updateCollectedURLsForSequences() {
+        //     // Assuming collectedURLsForSequences is a 2D array where each inner array represents URLs for a sequence.
+        //     if (!collectedURLsForSequences[currentSequence - 1]) {
+        //         collectedURLsForSequences[currentSequence - 1] = [];
+        //     }
+        //     collectedURLsForSequences[currentSequence - 1] = [...collectedURLs];
+        //     console.log(`index.js loadButton: Updated collectedURLsForSequences for sequence ${currentSequence}:`, collectedURLsForSequences[currentSequence - 1]);
+        // }
         
         // Inside your playButton event listener, after the play logic
         playButton.addEventListener('click', () => {            const continuousPlayCheckbox = document.getElementById('continuous-play');

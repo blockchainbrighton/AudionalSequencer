@@ -3,15 +3,18 @@
 function startScheduler() {
     channels.forEach(channel => {
         const channelIndex = parseInt(channel.dataset.id.split('-')[1]) - 1;
-        if(!channelMutes[channelIndex]) {  // If channel is not muted
+        if (!channelMutes[channelIndex]) {  // If channel is not muted
             setChannelVolume(channelIndex, 1);
         }
     });
-    
+
     clearTimeout(timeoutId); // Clear the current timeout without closing the audio context
     audioContext.resume();
     startTime = audioContext.currentTime;
     nextStepTime = startTime;
+
+    const currentBPM = window.unifiedSequencerSettings.getBPM();
+    console.log(`[startScheduler] Current BPM from global settings: ${currentBPM}`);
 
     scheduleNextStep();
 }
@@ -33,9 +36,12 @@ function resumeScheduler() {
   scheduleNextStep(); // Begin scheduling steps again
 }
 
-
 function scheduleNextStep() {
+    const bpm = window.unifiedSequencerSettings.getBPM() || 105; // Fallback to 105 BPM
+    console.log(`[scheduleNextStep] Current BPM: ${bpm}`);
+
     stepDuration = 60 / bpm / 4;
+    console.log(`[scheduleNextStep] Step Duration: ${stepDuration}`);
 
     timeoutId = setTimeout(() => {
         playStep();
