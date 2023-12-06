@@ -6,8 +6,8 @@ function updateSetting(key, value) {
 }
 
 // Function to get a specific setting
-function getSetting(key) {
-    return window.unifiedSequencerSettings.getSetting(key);
+function getSettings(key) {
+    return window.unifiedSequencerSettings.getSettings(key);
 }
 
 /// Add event listeners for various UI elements to update settings
@@ -51,6 +51,6 @@ document.getElementById('continuous-play').addEventListener('change', function(e
 
 // Attach these functions to the global window object for easy access
 window.updateSetting = updateSetting;
-window.getSetting = getSetting;
+window.getSettings = getSettings;
 window.loadSettingsFromFile = loadSettingsFromFile;
 window.exportSettings = exportSettings;

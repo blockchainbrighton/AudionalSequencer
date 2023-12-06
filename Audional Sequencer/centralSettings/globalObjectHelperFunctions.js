@@ -9,16 +9,28 @@ function updateGlobalBPM(newBPM) {
     // Additional logic if needed, e.g., emit messages or update external modules
 }
 
-function clearAndLoadSettings(jsonSettings) {
+function clearSettings() {
     if (window.unifiedSequencerSettings) {
         window.unifiedSequencerSettings.clearMasterSettings();
-        window.unifiedSequencerSettings.loadSettings(jsonSettings);
-        updateUIFromLoadedSettings();
-        console.log("[clearAndLoadSettings] Settings cleared and new settings loaded.");
+        console.log("[clearSettings] Settings cleared.");
     } else {
         console.error("window.unifiedSequencerSettings is not defined.");
     }
 }
+function loadNewSettings(jsonSettings) {
+    if (window.unifiedSequencerSettings) {
+        window.unifiedSequencerSettings.loadSettings(jsonSettings);
+
+        // Log the settings that have been loaded
+        console.log("[loadNewSettings] Loaded settings:", jsonSettings);
+
+        updateUIFromLoadedSettings();
+        console.log("[loadNewSettings] New settings loaded and UI updated.");
+    } else {
+        console.error("window.unifiedSequencerSettings is not defined.");
+    }
+}
+
 
 // Function to save trim settings
 function setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
@@ -51,7 +63,7 @@ function setIsLooping(trimmer, isLooping) {
 
 
 function updateUIFromLoadedSettings() {
-    const settings = window.unifiedSequencerSettings.getSetting('masterSettings');
+    const settings = window.unifiedSequencerSettings.getSettings('masterSettings');
 
     // Log the settings for debugging
     console.log("Loaded settings:", settings);

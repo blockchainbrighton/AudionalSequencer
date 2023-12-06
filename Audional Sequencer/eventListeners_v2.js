@@ -41,13 +41,17 @@ document.addEventListener("DOMContentLoaded", function() {
         let file = loadFileInput.files[0];
         let reader = new FileReader();
         reader.onload = function(e) {
+            console.log("File read start");
             let settings = e.target.result;
-            window.unifiedSequencerSettings.loadSettings(settings);
-            console.log("Loaded file content:", settings);
-    
-            // Call function to update the UI based on the loaded settings
-            updateUIFromLoadedSettings();
+            console.log("[loadFileInput] File content:", settings);
+        
+            // Clear existing settings before loading new ones
+            clearSettings();
+
+            // Load new settings and update UI
+            loadNewSettings(settings);
         };
+
         reader.readAsText(file);
     });
 
