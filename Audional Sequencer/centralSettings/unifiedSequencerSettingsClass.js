@@ -17,7 +17,7 @@ class UnifiedSequencerSettings {
             }
         };
     }
-    
+
     clearMasterSettings() {
         this.settings.masterSettings = {
             projectName: '',
@@ -116,8 +116,10 @@ class UnifiedSequencerSettings {
             console.log("[loadSettings] Received JSON Settings:", jsonSettings);
             const parsedSettings = typeof jsonSettings === 'string' ? JSON.parse(jsonSettings) : jsonSettings;
             console.log("[loadSettings] Parsed Settings:", parsedSettings);
-    
-            Object.assign(this.settings.masterSettings, parsedSettings);
+
+            // Replace the entire masterSettings with parsedSettings
+            this.settings.masterSettings = parsedSettings;
+
             console.log("[loadSettings] Updated masterSettings:", this.settings.masterSettings);
         } catch (error) {
             console.error('Error loading settings:', error);
