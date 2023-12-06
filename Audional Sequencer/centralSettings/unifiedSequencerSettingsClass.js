@@ -16,9 +16,31 @@ class UnifiedSequencerSettings {
                 projectSequences: this.initializeSequences(16, 16, 64)
             }
         };
+
+        // Expose the checkSettings function for manual checking
+        this.checkSettings = this.checkSettings.bind(this);
+    }
+
+    getSettings(key) {
+        if (key) {
+            const settingValue = this.settings.masterSettings[key];
+            console.log(`[getSettings] Retrieved setting for key '${key}':`, settingValue);
+            return settingValue;
+        } else {
+            console.log("[getSettings] Retrieved all settings:", this.settings.masterSettings);
+            return this.settings.masterSettings;
+        }
+    }
+
+    // Nested function for manual checking
+    checkSettings() {
+        console.log("[checkSettings] Current masterSettings:", this.settings.masterSettings);
+        return this.settings.masterSettings;
     }
 
     clearMasterSettings() {
+        console.log("[clearMasterSettings] Current masterSettings before clearing:", this.settings.masterSettings);
+
         this.settings.masterSettings = {
             projectName: '',
             projectBPM: 120,
@@ -107,16 +129,8 @@ class UnifiedSequencerSettings {
         return this.settings.masterSettings.projectURLs[channelIndex];
     }
 
-    getSettings(key) {
-        if (key) {
-            const settingValue = this.settings.masterSettings[key];
-            console.log(`[getSettings] Retrieved setting for key '${key}':`, settingValue);
-            return settingValue;
-        } else {
-            console.log("[getSettings] Retrieved all settings:", this.settings.masterSettings);
-            return this.settings.masterSettings;
-        }
-    }
+    
+
     
     
 
@@ -126,9 +140,8 @@ class UnifiedSequencerSettings {
             const parsedSettings = typeof jsonSettings === 'string' ? JSON.parse(jsonSettings) : jsonSettings;
             console.log("[loadSettings] Parsed Settings:", parsedSettings);
 
-            // Replace the entire masterSettings with parsedSettings
+            console.log("[loadSettings] Current masterSettings before loading new settings:", this.settings.masterSettings);
             this.settings.masterSettings = parsedSettings;
-
             console.log("[loadSettings] Updated masterSettings:", this.settings.masterSettings);
         } catch (error) {
             console.error('Error loading settings:', error);
