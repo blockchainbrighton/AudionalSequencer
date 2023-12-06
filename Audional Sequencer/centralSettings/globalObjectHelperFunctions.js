@@ -42,6 +42,9 @@ function setIsLooping(trimmer, isLooping) {
 function updateUIFromLoadedSettings() {
     const settings = window.unifiedSequencerSettings.getSetting('masterSettings');
 
+    // Log the settings for debugging
+    console.log("Loaded settings:", settings);
+
     if (!settings) {
         console.error("Settings are not loaded or undefined.");
         return;
@@ -57,6 +60,9 @@ function updateUIFromLoadedSettings() {
             console.log("Missing project name, using placeholder.");
             projectNameInput.value = "AUDX Project";
         }
+
+          // Additional log for confirmation
+        console.log("UI updated with loaded settings.");
     }
 
     // Update BPM

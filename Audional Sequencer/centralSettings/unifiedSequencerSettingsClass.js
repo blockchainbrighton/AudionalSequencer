@@ -18,13 +18,7 @@ class UnifiedSequencerSettings {
         };
     }
 
-    getBPM() {
-        return this.settings.masterSettings.projectBPM;
-    }
-
-    setBPM(newBPM) {
-        this.settings.masterSettings.projectBPM = newBPM;
-    }
+  
 
     initializeSequences(numSequences, numChannels, numSteps) {
         let sequences = {};
@@ -40,6 +34,16 @@ class UnifiedSequencerSettings {
             channels[`ch${ch}`] = Array(numSteps).fill(false);
         }
         return channels;
+    }
+
+    updateStepState(sequenceNumber, channelIndex, stepIndex, state) {
+        const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber + 1}`];
+        const channel = sequence && sequence[`ch${channelIndex + 1}`];
+        if (channel && stepIndex < channel.length) {
+            channel[stepIndex] = state;
+        } else {
+            console.error('Invalid sequence, channel, or step index');
+        }
     }
 
     updateSetting(key, value, channelIndex = null) {
@@ -60,6 +64,14 @@ class UnifiedSequencerSettings {
         }
     }
 
+    getBPM() {
+        return this.settings.masterSettings.projectBPM;
+    }
+
+    setBPM(newBPM) {
+        this.settings.masterSettings.projectBPM = newBPM;
+    }
+
     setTrimSettingsForChannel(channelIndex, startSliderValue, endSliderValue) {
         if (this.isValidIndex(channelIndex, this.settings.masterSettings.trimSettings.length)) {
             const currentSettings = this.settings.masterSettings.trimSettings[channelIndex];
@@ -74,15 +86,7 @@ class UnifiedSequencerSettings {
         return trimSettings || { startSliderValue: 0.01, endSliderValue: 100.00 };
     }
 
-    updateStepState(sequenceNumber, channelIndex, stepIndex, state) {
-        const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber + 1}`];
-        const channel = sequence && sequence[`ch${channelIndex + 1}`];
-        if (channel && stepIndex < channel.length) {
-            channel[stepIndex] = state;
-        } else {
-            console.error('Invalid sequence, channel, or step index');
-        }
-    }
+   
 
     getAudioUrlForChannel(channelIndex) {
         return this.settings.masterSettings.projectURLs[channelIndex];
@@ -94,16 +98,24 @@ class UnifiedSequencerSettings {
 
     loadSettings(jsonSettings) {
         try {
+            console.log("[loadSettings] Received JSON Settings:", jsonSettings);
             const parsedSettings = typeof jsonSettings === 'string' ? JSON.parse(jsonSettings) : jsonSettings;
+            console.log("[loadSettings] Parsed Settings:", parsedSettings);
+    
             Object.assign(this.settings.masterSettings, parsedSettings);
+            console.log("[loadSettings] Updated masterSettings:", this.settings.masterSettings);
         } catch (error) {
             console.error('Error loading settings:', error);
         }
     }
+    
 
     exportSettings() {
-        return JSON.stringify(this.settings.masterSettings);
+        const exportedSettings = JSON.stringify(this.settings.masterSettings);
+        console.log("[exportSettings] Exported Settings:", exportedSettings);
+        return exportedSettings;
     }
+    
 
     viewCurrentSettings() {
         return JSON.stringify(this.settings, null, 2);
