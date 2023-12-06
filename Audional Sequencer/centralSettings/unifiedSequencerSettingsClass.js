@@ -132,7 +132,30 @@ class UnifiedSequencerSettings {
         return this.settings.masterSettings.projectURLs[channelIndex];
     }
 
-    
+    setProjectName(name) {
+        this.settings.masterSettings.projectName = name;
+        console.log(`[setProjectName] Project name set to: ${name}`);
+    }
+
+    setProjectURLs(urls) {
+        this.settings.masterSettings.projectURLs = urls;
+        console.log(`[setProjectURLs] Project URLs set:`, urls);
+    }
+
+    setTrimSettings(settings) {
+        this.settings.masterSettings.trimSettings = settings;
+        console.log(`[setTrimSettings] Trim settings set:`, settings);
+    }
+
+    setProjectURLNames(names) {
+        this.settings.masterSettings.projectURLNames = names;
+        console.log(`[setProjectURLNames] Project URL names set:`, names);
+    }
+
+    setProjectSequences(sequences) {
+        this.settings.masterSettings.projectSequences = sequences;
+        console.log(`[setProjectSequences] Project sequences set:`, sequences);
+    }
 
     
     
