@@ -42,20 +42,33 @@ function setIsLooping(trimmer, isLooping) {
 function updateUIFromLoadedSettings() {
     const settings = window.unifiedSequencerSettings.getSetting('masterSettings');
 
-    // Example: Update project name
-    const projectNameInput = document.getElementById('project-name');
-    if (settings.projectName) {
-        projectNameInput.value = settings.projectName;
+    if (!settings) {
+        console.error("Settings are not loaded or undefined.");
+        return;
     }
 
-    // Example: Update BPM
+    // Update project name
+    const projectNameInput = document.getElementById('project-name');
+    if (projectNameInput) {
+        if (settings.projectName) {
+            projectNameInput.value = settings.projectName;
+        } else {
+            // Log missing project name and use a placeholder
+            console.log("Missing project name, using placeholder.");
+            projectNameInput.value = "AUDX Project";
+        }
+    }
+
+    // Update BPM
     const bpmSlider = document.getElementById('bpm-slider');
     const bpmDisplay = document.getElementById('bpm-display');
-    if (settings.projectBPM) {
+    if (bpmSlider && bpmDisplay && settings.projectBPM) {
         bpmSlider.value = settings.projectBPM;
         bpmDisplay.textContent = settings.projectBPM;
     }
 }
+
+
 
 
 // Add implementations for getAudioUrlForChannel and getTrimSettingsForChannel in UnifiedSequencerSettings
