@@ -9,6 +9,17 @@ function updateGlobalBPM(newBPM) {
     // Additional logic if needed, e.g., emit messages or update external modules
 }
 
+function clearAndLoadSettings(jsonSettings) {
+    if (window.unifiedSequencerSettings) {
+        window.unifiedSequencerSettings.clearMasterSettings();
+        window.unifiedSequencerSettings.loadSettings(jsonSettings);
+        updateUIFromLoadedSettings();
+        console.log("[clearAndLoadSettings] Settings cleared and new settings loaded.");
+    } else {
+        console.error("window.unifiedSequencerSettings is not defined.");
+    }
+}
+
 // Function to save trim settings
 function setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
     window.unifiedSequencerSettings.setTrimSettingsForChannel(channelIndex, startSliderValue, endSliderValue);

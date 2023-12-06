@@ -17,7 +17,22 @@ class UnifiedSequencerSettings {
             }
         };
     }
-
+    
+    clearMasterSettings() {
+        this.settings.masterSettings = {
+            projectName: '',
+            projectBPM: 120,
+            projectURLs: new Array(16).fill(''),
+            trimSettings: Array.from({ length: 16 }, () => ({
+                startSliderValue: 0.01,
+                endSliderValue: 100.00,
+                totalSampleDuration: 0
+            })),
+            projectURLNames: new Array(16).fill(''),
+            projectSequences: this.initializeSequences(16, 16, 64)
+        };
+        console.log("[clearMasterSettings] Master settings cleared.");
+    }
   
 
     initializeSequences(numSequences, numChannels, numSteps) {
