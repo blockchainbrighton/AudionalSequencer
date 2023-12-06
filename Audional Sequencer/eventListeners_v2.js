@@ -44,6 +44,9 @@ document.addEventListener("DOMContentLoaded", function() {
             let settings = e.target.result;
             window.unifiedSequencerSettings.loadSettings(settings);
             console.log("Loaded file content:", settings);
+    
+            // Call function to update the UI based on the loaded settings
+            updateUIFromLoadedSettings();
         };
         reader.readAsText(file);
     });
