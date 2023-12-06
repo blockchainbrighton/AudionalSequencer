@@ -14,7 +14,8 @@ function importSettings(jsonSettings) {
 
         // Update UI for each sequence
         const masterSettings = window.unifiedSequencerSettings.getSetting('masterSettings');
-        if (masterSettings && masterSettings.projectSequences) {
+
+        if (masterSettings && typeof masterSettings.projectSequences === 'object') {
             for (let sequenceNumber = 1; sequenceNumber <= Object.keys(masterSettings.projectSequences).length; sequenceNumber++) {
                 updateUIForSequence(sequenceNumber);
             }
