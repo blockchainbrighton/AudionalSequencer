@@ -2,18 +2,20 @@
 
 function exportSettings() {
     const settings = window.unifiedSequencerSettings.exportSettings();
-    const formattedSettings = JSON.stringify(JSON.parse(settings), null, 4);
-    // Save this JSON to a file or provide it for download
-    return formattedSettings;
+    // Directly return the JSON string of the settings
+    return settings;
 }
+
 
 function importSettings(jsonSettings) {
     try {
-        // Assuming jsonSettings is a JSON string
-        window.unifiedSequencerSettings.loadSettings(jsonSettings);
+        // Parse jsonSettings if it's a string
+        const parsedSettings = typeof jsonSettings === 'string' ? JSON.parse(jsonSettings) : jsonSettings;
+        window.unifiedSequencerSettings.loadSettings(parsedSettings);
+
 
         // Update UI for each sequence
-        const masterSettings = window.unifiedSequencerSettings.getSetting('masterSettings');
+        const masterSettings = window.unifiedSequencerSettings.getSettings('masterSettings');
 
         if (masterSettings && typeof masterSettings.projectSequences === 'object') {
             for (let sequenceNumber = 1; sequenceNumber <= Object.keys(masterSettings.projectSequences).length; sequenceNumber++) {
