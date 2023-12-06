@@ -22,13 +22,16 @@ class UnifiedSequencerSettings {
     }
 
     getSettings(key) {
-        if (key) {
+        if (key === 'masterSettings') {
+            console.log("[getSettings] Retrieved all masterSettings:", this.settings.masterSettings);
+            return this.settings.masterSettings;
+        } else if (key) {
             const settingValue = this.settings.masterSettings[key];
             console.log(`[getSettings] Retrieved setting for key '${key}':`, settingValue);
             return settingValue;
         } else {
-            console.log("[getSettings] Retrieved all settings:", this.settings.masterSettings);
-            return this.settings.masterSettings;
+            console.log("[getSettings] Retrieved all settings:", this.settings);
+            return this.settings;
         }
     }
 
@@ -163,6 +166,83 @@ class UnifiedSequencerSettings {
     isValidIndex(index, length) {
         return index >= 0 && index < length;
     }
+
+    // Additional methods for updating UI
+    updateProjectNameUI(projectName) {
+        const projectNameInput = document.getElementById('project-name');
+        if (projectNameInput) {
+            projectNameInput.value = projectName || "AUDX Project";
+            console.log("Project name UI updated:", projectName);
+        }
+    }
+
+    updateBPMUI(bpm) {
+        const bpmSlider = document.getElementById('bpm-slider');
+        const bpmDisplay = document.getElementById('bpm-display');
+        if (bpmSlider && bpmDisplay) {
+            bpmSlider.value = bpm;
+            bpmDisplay.textContent = bpm;
+            console.log("BPM UI updated:", bpm);
+        }
+    }
+
+    updateProjectURLsUI(urls) {
+        // Implement logic to update UI for project URLs
+        console.log("Project URLs UI updated:", urls);
+        // Example: Update each URL input field
+        urls.forEach((url, index) => {
+            const urlInput = document.getElementById(`url-input-${index}`);
+            if (urlInput) {
+                urlInput.value = url;
+            }
+        });
+    }
+
+    updateTrimSettingsUI(trimSettings) {
+        // Implement logic to update UI for trim settings
+        console.log("Trim settings UI updated:", trimSettings);
+        // Example: Update each trim setting input field
+        trimSettings.forEach((setting, index) => {
+            const startSlider = document.getElementById(`start-slider-${index}`);
+            const endSlider = document.getElementById(`end-slider-${index}`);
+            if (startSlider && endSlider) {
+                startSlider.value = setting.startSliderValue;
+                endSlider.value = setting.endSliderValue;
+            }
+        });
+    }
+
+    updateProjectURLNamesUI(urlNames) {
+        // Implement logic to update UI for project URL names
+        console.log("Project URL names UI updated:", urlNames);
+        // Example: Update each URL name display
+        urlNames.forEach((name, index) => {
+            const nameDisplay = document.getElementById(`url-name-${index}`);
+            if (nameDisplay) {
+                nameDisplay.textContent = name;
+            }
+        });
+    }
+
+    updateProjectSequencesUI(sequences) {
+        // Implement logic to update UI for project sequences
+        console.log("Project sequences UI updated:", sequences);
+        // Example: Update each sequence display or control
+        Object.keys(sequences).forEach(sequenceKey => {
+            const sequence = sequences[sequenceKey];
+            Object.keys(sequence).forEach(channelKey => {
+                const steps = sequence[channelKey];
+                steps.forEach((step, index) => {
+                    const stepControl = document.getElementById(`${sequenceKey}-${channelKey}-step-${index}`);
+                    if (stepControl) {
+                        // Update step control based on step value
+                    }
+                });
+            });
+        });
+    }
 }
+
+
 
 window.unifiedSequencerSettings = new UnifiedSequencerSettings();

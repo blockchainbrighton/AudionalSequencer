@@ -65,7 +65,6 @@ function setIsLooping(trimmer, isLooping) {
 function updateUIFromLoadedSettings() {
     const settings = window.unifiedSequencerSettings.getSettings('masterSettings');
 
-    // Log the settings for debugging
     console.log("Loaded settings:", settings);
 
     if (!settings) {
@@ -73,20 +72,16 @@ function updateUIFromLoadedSettings() {
         return;
     }
 
-    // Update project name
-    const projectNameInput = document.getElementById('project-name');
-    if (projectNameInput) {
-        if (settings.projectName) {
-            projectNameInput.value = settings.projectName;
-        } else {
-            // Log missing project name and use a placeholder
-            console.log("Missing project name, using placeholder.");
-            projectNameInput.value = "AUDX Project";
-        }
+    // Call the new methods in UnifiedSequencerSettings class to update the UI
+    window.unifiedSequencerSettings.updateProjectNameUI(settings.projectName);
+    window.unifiedSequencerSettings.updateBPMUI(settings.projectBPM);
+    window.unifiedSequencerSettings.updateProjectURLsUI(settings.projectURLs);
+    window.unifiedSequencerSettings.updateTrimSettingsUI(settings.trimSettings);
+    window.unifiedSequencerSettings.updateProjectURLNamesUI(settings.projectURLNames);
+    window.unifiedSequencerSettings.updateProjectSequencesUI(settings.projectSequences);
 
-          // Additional log for confirmation
-        console.log("UI updated with loaded settings.");
-    }
+    console.log("UI updated with loaded settings.");
+}
 
     // Update BPM
     const bpmSlider = document.getElementById('bpm-slider');
@@ -95,7 +90,32 @@ function updateUIFromLoadedSettings() {
         bpmSlider.value = settings.projectBPM;
         bpmDisplay.textContent = settings.projectBPM;
     }
+    
+// Add helper functions to directly invoke update methods
+function updateProjectName(projectName) {
+    window.unifiedSequencerSettings.updateProjectNameUI(projectName);
 }
+
+function updateBPM(bpm) {
+    window.unifiedSequencerSettings.updateBPMUI(bpm);
+}
+
+function updateProjectURLs(urls) {
+    window.unifiedSequencerSettings.updateProjectURLsUI(urls);
+}
+
+function updateTrimSettings(trimSettings) {
+    window.unifiedSequencerSettings.updateTrimSettingsUI(trimSettings);
+}
+
+function updateProjectURLNames(urlNames) {
+    window.unifiedSequencerSettings.updateProjectURLNamesUI(urlNames);
+}
+
+function updateProjectSequences(sequences) {
+    window.unifiedSequencerSettings.updateProjectSequencesUI(sequences);
+}
+
 
 
 
