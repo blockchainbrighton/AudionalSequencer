@@ -128,19 +128,19 @@ function updateProjectSequencesUI(sequences) {
 
 // Utility Functions
 
-function updateStepStateAndUI(sequenceNumber, channelIndex, stepIndex, newState) {
-    // Update the global object
-    window.unifiedSequencerSettings.updateStepState(sequenceNumber, channelIndex, stepIndex, newState);
-
-    // Find the corresponding step button in the UI and update its state
+function updateSpecificStepUI(sequenceNumber, channelIndex, stepIndex) {
+    const stepState = window.unifiedSequencerSettings.getStepState(sequenceNumber, channelIndex, stepIndex);
     const stepButtonId = `${sequenceNumber}-ch${channelIndex + 1}-step-${stepIndex}`;
     const stepButton = document.getElementById(stepButtonId);
+
     if (stepButton) {
-        stepButton.classList.toggle('selected', newState);
+        stepButton.classList.toggle('selected', stepState);
+        console.log(`updateSpecificStepUI called: Sequence ${sequenceNumber}, Channel ${channelIndex}, Step ${stepIndex}, State: ${stepState}`);
     } else {
-        console.error('Step button not found for the given IDs');
+        console.error(`Step button not found for the given IDs: ${stepButtonId}`);
     }
 }
+
 
 function reflectStepStateInUI(sequenceNumber, channelIndex, stepIndex) {
     const state = window.unifiedSequencerSettings.getStepState(sequenceNumber, channelIndex, stepIndex);
