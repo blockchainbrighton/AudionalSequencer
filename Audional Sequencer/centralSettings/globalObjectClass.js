@@ -6,6 +6,7 @@ class UnifiedSequencerSettings {
             masterSettings: {
                 projectName: '',
                 projectBPM: 120,
+                currentSequence: 1, // Initialize with a default value
                 projectURLs: new Array(16).fill(''),
                 trimSettings: Array.from({ length: 16 }, () => ({
                     startSliderValue: 0.01,
@@ -20,6 +21,18 @@ class UnifiedSequencerSettings {
         // Expose the checkSettings function for manual checking
         this.checkSettings = this.checkSettings.bind(this);
     }
+
+    // Method to update the current sequence
+    setCurrentSequence(sequenceNumber) {
+        this.settings.currentSequence = sequenceNumber;
+        console.log(`[setCurrentSequence] Current sequence set to: ${sequenceNumber}`);
+    }
+
+    // Method to get the current sequence
+    getCurrentSequence() {
+        return this.settings.currentSequence;
+    }
+
 
     getSettings(key) {
         if (key === 'masterSettings') {

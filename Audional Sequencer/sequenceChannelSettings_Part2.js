@@ -3,17 +3,13 @@
 
 
 function loadSequence(sequenceNumber) {
+    // Retrieve the sequence from the global object
+    let sequenceChannels = window.unifiedSequencerSettings.getSequence(sequenceNumber);
 
-    // Check if the sequence exists and initialize if not
-    if (!sequences[sequenceNumber - 1]) {
-        // If the sequence doesn't exist, initialize it with default settings
-        sequences[sequenceNumber - 1] = Array(16).fill().map(() => [null].concat(Array(64).fill(false)));
-    }
-
-    // Assertion to ensure valid indexing
-    if (sequenceNumber - 1 < 0 || sequenceNumber - 1 >= sequences.length) {
-        console.error(`Invalid sequenceNumber: ${sequenceNumber}`);
-        return;
+    // Initialize the sequence if it doesn't exist
+    if (!sequenceChannels) {
+        sequenceChannels = Array(16).fill().map(() => [null].concat(Array(64).fill(false)));
+        window.unifiedSequencerSettings.setSequence(sequenceNumber, sequenceChannels);
     }
 
     // Load the sequence data here
@@ -22,17 +18,12 @@ function loadSequence(sequenceNumber) {
     // Removed the code that updates the BPM as it's a master setting
     // The BPM should remain constant and managed by a separate control
 
- 
-    const sequenceChannels = sequences[sequenceNumber - 1];
-    if (!sequenceChannels) {
-        console.error(`Sequence ${sequenceNumber} is not found in sequences.`, sequences);
-        return;
-    }
-
+    // Check if sequenceChannels is an array
     if (!Array.isArray(sequenceChannels)) {
         console.error(`Sequence ${sequenceNumber} is not an array.`, sequenceChannels);
         return;
     }
+
     const urlsForSequence = sequenceChannels.map(channelData => channelData[0]);
     // console.log(`URLs for Sequence ${sequenceNumber}:`, urlsForSequence);
 
@@ -42,8 +33,8 @@ function loadSequence(sequenceNumber) {
     // Update the UI to reflect the loaded sequence
     updateUIForSequence(sequenceNumber);
 
-    // Update the currentSequence
-    currentSequence = sequenceNumber;
+    // Update the currentSequence in the global object
+    window.unifiedSequencerSettings.setCurrentSequence(sequenceNumber);
 
     sequenceChannels.forEach((channelData, channelIndex) => {
         const currentUrl = channelData[0]; // Assuming the URL is at the 0th index of channelData array
@@ -60,19 +51,20 @@ function loadSequence(sequenceNumber) {
 
 
 function loadNextSequence() {
-    if (currentSequence < totalSequenceCount) {
+    if (window.unifiedSequencerSettings.getCurrentSequence() < totalSequenceCount) {
         // Save current sequence's settings
 
         // Increment the current sequence number
-        currentSequence++;
+        const newSequence = window.unifiedSequencerSettings.getCurrentSequence() + 1;
+        window.unifiedSequencerSettings.setCurrentSequence(newSequence);
 
         // Load the next sequence's settings
-        loadSequence(currentSequence);
+        loadSequence(newSequence);
 
         // Update the displayed number
         const sequenceDisplayElement = document.getElementById('current-sequence-display');
         if (sequenceDisplayElement) {
-            sequenceDisplayElement.textContent = 'Sequence ' + currentSequence;
+            sequenceDisplayElement.textContent = 'Sequence ' + newSequence;
         }
         
         updateActiveQuickPlayButton();
