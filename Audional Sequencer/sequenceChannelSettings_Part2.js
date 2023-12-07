@@ -90,41 +90,40 @@ function loadNextSequence() {
     }
 }
 
-// function updateUIForSequence(sequenceNumber) {
-//     const masterSettings = window.unifiedSequencerSettings.getSettings('masterSettings');
-//     const sequenceSettings = masterSettings.projectSequences[`Sequence${sequenceNumber}`];
-// 
-//     if (sequenceNumber > 0 && sequenceNumber <= masterSettings.projectSequences.length) {
-//         saveCurrentSequence(currentSequence); // Assuming this function saves the current sequence state
-// 
-//         // Mark the sequence as active
-//         markSequenceAsLive(sequenceNumber - 1);
-// 
-//         channels.forEach((channel, index) => {
-//             const stepButtons = channel.querySelectorAll('.step-button');
-//             const toggleMuteButtons = channel.querySelectorAll('.toggle-mute');
-// 
-//             // Clear all step buttons and toggle mute states
-//             stepButtons.forEach(button => button.classList.remove('selected'));
-//             toggleMuteButtons.forEach(button => button.classList.remove('toggle-mute'));
-// 
-//             // Update the steps based on the sequence settings
-//             sequenceSettings[index].forEach((stepState, pos) => {
-//                 // Skip the 0th position (our placeholder)
-//                 if (pos === 0) return;
-// 
-//                 if (stepState) {
-//                     stepButtons[pos - 1].classList.add('selected');
-//                 }
-//             });
-// 
-//             // Additional logic for updating other UI elements like toggle mute states, volume, etc.
-//         });
-//     } else {
-//         console.error("Invalid sequence number:", sequenceNumber);
-//     }
-// }
+function updateUIForSequence(sequenceNumber) {
+    const masterSettings = window.unifiedSequencerSettings.getSettings('masterSettings');
+    const sequenceSettings = masterSettings.projectSequences[`Sequence${sequenceNumber}`];
 
+    if (sequenceNumber > 0 && sequenceNumber <= masterSettings.projectSequences.length) {
+        saveCurrentSequence(currentSequence); // Assuming this function saves the current sequence state
+
+        // Mark the sequence as active
+        markSequenceAsLive(sequenceNumber - 1);
+
+        channels.forEach((channel, index) => {
+            const stepButtons = channel.querySelectorAll('.step-button');
+            const toggleMuteButtons = channel.querySelectorAll('.toggle-mute');
+
+            // Clear all step buttons and toggle mute states
+            stepButtons.forEach(button => button.classList.remove('selected'));
+            toggleMuteButtons.forEach(button => button.classList.remove('toggle-mute'));
+
+            // Update the steps based on the sequence settings
+            sequenceSettings[index].forEach((stepState, pos) => {
+                // Skip the 0th position (our placeholder)
+                if (pos === 0) return;
+
+                if (stepState) {
+                    stepButtons[pos - 1].classList.add('selected');
+                }
+            });
+
+            // Additional logic for updating other UI elements like toggle mute states, volume, etc.
+        });
+    } else {
+        console.error("Invalid sequence number:", sequenceNumber);
+    }
+}
 
 // Call this function whenever the sequence changes
 function changeSequence(seq) {

@@ -3,6 +3,7 @@ function setupLoadSampleButton(channel, index) {
 
 const loadSampleButton = channel.querySelector('.load-sample-button');
                 loadSampleButton.addEventListener('click', () => {
+
                     // Create a basic modal for audional ID input
                     const idModal = document.createElement('div');
                     idModal.style.position = 'fixed';
@@ -77,31 +78,30 @@ const loadSampleButton = channel.querySelector('.load-sample-button');
                         let url;
                         if (audionalInput.value) {
                             url = 'https://ordinals.com/content/' + getIDFromURL(audionalInput.value);
-                            console.log(`index.js loadButton: Setting URL for channel ${index + 1}:`, url);
+                            console.log(`Setting URL for channel ${index + 1}:`, url);
                         } else if (ipfsInput.value) {
                             url = 'https://ipfs.io/ipfs/' + ipfsInput.value;
-                            console.log(`index.js loadButton: Setting IPFS URL for channel ${index + 1}:`, url);
+                            console.log(`Setting IPFS URL for channel ${index + 1}:`, url);
                         }
-                    
+
                         if (url) {
-                            // Update the URL in the global settings object
+                            // Update the URL in the global settings object at the specific channel index
                             window.unifiedSequencerSettings.updateSetting('projectURLs', url, index);
-                    
+
                             // Fetch and load the audio
                             fetchAudio(url, index, loadSampleButton);
-                    
+
                             // Update the class of the channel container
                             const channelContainer = document.querySelector(`.channel:nth-child(${index + 1}) .channel-container`);
                             if (channelContainer) {
                                 channelContainer.classList.toggle('ordinal-loaded', audionalInput.value !== undefined);
                             }
                         }
-                    
+
                         document.body.removeChild(idModal);
-                        console.log(`loadButton: Updated URL for channel ${index + 1}:`, url);
+                        console.log(`Updated URL for channel ${index + 1}:`, url);
                     });
                     idModalContent.appendChild(loadButton);
-                    
 
                     // Cancel button implementation
                     const cancelButton = document.createElement('button');
@@ -182,7 +182,7 @@ const loadSampleButton = channel.querySelector('.load-sample-button');
                     document.body.appendChild(idModal);
                 });
                 // console.log("Collected URLs before adding to sequence arrays:", collectedURLs);
-                addURLsToSequenceArrays(collectedURLs);
+                // addURLsToSequenceArrays(collectedURLs);
                 
             }
 
