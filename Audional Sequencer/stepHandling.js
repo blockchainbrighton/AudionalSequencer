@@ -32,17 +32,26 @@ function renderPlayhead(buttons, currentStep) {
 
 
 function playStep() {
+    console.log("[playStep] Function called");
+
     // Assuming 'currentSequence' is the currently selected sequence number
     const currentSequenceData = window.unifiedSequencerSettings.getSettings('projectSequences')[`Sequence${currentSequence}`];
+    console.log(`[playStep] Current sequence data:`, currentSequenceData);
 
     // Only iterate over active channels
     activeChannels.forEach((channelIndex) => {
+        console.log(`[playStep] Processing channel index: ${channelIndex}`);
+
         const channel = channels[channelIndex];
         const buttons = channel.querySelectorAll('.step-button');
-        const isMuted = channel.dataset.muted === 'true';
 
         // Get the step state for the current step from the global object
         const stepState = currentSequenceData && currentSequenceData[`ch${channelIndex + 1}`] ? currentSequenceData[`ch${channelIndex + 1}`][currentStep] : false;
+        console.log(`[playStep] Step state for Channel ${channelIndex}, Step ${currentStep}:`, stepState);
+
+        // Get the mute state for the current channel from the global object
+        const isMuted = window.unifiedSequencerSettings.getChannelMuteState(channelIndex);
+        console.log(`[playStep] Mute state for Channel ${channelIndex}:`, isMuted);
 
         renderPlayhead(buttons, currentStep, isMuted);
         playSound(channel, currentStep, stepState);
@@ -78,6 +87,8 @@ function playStep() {
             // Use the next-sequence button logic to move to the next sequence
             document.getElementById('next-sequence').click();
         }
+        console.log(`[playStep] Next step: ${currentStep}, Total steps count: ${totalStepCount}`);
+
     }
 
     nextStepTime += stepDuration;
