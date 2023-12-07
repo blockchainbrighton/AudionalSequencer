@@ -231,48 +231,52 @@ channels.forEach((channel, index) => {
 
 
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const stepsContainer = channel.querySelector('.steps-container');
-        stepsContainer.innerHTML = '';
-    
-        for (let i = 0; i < 64; i++) {
-            const button = document.createElement('button');
-            button.classList.add('step-button');
-    
-            // Retrieve the channel index from the channel's id attribute
-            let channelIndex = parseInt(channel.id.split('-')[1]) - 1;
-            console.log(`[Debug] Channel Index: ${channelIndex}`);
-    
-            button.addEventListener('click', () => {
-                console.log(`[Debug] Button clicked: Channel ${channelIndex}, Step ${i}`);
-    
-                // Log the current step state before toggling
-                let currentStepState = button.classList.contains('selected');
-                console.log(`[Debug] Current Step State before toggle: ${currentStepState}`);
-    
-                // Toggle the step state
-                button.classList.toggle('selected');
-                
-                // Update the step's state in the channelSettings
-                let stepState = button.classList.contains('selected');
-                console.log(`[Debug] New Step State after toggle: ${stepState}`);
-    
-                updateStep(channelIndex, i, stepState);
-                
-                // Log the global object state before update
-                console.log(`[Debug] Global Object State before update:`, window.unifiedSequencerSettings.viewCurrentSettings());
-    
-                // Update the global object
-                window.unifiedSequencerSettings.updateStepState(currentSequence, channelIndex, i, stepState);
-    
-                // Log the global object state after update
-                console.log(`[Debug] Global Object State after update:`, window.unifiedSequencerSettings.viewCurrentSettings());
-            });
-    
-            stepsContainer.appendChild(button);
-        }
-    });
-    
+        document.addEventListener('DOMContentLoaded', () => {
+            const stepsContainer = channel.querySelector('.steps-container');
+            stepsContainer.innerHTML = '';
+        
+            for (let i = 0; i < 64; i++) {
+                const button = document.createElement('button');
+                button.classList.add('step-button');
+        
+                // Retrieve the channel index from the channel's id attribute
+                let channelIndex = parseInt(channel.id.split('-')[1]) - 1;
+                console.log(`[Debug] Channel Index: ${channelIndex}`);
+        
+                // Assign an ID to the button based on sequence, channel, and step index
+                    // Assuming 'currentSequence' is defined and holds the current sequence key
+                    button.id = `${currentSequence}-ch${channelIndex + 1}-step-${i}`;
+
+                    button.addEventListener('click', () => {                    
+                    console.log(`[Debug] Button clicked: Channel ${channelIndex}, Step ${i}`);
+        
+                    // Log the current step state before toggling
+                    let currentStepState = button.classList.contains('selected');
+                    console.log(`[Debug] Current Step State before toggle: ${currentStepState}`);
+        
+                    // Toggle the step state
+                    button.classList.toggle('selected');
+                    
+                    // Update the step's state in the channelSettings
+                    let stepState = button.classList.contains('selected');
+                    console.log(`[Debug] New Step State after toggle: ${stepState}`);
+        
+                    updateStep(channelIndex, i, stepState);
+                    
+                    // Log the global object state before update
+                    console.log(`[Debug] Global Object State before update:`, window.unifiedSequencerSettings.viewCurrentSettings());
+        
+                    // Update the global object
+                    window.unifiedSequencerSettings.updateStepState(currentSequence, channelIndex, i, stepState);
+        
+                    // Log the global object state after update
+                    console.log(`[Debug] Global Object State after update:`, window.unifiedSequencerSettings.viewCurrentSettings());
+                });
+        
+                stepsContainer.appendChild(button);
+            }
+        });
+        
 
 
             const loadSampleButton = channel.querySelector('.load-sample-button');

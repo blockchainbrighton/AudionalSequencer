@@ -248,21 +248,23 @@ class UnifiedSequencerSettings {
     }
 
     updateProjectSequencesUI(sequences) {
-        // Implement logic to update UI for project sequences
-        console.log("Project sequences UI updated:", sequences);
-        // Example: Update each sequence display or control
         Object.keys(sequences).forEach(sequenceKey => {
             const sequence = sequences[sequenceKey];
             Object.keys(sequence).forEach(channelKey => {
                 const steps = sequence[channelKey];
                 steps.forEach((step, index) => {
-                    const stepControl = document.getElementById(`${sequenceKey}-${channelKey}-step-${index}`);
-                    if (stepControl) {
-                        // Update step control based on step value
+                    const stepButton = document.getElementById(`${sequenceKey}-${channelKey}-step-${index}`);
+                    if (stepButton) {
+                        if (step) {
+                            stepButton.classList.add('selected');
+                        } else {
+                            stepButton.classList.remove('selected');
+                        }
                     }
                 });
             });
         });
+        console.log("Project sequences UI updated:", sequences);
     }
 }
 
