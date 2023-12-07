@@ -2,7 +2,6 @@
 <html>
 
 <head>
-    <!--<link rel="stylesheet" type="text/css" href="16channelBetaSequencer/styles.css">-->
     <link rel="stylesheet" type="text/css" href="styles/channel-elements.css">
     <link rel="stylesheet" type="text/css" href="styles/variables-media-queries.css">
     <link rel="stylesheet" type="text/css" href="styles/global-structural.css">
@@ -12,8 +11,6 @@
     <link rel="stylesheet" type="text/css" href="styles/animations-keyframes.css">
     <link rel="stylesheet" type="text/css" href="styles/utility-buttons.css">
     <link rel="stylesheet" type="text/css" href="AudioTrimModule/audio-trim-module.css">
-    <!--<link rel="stylesheet" type="text/css" href="audioTrimSvelteComponent/bundle.css">
-    <link rel="stylesheet" type="text/css" href="audioTrimSvelteComponent/bundle.css">-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
    
 </head>
@@ -154,12 +151,7 @@
 <script src="centralSettings/importExportGlobalSettings.js"></script>
 <script src="AudioTrimModule/audioTrimModuleHelperFunctions.js"></script>
 <script src="AudioTrimModule/audioTrimModule_v2.js"></script>
-<!--<script type="module" src="AudioTrimES6Module/audioTrimModule.js"></script>-->
 <script src="centralSettings/globalObjectHelperFunctions_v2.js"></script>
-<!--<script src="centralSettings/globalExportSettings.js"></script>-->
-<!--<script src="audioTrimSvelteComponent/LocalStorageUtils.js"></script>-->
-<!-- <script src="16channelBetaSequencer/audioTrimSvelteComponent/audioTrimSettingsLocalStorage.js"></script>  -->
-<!-- <script src="audioTrimSvelteComponent/bundle.js"></script>-->
 <script src="updateSequenceData.js"></script>
 <script src="quickplayButtons.js"></script> <!-- Newly added external script link -->
 <script src="copyAndPaste.js"></script>
@@ -176,26 +168,7 @@
 <script src="embeddedPreset.js"></script>
 <script src="audionalSampleLibrary.js"></script>
 <script src="audioUtils.js"></script>
-<!--<script src="importExport.js"></script>-->
-<!--<script src="importSettingsToGlobalObject.js"></script>-->
 <script src="index.js"></script>
-
-  <script>
-//     window.trimSettings = (function() {
-//         let settings = JSON.parse(localStorage.getItem('audioTrimSettings') || '{}');
-// 
-//         function update(channelIndex, newSettings) {
-//             settings[channelIndex] = newSettings;
-//             localStorage.setItem('audioTrimSettings', JSON.stringify(settings));
-//         }
-// 
-//         function get(channelIndex) {
-//             return settings[channelIndex] || { start: 0.01, end: 100 };
-//         }
-// 
-//         return { update, get };
-//     })();
-// </script>
 
 </body>
 </html>
