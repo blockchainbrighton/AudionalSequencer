@@ -125,7 +125,34 @@ function updateProjectSequencesUI(sequences) {
     });
 }
 
+
 // Utility Functions
+
+function updateStepStateAndUI(sequenceNumber, channelIndex, stepIndex, newState) {
+    // Update the global object
+    window.unifiedSequencerSettings.updateStepState(sequenceNumber, channelIndex, stepIndex, newState);
+
+    // Find the corresponding step button in the UI and update its state
+    const stepButtonId = `${sequenceNumber}-ch${channelIndex + 1}-step-${stepIndex}`;
+    const stepButton = document.getElementById(stepButtonId);
+    if (stepButton) {
+        stepButton.classList.toggle('selected', newState);
+    } else {
+        console.error('Step button not found for the given IDs');
+    }
+}
+
+function reflectStepStateInUI(sequenceNumber, channelIndex, stepIndex) {
+    const state = window.unifiedSequencerSettings.getStepState(sequenceNumber, channelIndex, stepIndex);
+    const stepButtonId = `${sequenceNumber}-ch${channelIndex + 1}-step-${stepIndex}`;
+    const stepButton = document.getElementById(stepButtonId);
+    
+    if (stepButton) {
+        stepButton.classList.toggle('selected', state);
+    } else {
+        console.error('Step button not found for the given IDs');
+    }
+}
 
 function clearSettings() {
     if (window.unifiedSequencerSettings) {

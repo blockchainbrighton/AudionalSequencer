@@ -1,4 +1,4 @@
-// unifiedSequencerSettingsClass.js
+// globalObjectClass.js
 
 class UnifiedSequencerSettings {
     constructor() {
@@ -85,6 +85,18 @@ class UnifiedSequencerSettings {
             console.error('Invalid sequence, channel, or step index');
         }
     }
+
+    getStepState(sequenceNumber, channelIndex, stepIndex) {
+        const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber + 1}`];
+        const channel = sequence && sequence[`ch${channelIndex + 1}`];
+        if (channel && stepIndex < channel.length) {
+            return channel[stepIndex];
+        } else {
+            console.error('Invalid sequence, channel, or step index');
+            return null;
+        }
+    }
+    
 
     updateSetting(key, value, channelIndex = null) {
         if (channelIndex !== null && Array.isArray(this.settings.masterSettings[key])) {
