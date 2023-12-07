@@ -9,7 +9,6 @@ function handleStep(channel, channelData, totalStepCount) {
       channel.dataset.muted = isMuted ? 'true' : 'false';
       // Update the mute state in the DOM
       updateMuteState(channel, isMuted);
-      saveCurrentSequence(currentSequence);
       console.log('Mute toggled by the handleStep function');
     }
 
@@ -33,31 +32,20 @@ function renderPlayhead(buttons, currentStep) {
 
 
 function playStep() {
-    const presetData = presets.preset1;
+    // Assuming 'currentSequence' is the currently selected sequence number
+    const currentSequenceData = window.unifiedSequencerSettings.getSettings('projectSequences')[`Sequence${currentSequence}`];
 
     // Only iterate over active channels
     activeChannels.forEach((channelIndex) => {
         const channel = channels[channelIndex];
         const buttons = channel.querySelectorAll('.step-button');
-        let channelData = presetData.channels[channelIndex];
-        const defaultTriggerArray = Array(4096).fill(false);
-        renderPlayhead(buttons, currentStep, channel.dataset.muted === 'true');
+        const isMuted = channel.dataset.muted === 'true';
 
+        // Get the step state for the current step from the global object
+        const stepState = currentSequenceData && currentSequenceData[`ch${channelIndex + 1}`] ? currentSequenceData[`ch${channelIndex + 1}`][currentStep] : false;
 
-        // If no channelData is found for the current channel, use a default set of values
-        if (!channelData) {
-            console.warn(`No preset data for channel index: ${channelIndex + 1}`);
-            channelData = {
-                triggers: defaultTriggerArray.slice(), // Clone the defaultTriggerArray
-                toggleMuteSteps: [],
-                mute: false,
-                url: null
-            };
-        }
-
-        renderPlayhead(buttons, currentStep);
-        const isMuted = handleStep(channel, channelData, totalStepCount);
-        playSound(channel, currentStep, isMuted);
+        renderPlayhead(buttons, currentStep, isMuted);
+        playSound(channel, currentStep, stepState);
     });
 
     currentStep = (currentStep + 1) % 64;
@@ -76,8 +64,6 @@ function playStep() {
     if (currentStep % 64 === 0) {
         sequenceCount++;
 
-        
-    
         
 
         // Check if we need to switch to the next sequence (continuous play logic)

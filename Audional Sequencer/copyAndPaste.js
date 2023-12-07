@@ -174,7 +174,6 @@ function pasteSequenceSettings(settings) {
 
     // Now, call functions that rely on channelSettings
     updateUIForSequence(currentSequence);
-    saveCurrentSequence(currentSequence);
 
     console.log("P1 Pasted sequences array:", sequences);
 

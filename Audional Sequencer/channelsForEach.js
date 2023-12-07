@@ -5,7 +5,6 @@ import { setupLoadSampleButton } from './loadSampleButtonModal.js';
 
 channels.forEach((channel, index) => {
     channel.dataset.id = `Channel-${index + 1}`;
-    saveCurrentSequence(currentSequence);
     
     // Create a gain node for the channel
     const gainNode = audioContext.createGain();

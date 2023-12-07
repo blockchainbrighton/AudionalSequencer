@@ -38,6 +38,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     loadFileInput.addEventListener('change', () => {
+        console.log("{debugGlobalObjectToUI} loadFileInput event listener: loaded new settings", settings);
+
         let file = loadFileInput.files[0];
         let reader = new FileReader();
         reader.onload = function(e) {

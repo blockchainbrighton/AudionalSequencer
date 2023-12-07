@@ -37,6 +37,8 @@ function resumeScheduler() {
 }
 
 function scheduleNextStep() {
+    console.log("[scheduleNextStep] Attempting to play sound for Channel:", "Step:", currentStep);
+
     const bpm = window.unifiedSequencerSettings.getBPM() || 105; // Fallback to 105 BPM
     console.log(`[scheduleNextStep] Current BPM: ${bpm}`);
 

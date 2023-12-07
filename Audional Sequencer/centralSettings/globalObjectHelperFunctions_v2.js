@@ -35,6 +35,8 @@ function setGlobalProjectSequences(sequences) {
 // UI Update Functions
 
 function updateUIFromLoadedSettings() {
+    console.log("{debugGlobalObjectToUI} updateUIFromLoadedSettings: called with settings", settings);
+
     const settings = window.unifiedSequencerSettings.getSettings('masterSettings');
     console.log("Loaded settings:", settings);
 
@@ -52,6 +54,8 @@ function updateUIFromLoadedSettings() {
 }
 
 function updateProjectNameUI(projectName) {
+    console.log("{debugGlobalObjectToUI} updateProjectNameUI: updating with projectName", projectName);
+
     const projectNameInput = document.getElementById('project-name');
     if (projectNameInput) {
         projectNameInput.value = projectName || "AUDX Project";
@@ -60,6 +64,8 @@ function updateProjectNameUI(projectName) {
 }
 
 function updateBPMUI(bpm) {
+    console.log("{debugGlobalObjectToUI} updateBPMUI: updating with BPM", bpm);
+
     const bpmSlider = document.getElementById('bpm-slider');
     const bpmDisplay = document.getElementById('bpm-display');
     if (bpmSlider && bpmDisplay) {
@@ -70,6 +76,8 @@ function updateBPMUI(bpm) {
 }
 
 function updateProjectURLsUI(urls) {
+    console.log("{debugGlobalObjectToUI} updateProjectURLsUI: updating with URLs", urls);
+
     // Implement logic to update UI for project URLs
     console.log("Project URLs UI updated:", urls);
     // Example: Update each URL input field
@@ -82,6 +90,8 @@ function updateProjectURLsUI(urls) {
 }
 
 function updateTrimSettingsUI(trimSettings) {
+    console.log("{debugGlobalObjectToUI} updateTrimSettingsUI: updating with trimSettings", trimSettings);
+
     // Implement logic to update UI for trim settings
     console.log("Trim settings UI updated:", trimSettings);
     // Example: Update each trim setting input field
@@ -96,6 +106,8 @@ function updateTrimSettingsUI(trimSettings) {
 }
 
 function updateProjectURLNamesUI(urlNames) {
+    console.log("{debugGlobalObjectToUI} updateProjectURLNamesUI: updating with URL names", urlNames);
+
     // Implement logic to update UI for project URL names
     console.log("Project URL names UI updated:", urlNames);
     // Example: Update each URL name display
@@ -108,6 +120,8 @@ function updateProjectURLNamesUI(urlNames) {
 }
 
 function updateProjectSequencesUI(sequences) {
+    console.log("{debugGlobalObjectToUI} updateProjectSequencesUI: updating with sequences", sequences);
+
     // Implement logic to update UI for project sequences
     console.log("Project sequences UI updated:", sequences);
     // Example: Update each sequence display or control

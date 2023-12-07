@@ -12,7 +12,6 @@ function setChannelVolume(channelIndex, volume) {
       volume: volume
   });
 
-  saveCurrentSequence(currentSequence);
 }
 
   function updateChannelVolume(channel) {

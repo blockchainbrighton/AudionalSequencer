@@ -11,6 +11,9 @@ function importSettings(jsonSettings) {
     try {
         // Parse jsonSettings if it's a string
         const parsedSettings = typeof jsonSettings === 'string' ? JSON.parse(jsonSettings) : jsonSettings;
+
+        console.log("{debugGlobalObjectToUI} importSettings: loading settings", parsedSettings);
+
         window.unifiedSequencerSettings.loadSettings(parsedSettings);
 
 
@@ -20,6 +23,8 @@ function importSettings(jsonSettings) {
         if (masterSettings && typeof masterSettings.projectSequences === 'object') {
             for (let sequenceNumber = 1; sequenceNumber <= Object.keys(masterSettings.projectSequences).length; sequenceNumber++) {
                 updateUIForSequence(sequenceNumber);
+                console.log("{debugGlobalObjectToUI} importSettings: updated UI for sequence number", sequenceNumber);
+
             }
         }
 

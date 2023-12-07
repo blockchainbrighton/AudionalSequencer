@@ -31,7 +31,6 @@ function handleSoloLogic(channel, index) {
 
 channels.forEach((channel, index) => {
     channel.dataset.id = `Channel-${index + 1}`;
-    saveCurrentSequence(currentSequence);
 
     // Create and configure gain node
     const gainNode = audioContext.createGain();

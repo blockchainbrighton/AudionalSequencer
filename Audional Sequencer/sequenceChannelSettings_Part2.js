@@ -58,19 +58,10 @@ function loadSequence(sequenceNumber) {
 }
 
 
-function saveCurrentSequence(sequenceNumber) {
-    sequences[sequenceNumber - 1] = [...channelSettings];
-    // console.log(`from saveCurrentSequence: Saved settings for Sequence ${sequenceNumber}:`, sequences[sequenceNumber - 1]);
-    const urlsForSavedSequence = channelSettings.map(channelData => channelData[0]);
-    // console.log(`from saveCurrentSequence: Saved URLs for Sequence ${sequenceNumber}:`, urlsForSavedSequence);
-
-}
-
 
 function loadNextSequence() {
     if (currentSequence < totalSequenceCount) {
         // Save current sequence's settings
-        saveCurrentSequence(currentSequence);
 
         // Increment the current sequence number
         currentSequence++;
@@ -95,7 +86,6 @@ function updateUIForSequence(sequenceNumber) {
     const sequenceSettings = masterSettings.projectSequences[`Sequence${sequenceNumber}`];
 
     if (sequenceNumber > 0 && sequenceNumber <= masterSettings.projectSequences.length) {
-        saveCurrentSequence(currentSequence); // Assuming this function saves the current sequence state
 
         // Mark the sequence as active
         markSequenceAsLive(sequenceNumber - 1);
@@ -150,8 +140,7 @@ function changeSequence(seq) {
         }
     });
 
-    // Save the loaded preset to the current sequence
-    saveCurrentSequence(currentSequence);
+
     // console.log("loadChannelSettingsFromPreset: After loadChannelSettingsFromPreset, gainNodes values:", gainNodes.map(gn => gn.gain.value));
 
 }
@@ -201,7 +190,6 @@ document.getElementById('next-sequence').addEventListener('click', loadNextSeque
 document.getElementById('prev-sequence').addEventListener('click', function() {
     if (currentSequence > 1) {
         // Save current sequence's settings
-        saveCurrentSequence(currentSequence);
 
         // Decrement the current sequence number and load its settings
         currentSequence--;
