@@ -128,7 +128,7 @@ function playSound(channel, currentStep) {
           source.buffer = audioBuffer;
 
           // Retrieve trim settings for the channel
-          const trimSettings = window.unifiedSequencerSettings.getTrimSettingsForChannel(channelIndex);
+          const trimSettings = window.unifiedSequencerSettings.getTrimSettings(channelIndex);
           // Calculate the start and end times based on trim settings
           let trimStart = (trimSettings.startSliderValue / 100) * audioBuffer.duration;
           let trimEnd = (trimSettings.endSliderValue / 100) * audioBuffer.duration;

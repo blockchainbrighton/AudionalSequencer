@@ -269,7 +269,7 @@ function updateProjectSequencesUI(sequenceData) {
 // 
    // Function to get trim settings
    function getTrimSettings(channelIndex) {
-       return window.unifiedSequencerSettings.getTrimSettingsForChannel(channelIndex);
+       return window.unifiedSequencerSettings.getTrimSettings(channelIndex);
    }
 // 
 // function setStartSliderValue(trimmer, value) {

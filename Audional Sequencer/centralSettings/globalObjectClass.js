@@ -164,7 +164,7 @@ class UnifiedSequencerSettings {
         this.settings.masterSettings.projectBPM = newBPM;
     }
 
-    setTrimSettingsForChannel(channelIndex, startSliderValue, endSliderValue) {
+    setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
         if (this.isValidIndex(channelIndex, this.settings.masterSettings.trimSettings.length)) {
             const currentSettings = this.settings.masterSettings.trimSettings[channelIndex];
             Object.assign(currentSettings, { startSliderValue, endSliderValue });
@@ -194,10 +194,10 @@ class UnifiedSequencerSettings {
         console.log(`[setProjectURLs] Project URLs set:`, urls);
     }
 
-    setTrimSettings(settings) {
-        this.settings.masterSettings.trimSettings = settings;
-        console.log(`[setTrimSettings] Trim settings set:`, settings);
-    }
+    // setTrimSettings(settings) {
+    //     this.settings.masterSettings.trimSettings = settings;
+    //     console.log(`[setTrimSettings] Trim settings set:`, settings);
+    // }
 
     setProjectURLNames(names) {
         this.settings.masterSettings.projectURLNames = names;
