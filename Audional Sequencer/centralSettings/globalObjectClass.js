@@ -217,16 +217,20 @@ class UnifiedSequencerSettings {
             console.log("[loadSettings] Received JSON Settings:", jsonSettings);
             const parsedSettings = typeof jsonSettings === 'string' ? JSON.parse(jsonSettings) : jsonSettings;
             console.log("[loadSettings] Parsed Settings:", parsedSettings);
-
+    
             console.log("[loadSettings] Current masterSettings before loading new settings:", this.settings.masterSettings);
-            this.settings.masterSettings = parsedSettings;
+            
+            // Update masterSettings with parsedSettings
+            this.settings.masterSettings = { ...this.settings.masterSettings, ...parsedSettings };
             console.log("[loadSettings] Updated masterSettings:", this.settings.masterSettings);
+    
+            // Notify all observers about the change
+            this.notifyObservers();
         } catch (error) {
             console.error('Error loading settings:', error);
         }
-        // Notify all observers about the change
-        this.notifyObservers();
     }
+    
     
 
     exportSettings() {

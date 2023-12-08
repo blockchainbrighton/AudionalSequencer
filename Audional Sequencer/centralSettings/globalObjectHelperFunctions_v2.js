@@ -7,14 +7,23 @@ function updateProjectURLsUI(urls) {
         const loadButton = document.getElementById(`load-sample-button-${index}`);
         if (loadButton) {
             if (url) {
-                // Update the button text to indicate that a URL is loaded
-                loadButton.textContent = "URL Loaded";
+                // Extract the ID from the URL
+                const urlID = extractURLID(url);
+                loadButton.textContent = urlID ? `ID: ${urlID}` : "URL Loaded";
             } else {
                 // Reset the button text to the default
                 loadButton.textContent = "Load New";
             }
         }
     });
+}
+
+// Helper function to extract URL ID
+function extractURLID(url) {
+    // Implement logic to extract ID from URL
+    // Example: Extract the last part of the URL after the last '/'
+    const parts = url.split('/');
+    return parts[parts.length - 1]; // This returns the last segment of the URL
 }
 
 // 
@@ -185,27 +194,27 @@ function setGlobalProjectURLs(urls) {
 
 
 function updateProjectSequencesUI(sequenceData) {
-    console.log("{debugGlobalObjectToUI} [updateProjectSequencesUI] updateProjectSequencesUI: updating with sequences", sequenceData);
+    // console.log("{debugGlobalObjectToUI} [updateProjectSequencesUI] updateProjectSequencesUI: updating with sequences", sequenceData);
 
     // Log the total number of sequences being processed
-    console.log(`[updateProjectSequencesUI] Total sequences to process: ${Object.keys(sequenceData).length}`);
+    // console.log(`[updateProjectSequencesUI] Total sequences to process: ${Object.keys(sequenceData).length}`);
 
     Object.keys(sequenceData).forEach(sequenceKey => {
         const sequence = sequenceData[sequenceKey];
-        console.log(`[updateProjectSequencesUI] Processing sequence: ${sequenceKey}`);
+        // console.log(`[updateProjectSequencesUI] Processing sequence: ${sequenceKey}`);
 
         Object.keys(sequence).forEach(channelKey => {
             const steps = sequence[channelKey].steps; // Corrected to directly access the steps array
-            console.log(`[updateProjectSequencesUI] Processing channel: ${channelKey} in sequence: ${sequenceKey}`);
+            // console.log(`[updateProjectSequencesUI] Processing channel: ${channelKey} in sequence: ${sequenceKey}`);
 
             if (Array.isArray(steps)) {
-                console.log(`[updateProjectSequencesUI] Total steps in channel ${channelKey}: ${steps.length}`);
+                // console.log(`[updateProjectSequencesUI] Total steps in channel ${channelKey}: ${steps.length}`);
 
                 steps.forEach((step, index) => {
                     const stepControlId = `${sequenceKey}-${channelKey}-step-${index}`;
                     const stepControl = document.getElementById(stepControlId);
 
-                    console.log(`[updateProjectSequencesUI] Processing stepControl ID: ${stepControlId}, State: ${step}`);
+                    // console.log(`[updateProjectSequencesUI] Processing stepControl ID: ${stepControlId}, State: ${step}`);
 
                     if (stepControl) {
                         if (step === true) {
@@ -220,11 +229,11 @@ function updateProjectSequencesUI(sequenceData) {
                             }
                         }
                     } else {
-                        console.log(`[updateProjectSequencesUI] Step control not found for ID: ${stepControlId}`);
+                        // console.log(`[updateProjectSequencesUI] Step control not found for ID: ${stepControlId}`);
                     }
                 });
             } else {
-                console.log(`[updateProjectSequencesUI] Steps data for channel ${channelKey} in sequence ${sequenceKey} is not an array`);
+                // console.log(`[updateProjectSequencesUI] Steps data for channel ${channelKey} in sequence ${sequenceKey} is not an array`);
             }
         });
     });
