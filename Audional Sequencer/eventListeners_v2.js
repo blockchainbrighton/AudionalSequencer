@@ -58,7 +58,10 @@ document.addEventListener("DOMContentLoaded", function() {
                         // Assuming you have a way to get the corresponding loadSampleButtonElement
                         const loadSampleButtonElement = document.getElementById(`load-sample-button-${i}`);
                         await fetchAudio(url, i, loadSampleButtonElement);
-                    }
+                        // Extract ID from URL and update button text
+                        const loadedSampleId = extractURLID(url); // Implement this function based on your URL structure
+                        loadSampleButtonElement.textContent = `Loaded: ${loadedSampleId}`;
+                   }
                 }
             }
         };
