@@ -144,10 +144,10 @@ function setGlobalProjectURLs(urls) {
     console.log(`[setGlobalProjectURLs] Project URLs updated:`, urls);
 }
 // 
-// function setGlobalTrimSettings(trimSettings) {
-//     window.unifiedSequencerSettings.setTrimSettings(trimSettings);
-//     console.log(`[setGlobalTrimSettings] Trim settings updated:`, trimSettings);
-// }
+function setTrimSettings(trimSettings) {
+    window.unifiedSequencerSettings.setTrimSettings(trimSettings);
+    console.log(`[setGlobalTrimSettings] Trim settings updated:`, trimSettings);
+}
 // 
 // function setGlobalProjectURLNames(urlNames) {
 //     window.unifiedSequencerSettings.setProjectURLNames(urlNames);
