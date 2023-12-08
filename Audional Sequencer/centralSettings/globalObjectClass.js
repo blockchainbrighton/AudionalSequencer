@@ -112,26 +112,30 @@ class UnifiedSequencerSettings {
         return channels;
     }
     updateStepState(sequenceNumber, channelIndex, stepIndex, state) {
-        const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber + 1}`];
-        const channel = sequence && sequence[`ch${channelIndex + 1}`];
-        if (channel && stepIndex < channel.length) {
-            channel[stepIndex] = state;
+        console.log(`[updateStepState] Called with Sequence: ${sequenceNumber}, Channel: ${channelIndex}, Step: ${stepIndex}, State: ${state}`);
+        const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber}`];
+        const channel = sequence && sequence[`ch${channelIndex}`];
+        if (channel && stepIndex < channel.triggers.length) {
+            channel.triggers[stepIndex] = state;
         } else {
-            console.error('Invalid sequence, channel, or step index');
+            console.error('Invalid sequence, channel, or step index in updateStepState');
         }
     }
-
-     getStepState(sequenceNumber, channelIndex, stepIndex) {
-        // console.log(`getStepState called with Sequence ${sequenceNumber}, Channel ${channelIndex}, Step ${stepIndex}`);
-        const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber + 1}`];
-        const channel = sequence && sequence[`ch${channelIndex + 1}`];
-        if (channel && stepIndex < channel.length) {
-            return channel[stepIndex];
+    
+    
+    getStepState(sequenceNumber, channelIndex, stepIndex) {
+        console.log(`[getStepState] Called with Sequence: ${sequenceNumber}, Channel: ${channelIndex}, Step: ${stepIndex}`);
+        const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber}`];
+        const channel = sequence && sequence[`ch${channelIndex}`];
+        if (channel && stepIndex < channel.triggers.length) {
+            return channel.triggers[stepIndex];
         } else {
-            console.error('Invalid sequence, channel, or step index');
+            console.error('Invalid sequence, channel, or step index in getStepState');
             return null;
         }
     }
+    
+    
     
 
     updateSetting(key, value, channelIndex = null) {

@@ -34,13 +34,12 @@ function openAudioTrimmerModal(channelIndex) {
                 } else {
                     console.error('Required elements not found in the DOM');
                 }
-                // Call the function to update the trimmer with the audio buffer
-                // Update the trimmer with the audio buffer
-                const channel = document.querySelector(`.channel[data-id="Channel-${channelIndex + 1}"]`);
-                const url = channel.dataset.originalUrl;
+
+                // Retrieve the URL from the global settings
+                const url = window.unifiedSequencerSettings.settings.masterSettings.projectURLs[channelIndex];
                 updateAudioTrimmerWithBufferHelper(url, channelIndex);
-                });           
-                document.getElementById('audio-trimmer-modal').style.display = 'block';
+            });           
+            document.getElementById('audio-trimmer-modal').style.display = 'block';
         })
         .catch(error => {
             console.error('Error loading audio trimmer module:', error);

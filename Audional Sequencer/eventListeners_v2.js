@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
             window.unifiedSequencerSettings.loadSettings(loadedSettings);
 
             // Update step buttons based on the loaded settings
-             updateAllStepButtonsFromSettings(loadedSettings.projectSequences);
+             // updateAllStepButtonsFromSettings(loadedSettings.projectSequences);
 
     
             // Fetch audio for each URL in the loaded settings

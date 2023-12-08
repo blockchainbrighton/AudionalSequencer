@@ -114,10 +114,10 @@ function updateSpecificStepUI(sequenceNumber, channelIndex, stepIndex) {
 //     console.log(`[setGlobalProjectName] Project name updated to: ${projectName}`);
 // }
 // 
-// function setGlobalProjectURLs(urls) {
-//     window.unifiedSequencerSettings.setProjectURLs(urls);
-//     console.log(`[setGlobalProjectURLs] Project URLs updated:`, urls);
-// }
+function setGlobalProjectURLs(urls) {
+    window.unifiedSequencerSettings.setProjectURLs(urls);
+    console.log(`[setGlobalProjectURLs] Project URLs updated:`, urls);
+}
 // 
 // function setGlobalTrimSettings(trimSettings) {
 //     window.unifiedSequencerSettings.setTrimSettings(trimSettings);
@@ -216,10 +216,10 @@ function updateSpecificStepUI(sequenceNumber, channelIndex, stepIndex) {
 //     window.unifiedSequencerSettings.setTrimSettingsForChannel(channelIndex, startSliderValue, endSliderValue);
 // }
 // 
-// // Function to get trim settings
-// function getTrimSettings(channelIndex) {
-//     return window.unifiedSequencerSettings.getTrimSettingsForChannel(channelIndex);
-// }
+   // Function to get trim settings
+   function getTrimSettings(channelIndex) {
+       return window.unifiedSequencerSettings.getTrimSettingsForChannel(channelIndex);
+   }
 // 
 // function setStartSliderValue(trimmer, value) {
 //     trimmer.startSliderValue = value;
