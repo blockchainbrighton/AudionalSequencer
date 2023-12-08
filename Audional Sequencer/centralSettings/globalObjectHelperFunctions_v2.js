@@ -35,7 +35,6 @@ function setGlobalProjectSequences(sequences) {
 // UI Update Functions
 
 function updateUIFromLoadedSettings() {
-    console.log("{debugGlobalObjectToUI} updateUIFromLoadedSettings: called with settings", settings);
 
     const settings = window.unifiedSequencerSettings.getSettings('masterSettings');
     console.log("Loaded settings:", settings);

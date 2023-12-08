@@ -51,18 +51,18 @@ document.addEventListener("DOMContentLoaded", function() {
         reader.readAsText(file);
     });
 
-    function loadPresetFromFile(filePath) {
-        console.log(`Loading preset from: ${filePath}`);
-        fetch(filePath)
-            .then(response => response.json())
-            .then(jsonString => {
-                window.unifiedSequencerSettings.loadSettings(JSON.stringify(jsonString));
-                // Update UI after loading settings
-                updateUIFromLoadedSettings();
-            })
-            .catch(error => console.error(`Error loading preset from ${filePath}:`, error));
-        loadOptions.style.display = "none";
-    }
+    // function loadPresetFromFile(filePath) {
+    //     console.log(`Loading preset from: ${filePath}`);
+    //     fetch(filePath)
+    //         .then(response => response.json())
+    //         .then(jsonString => {
+    //             window.unifiedSequencerSettings.loadSettings(JSON.stringify(jsonString));
+    //             // Update UI after loading settings
+    //             updateUIFromLoadedSettings();
+    //         })
+    //         .catch(error => console.error(`Error loading preset from ${filePath}:`, error));
+    //     loadOptions.style.display = "none";
+    // }
     
    
 });

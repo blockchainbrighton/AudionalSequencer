@@ -103,14 +103,17 @@ function bufferToBase64(buffer) {
   return window.btoa(binary);
 }
 
-
 // Function to play sound
 function playSound(channel, currentStep) {
-  
-  console.log(`[playSound] Step state for Channel ${channelIndex}, Step ${currentStep}:`, stepState);
-
+  // Extract channelIndex from the channel element's dataset
   const channelIndex = parseInt(channel.dataset.id.split('-')[1]) - 1;
+
+  console.log(`[playSound] Processing channel index: ${channelIndex}`);
+
+  // Retrieve the step state from the global object
   const stepState = window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, currentStep);
+
+  console.log(`[playSound] Step state for Channel ${channelIndex}, Step ${currentStep}:`, stepState);
 
   if (stepState) {
       const url = window.unifiedSequencerSettings.getAudioUrlForChannel(channelIndex);
@@ -123,7 +126,6 @@ function playSound(channel, currentStep) {
           console.log("[playSound] Audio buffer found for URL:", url);
 
           const source = audioContext.createBufferSource();
-          
           source.buffer = audioBuffer;
 
           const trimSettings = window.unifiedSequencerSettings.getTrimSettingsForChannel(channelIndex);
@@ -144,11 +146,8 @@ function playSound(channel, currentStep) {
       }
   } else {
       console.log("[playSound] Current step is not selected. Skipping playback.");
-      console.log(`[playSound] Gain value for Channel ${channelIndex}:`, gainNodes[channelIndex].gain.value);
-
   }
 }
-
 
 
 

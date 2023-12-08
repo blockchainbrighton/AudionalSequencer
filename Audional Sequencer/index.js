@@ -37,7 +37,7 @@ let volumeStates = Array(16).fill(1); // Start with full volume for all channels
 let soloedChannels = Array(16).fill(false); // Assuming you have 16 channels
 const audioBuffers = new Map();
 let channels = document.querySelectorAll('.channel[id^="channel-"]');
-let activeChannels = new Set();
+let activeChannels = 16;// new Set();
 let clearClickedOnce = Array(channels.length).fill(false);
 let clearConfirmTimeout = Array(channels.length).fill(null);
 

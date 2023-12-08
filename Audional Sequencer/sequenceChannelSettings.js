@@ -1,3 +1,5 @@
+// sequenceChannelSettings.js
+
 let totalSequenceCount = 64;
 
 // A function to be called whenever the sequence changes or JSON data is loaded
