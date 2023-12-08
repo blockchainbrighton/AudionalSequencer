@@ -1,11 +1,14 @@
-// unifiedSequencerSettingsClass.js
+// globalObjectClass.js
 
 class UnifiedSequencerSettings {
     constructor() {
+        this.observers = [];
+
         this.settings = {
             masterSettings: {
                 projectName: '',
                 projectBPM: 120,
+                currentSequence: 0, // Initialize with a default value
                 projectURLs: new Array(16).fill(''),
                 trimSettings: Array.from({ length: 16 }, () => ({
                     startSliderValue: 0.01,
@@ -20,6 +23,34 @@ class UnifiedSequencerSettings {
         // Expose the checkSettings function for manual checking
         this.checkSettings = this.checkSettings.bind(this);
     }
+
+    // Method to register an observer
+    addObserver(observerFunction) {
+        this.observers.push(observerFunction);
+    }
+
+    // Method to notify all observers
+    notifyObservers() {
+        this.observers.forEach(observerFunction => observerFunction(this.settings));
+    }
+
+    // Example of a method that changes settings
+    setProjectName(name) {
+        this.settings.masterSettings.projectName = name;
+        this.notifyObservers(); // Notify observers about the change
+    }
+
+    // Method to update the current sequence
+    setCurrentSequence(sequenceNumber) {
+        this.settings.currentSequence = sequenceNumber;
+        console.log(`[setCurrentSequence] Current sequence set to: ${sequenceNumber}`);
+    }
+
+    // Method to get the current sequence
+    getCurrentSequence() {
+        return this.settings.currentSequence;
+    }
+
 
     getSettings(key) {
         if (key === 'masterSettings') {
@@ -61,30 +92,51 @@ class UnifiedSequencerSettings {
   
 
     initializeSequences(numSequences, numChannels, numSteps) {
-        let sequences = {};
-        for (let seq = 1; seq <= numSequences; seq++) {
-            sequences[`Sequence${seq}`] = this.initializeChannels(numChannels, numSteps);
+        let sequenceData = {};
+        for (let seq = 0; seq < numSequences; seq++) {
+            sequenceData[`Sequence${seq}`] = this.initializeChannels(numChannels, numSteps);
         }
-        return sequences;
+        return sequenceData;
     }
-
+    
     initializeChannels(numChannels, numSteps) {
         let channels = {};
-        for (let ch = 1; ch <= numChannels; ch++) {
-            channels[`ch${ch}`] = Array(numSteps).fill(false);
+        for (let ch = 0; ch < numChannels; ch++) {
+            channels[`ch${ch}`] = {
+                steps: Array(numSteps).fill(false),
+                mute: false, // Ensure mute is off by default
+                url: '' // Default URL can be empty or set to a default value
+            };
         }
         return channels;
     }
-
+    
     updateStepState(sequenceNumber, channelIndex, stepIndex, state) {
-        const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber + 1}`];
-        const channel = sequence && sequence[`ch${channelIndex + 1}`];
-        if (channel && stepIndex < channel.length) {
-            channel[stepIndex] = state;
+        console.log(`[updateStepState] Called with Sequence: ${sequenceNumber}, Channel: ${channelIndex}, Step: ${stepIndex}, State: ${state}`);
+        const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber}`];
+        const channel = sequence && sequence[`ch${channelIndex}`];
+        if (channel && stepIndex < channel.steps.length) {
+            channel.steps[stepIndex] = state;
         } else {
-            console.error('Invalid sequence, channel, or step index');
+            console.error('Invalid sequence, channel, or step index in updateStepState');
         }
     }
+    
+    
+    getStepState(sequenceNumber, channelIndex, stepIndex) {
+        console.log(`[getStepState] Called with Sequence: ${sequenceNumber}, Channel: ${channelIndex}, Step: ${stepIndex}`);
+        const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber}`];
+        const channel = sequence && sequence[`ch${channelIndex}`];
+        if (channel && stepIndex < channel.steps.length) {
+            return channel.steps[stepIndex];
+        } else {
+            console.error('Invalid sequence, channel, or step index in getStepState');
+            return null;
+        }
+    }
+    
+    
+    
 
     updateSetting(key, value, channelIndex = null) {
         if (channelIndex !== null && Array.isArray(this.settings.masterSettings[key])) {
@@ -152,9 +204,9 @@ class UnifiedSequencerSettings {
         console.log(`[setProjectURLNames] Project URL names set:`, names);
     }
 
-    setProjectSequences(sequences) {
-        this.settings.masterSettings.projectSequences = sequences;
-        console.log(`[setProjectSequences] Project sequences set:`, sequences);
+    setProjectSequences(sequenceData) {
+        this.settings.masterSettings.projectSequences = sequenceData;
+        console.log(`[setProjectSequences] Project sequences set:`, sequenceData);
     }
 
     
@@ -172,6 +224,8 @@ class UnifiedSequencerSettings {
         } catch (error) {
             console.error('Error loading settings:', error);
         }
+        // Notify all observers about the change
+        this.notifyObservers();
     }
     
 
@@ -247,25 +301,7 @@ class UnifiedSequencerSettings {
         });
     }
 
-    updateProjectSequencesUI(sequences) {
-        Object.keys(sequences).forEach(sequenceKey => {
-            const sequence = sequences[sequenceKey];
-            Object.keys(sequence).forEach(channelKey => {
-                const steps = sequence[channelKey];
-                steps.forEach((step, index) => {
-                    const stepButton = document.getElementById(`${sequenceKey}-${channelKey}-step-${index}`);
-                    if (stepButton) {
-                        if (step) {
-                            stepButton.classList.add('selected');
-                        } else {
-                            stepButton.classList.remove('selected');
-                        }
-                    }
-                });
-            });
-        });
-        console.log("Project sequences UI updated:", sequences);
-    }
+    
 }
 
 

@@ -40,26 +40,39 @@ document.addEventListener("DOMContentLoaded", function() {
     loadFileInput.addEventListener('change', () => {
         let file = loadFileInput.files[0];
         let reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = async function(e) {
             console.log("File read start");
-            let settings = e.target.result;
-            console.log("[loadFileInput] File content:", settings);
+            let loadedSettings = JSON.parse(e.target.result);
+            console.log("[loadFileInput] File content:", loadedSettings);
         
-            // Clear existing settings before loading new ones
-            clearSettings();
-
             // Load new settings and update UI
-            loadNewSettings(settings);
-        };
+            window.unifiedSequencerSettings.loadSettings(loadedSettings);
 
+    
+            // Fetch audio for each URL in the loaded settings
+            if (loadedSettings.projectURLs && Array.isArray(loadedSettings.projectURLs)) {
+                for (let i = 0; i < loadedSettings.projectURLs.length; i++) {
+                    const url = loadedSettings.projectURLs[i];
+                    if (url) {
+                        // Call fetchAudio for each URL
+                        // Assuming you have a way to get the corresponding loadSampleButtonElement
+                        const loadSampleButtonElement = document.getElementById(`load-sample-button-${i}`);
+                        await fetchAudio(url, i, loadSampleButtonElement);
+                    }
+                }
+            }
+        };
+    
         reader.readAsText(file);
     });
+    
+    
 
     function loadPresetFromFile(filePath) {
         console.log(`Loading preset from: ${filePath}`);
         fetch(filePath)
             .then(response => response.json())
-            .then(jsonString => window.unifiedSequencerSettings.loadSettings(JSON.stringify(jsonString)))
+            .then(jsonSettings => window.unifiedSequencerSettings.loadSettings(jsonSettings))
             .catch(error => console.error(`Error loading preset from ${filePath}:`, error));
         loadOptions.style.display = "none";
     }
@@ -98,7 +111,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectNameInput = document.getElementById('project-name');
 
     projectNameInput.addEventListener('input', () => {
-        const projectName = projectNameInput.value;
+        const projectName = projectNameInput.value.trim();
+        
+        // Update the global settings with the new project name
         window.unifiedSequencerSettings.updateSetting('projectName', projectName);
+
+        // Check if the project name is empty and handle accordingly
+        if (!projectName) {
+            // Handle the case where no project name is provided
+            // For example, you might want to set a default name or display a placeholder
+            projectNameInput.value = "Default Project Name"; // Example placeholder
+        }
     });
 });

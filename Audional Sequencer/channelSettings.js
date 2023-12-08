@@ -2,7 +2,7 @@
 
 
 function setChannelVolume(channelIndex, volume) {
-  const channel = document.querySelector(`.channel[data-id="Channel-${channelIndex + 1}"]`);
+  const channel = document.querySelector(`.channel[data-id="Channel-${channelIndex}"]`);
   channel.dataset.volume = volume;
   updateChannelVolume(channel);
 
@@ -12,12 +12,11 @@ function setChannelVolume(channelIndex, volume) {
       volume: volume
   });
 
-  saveCurrentSequence(currentSequence);
 }
 
   function updateChannelVolume(channel) {
     const volume = parseFloat(channel.dataset.volume);
-    const gainNode = gainNodes[parseInt(channel.dataset.id.split('-')[1]) - 1];
+    const gainNode = gainNodes[parseInt(channel.dataset.id.split('-')[1])];
     gainNode.gain.value = volume;
     }
 

@@ -9,7 +9,6 @@ function handleStep(channel, channelData, totalStepCount) {
       channel.dataset.muted = isMuted ? 'true' : 'false';
       // Update the mute state in the DOM
       updateMuteState(channel, isMuted);
-      saveCurrentSequence(currentSequence);
       console.log('Mute toggled by the handleStep function');
     }
 
@@ -33,23 +32,27 @@ function renderPlayhead(buttons, currentStep) {
 
 
 function playStep() {
+    console.log("[playStep] Function called");
+
     const presetData = presets.preset1;
 
-    // Only iterate over active channels
-    activeChannels.forEach((channelIndex) => {
+    // Iterate over all 16 channels
+    for (let channelIndex = 0; channelIndex < 16; channelIndex++) {
+        console.log(`[playStep] Processing channel index: ${channelIndex}`);
+
         const channel = channels[channelIndex];
         const buttons = channel.querySelectorAll('.step-button');
         let channelData = presetData.channels[channelIndex];
-        const defaultTriggerArray = Array(4096).fill(false);
-        renderPlayhead(buttons, currentStep, channel.dataset.muted === 'true');
+        console.log(`[playStep] Channel data for channel index ${channelIndex}:`, channelData);
 
+        const defaultStepsArray = Array(4096).fill(false);
+        renderPlayhead(buttons, currentStep, channel.dataset.muted === 'true');
 
         // If no channelData is found for the current channel, use a default set of values
         if (!channelData) {
-            console.warn(`No preset data for channel index: ${channelIndex + 1}`);
+            console.warn(`No preset data for channel index: ${channelIndex}`);
             channelData = {
-                triggers: defaultTriggerArray.slice(), // Clone the defaultTriggerArray
-                toggleMuteSteps: [],
+                steps: defaultStepsArray.slice(),
                 mute: false,
                 url: null
             };
@@ -57,24 +60,32 @@ function playStep() {
 
         renderPlayhead(buttons, currentStep);
         const isMuted = handleStep(channel, channelData, totalStepCount);
-        playSound(channel, currentStep, isMuted);
-    });
+        console.log(`[playStep] Mute state for channel index ${channelIndex}: ${isMuted}`);
+
+        playSound(channel, currentStep, currentSequence);
+        console.log(`[playStep] Step ${currentStep} of sequence ${currentSequence} has been played on channel ${channelIndex}`);
+    }
 
     currentStep = (currentStep + 1) % 64;
     totalStepCount = (totalStepCount + 1);
+    console.log(`[playStep-count] Total steps count: ${totalStepCount}`);
+
 
     if (currentStep % 4 === 0) {
         beatCount++;  
+        console.log(`[playStep-count] Beat count: ${beatCount}`);
         emitBeat(beatCount);
     }
 
     if (currentStep % 16 === 0) {
         barCount = (barCount + 1);
+        console.log(`[playStep-count] Bar count: ${barCount}`);
         emitBar(barCount);
     }
 
     if (currentStep % 64 === 0) {
         sequenceCount++;
+        console.log(`[playStep-count] Sequence count: ${sequenceCount}`);
 
         
     
@@ -88,6 +99,7 @@ function playStep() {
             barCount = 0;
             currentStep = 0;
             totalStepCount = 0;
+            console.log("[playStep-count] Continuous play enabled, moving to the next sequence");
 
             // Use the next-sequence button logic to move to the next sequence
             document.getElementById('next-sequence').click();
@@ -95,17 +107,19 @@ function playStep() {
     }
 
     nextStepTime += stepDuration;
+    console.log(`[playStep-count] Next step time: ${nextStepTime}`);
+
     displayUpdatedValues();
 }
 
 function updateStepButtonsUI() {
-    const currentSequence = sequences[sequenceCount - 1]; // Get the current sequence based on sequenceCount
+    const currentSequence = sequences[sequenceCount]; // Get the current sequence based on sequenceCount
     const stepButtons = document.querySelectorAll('.step-button');
     
     stepButtons.forEach((button, index) => {
         // Determine the channel index from the button's parent container
         let channelElement = button.closest('.channel');
-        let channelIndex = parseInt(channelElement.id.split('-')[1]) - 1; // Assuming the id is in the format 'channel-x'
+        let channelIndex = parseInt(channelElement.id.split('-')[1]); // Assuming the id is in the format 'channel-x'
 
         // Update each button's state based on the currentSequence
         let stepState = currentSequence[index];

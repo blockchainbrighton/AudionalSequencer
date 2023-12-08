@@ -21,16 +21,16 @@ function setActiveSequence(index) {
     // If there's a previously active sequence that's different from the current one, set it to inactive
     if (currentActiveIndex !== null && currentActiveIndex !== index) {
         console.log(`Deactivating previously active sequence ${currentActiveIndex}`);
-        quickPlayButtons[currentActiveIndex - 1].classList.add('inactive');
+        quickPlayButtons[currentActiveIndex].classList.add('inactive');
     }
 
     // Light up the button for this index
-    quickPlayButtons[index-1].classList.remove('inactive');
+    quickPlayButtons[index].classList.remove('inactive');
     // console.log(`Sequence ${index} activated.`);
 
     // Darken other buttons  
     quickPlayButtons.forEach(button => {
-        if(button !== quickPlayButtons[index-1]) {
+        if(button !== quickPlayButtons[index]) {
             button.classList.add('inactive'); 
         }
     });
@@ -47,7 +47,7 @@ function updateActiveQuickPlayButton() {
     });
 
     // Add 'active' class to current sequence button
-    const activeBtn = quickPlayButtons[currentSequence - 1];
+    const activeBtn = quickPlayButtons[currentSequence];
     activeBtn.classList.add('active');
 }
 
@@ -59,7 +59,7 @@ function insertQuickPlayButtons() {
 
     if (checkBox && quickPlayButton) {
         for (let j = 0; j < 16; j++) {
-            const quickBtn = createQuickPlayButton(j + 1);
+            const quickBtn = createQuickPlayButton(j);
            // console.log(`Created Quick Play Button for Sequence_${j+1}`);
             checkBox.parentNode.insertBefore(quickBtn, quickPlayButton);
            // console.log(`Added Quick Play Button for Sequence_${j+1} to DOM`);
@@ -127,7 +127,7 @@ function createQuickPlayButton(index) {
 
 quickPlayButtons.forEach(button => button.classList.add('inactive'));
 
-for (let i = 1; i <= 16; i++) {
+for (let i = 0; i <= 15; i++) {
     let clonedChannel = channelTemplate.cloneNode(true);
     clonedChannel.id = `channel-${i}`;
     mainContainer.appendChild(clonedChannel);

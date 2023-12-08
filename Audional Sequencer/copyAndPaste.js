@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 sequenceNumber: currentSequence,
                 bpm: document.getElementById('bpm-slider').value,
                 channelSettings: [...channelSettings],
-                channelURLs: channelURLs[currentSequence - 1]
+                channelURLs: channelURLs[currentSequence]
             };
             console.log('Sequence settings copied:', copiedData);
 
@@ -76,8 +76,8 @@ function pasteSettings() {
     let settingsToImport;
 
     // Check if the current sequence is empty and add a new sequence if needed
-    if (!sequences[currentSequence - 1]) {
-        sequences[currentSequence - 1] = Array(16).fill().map(() => [null].concat(Array(64).fill(false)));
+    if (!sequences[currentSequence]) {
+        sequences[currentSequence] = Array(16).fill().map(() => [null].concat(Array(64).fill(false)));
     }
     console.log("P1 Copied data:", copiedData);
 
@@ -88,34 +88,34 @@ function pasteSettings() {
             channels: copiedData.channelSettings.map((channel, index) => {
                 return {
                     url: copiedData.channelURLs[index],
-                    triggers: channel.map((step, stepIndex) => step ? stepIndex : null).filter(Boolean)
+                    steps: channel.map((step, stepIndex) => step ? stepIndex : null).filter(Boolean)
                 };
             })
         }];
         // Update collectedURLsForSequences with the copied URLs for the current sequence
-        collectedURLsForSequences[currentSequence - 1] = copiedData.channelURLs;
+        collectedURLsForSequences[currentSequence] = copiedData.channelURLs;
 
         // Update the BPM for the current sequence
-        sequenceBPMs[currentSequence - 1] = copiedData.bpm;
+        sequenceBPMs[currentSequence] = copiedData.bpm;
 
     } else if (copiedData.type === 'channel') {
         // Update the specific channel's URL in collectedURLsForSequences
-        collectedURLsForSequences[currentSequence - 1][copiedData.channelIndex] = copiedData.channelURL;
+        collectedURLsForSequences[currentSequence][copiedData.channelIndex] = copiedData.channelURL;
 
         // Get the current sequence settings
         settingsToImport = [{
             name: `Sequence_${currentSequence}`,
             bpm: document.getElementById('bpm-slider').value,
-            channels: sequences[currentSequence - 1].map((channel, index) => {
+            channels: sequences[currentSequence].map((channel, index) => {
                 if (index === copiedData.channelIndex) {
                     return {
                         url: copiedData.channelURL,
-                        triggers: copiedData.channelSetting.map((step, stepIndex) => step ? stepIndex : null).filter(Boolean)
+                        steps: copiedData.channelSetting.map((step, stepIndex) => step ? stepIndex : null).filter(Boolean)
                     };
                 } else {
                     return {
                         url: channel[0],
-                        triggers: channel.map((step, stepIndex) => step ? stepIndex : null).filter(Boolean)
+                        steps: channel.map((step, stepIndex) => step ? stepIndex : null).filter(Boolean)
                     };
                 }
             })
@@ -147,10 +147,10 @@ function pasteSequenceSettings(settings) {
     console.log("P1 Parsed settings before conversion:", parsedSettings);
 
     // Update collectedURLsForSequences with the parsed URLs for the current sequence
-    collectedURLsForSequences[currentSequence - 1] = parsedSettings[0].channels.map(ch => ch.url);
+    collectedURLsForSequences[currentSequence] = parsedSettings[0].channels.map(ch => ch.url);
 
     // Update the BPM for the current sequence
-    sequenceBPMs[currentSequence - 1] = parsedSettings[0].bpm;
+    sequenceBPMs[currentSequence] = parsedSettings[0].bpm;
 
     // Build the sequences array for paste
     let pastedSequences = parsedSettings.map((seqSettings, index) => {
@@ -165,16 +165,15 @@ function pasteSequenceSettings(settings) {
     if (currentSequence > sequences.length) {
         sequences.push(pastedSequences[0]);
     } else {
-        sequences[currentSequence - 1] = pastedSequences[0];
+        sequences[currentSequence] = pastedSequences[0];
     }
-    console.log("P1 Current sequence after paste:", sequences[currentSequence - 1]);
+    console.log("P1 Current sequence after paste:", sequences[currentSequence]);
 
     // Ensure channelSettings is initialized for the current sequence
-    channelSettings = sequences[currentSequence - 1];
+    channelSettings = sequences[currentSequence];
 
     // Now, call functions that rely on channelSettings
     updateUIForSequence(currentSequence);
-    saveCurrentSequence(currentSequence);
 
     console.log("P1 Pasted sequences array:", sequences);
 
