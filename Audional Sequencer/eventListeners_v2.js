@@ -38,24 +38,23 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     loadFileInput.addEventListener('change', () => {
-        console.log("{debugGlobalObjectToUI} loadFileInput event listener: loaded new settings", settings);
-
         let file = loadFileInput.files[0];
         let reader = new FileReader();
         reader.onload = function(e) {
             console.log("File read start");
-            let settings = e.target.result;
-            console.log("[loadFileInput] File content:", settings);
+            let loadedSettings = e.target.result; // Renamed to 'loadedSettings' to avoid confusion
+            console.log("[loadFileInput] File content:", loadedSettings);
         
             // Clear existing settings before loading new ones
             clearSettings();
-
+    
             // Load new settings and update UI
-            loadNewSettings(settings);
+            loadNewSettings(loadedSettings);
         };
-
+    
         reader.readAsText(file);
     });
+    
 
     function loadPresetFromFile(filePath) {
         console.log(`Loading preset from: ${filePath}`);
