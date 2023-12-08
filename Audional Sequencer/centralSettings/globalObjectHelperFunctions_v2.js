@@ -46,27 +46,26 @@ function updateProjectURLNamesUI(urlNames) {
 function updateProjectSequencesUI(sequences) {
     console.log("{debugGlobalObjectToUI} updateProjectSequencesUI: updating with sequences", sequences);
 
-    // Implement logic to update UI for project sequences
-    console.log("Project sequences UI updated:", sequences);
-    // Example: Update each sequence display or control
     Object.keys(sequences).forEach(sequenceKey => {
         const sequence = sequences[sequenceKey];
         Object.keys(sequence).forEach(channelKey => {
-            const steps = sequence[channelKey];
-            steps.forEach((step, index) => {
-                const stepControl = document.getElementById(`${sequenceKey}-${channelKey}-step-${index}`);
-                if (stepControl) {
-                    // Update step control based on step value
-                    if (step === true) {
-                        stepControl.classList.add('active');
-                    } else {
-                        stepControl.classList.remove('active');
+            const steps = sequence[channelKey].steps; // Access the steps array
+            if (Array.isArray(steps)) {
+                steps.forEach((step, index) => {
+                    const stepControl = document.getElementById(`${sequenceKey}-${channelKey}-step-${index}`);
+                    if (stepControl) {
+                        if (step === true) {
+                            stepControl.classList.add('selected');
+                        } else {
+                            stepControl.classList.remove('selected');
+                        }
                     }
-                }
-            });
+                });
+            }
         });
     });
 }
+
 
 
 
@@ -181,7 +180,7 @@ function setGlobalProjectURLs(urls) {
 // 
 // function reflectStepStateInUI(sequenceNumber, channelIndex, stepIndex) {
 //     const state = window.unifiedSequencerSettings.getStepState(sequenceNumber, channelIndex, stepIndex);
-//     const stepButtonId = `${sequenceNumber}-ch${channelIndex + 1}-step-${stepIndex}`;
+//     const stepButtonId = `${sequenceNumber}-ch${channelIndex}-step-${stepIndex}`;
 //     const stepButton = document.getElementById(stepButtonId);
 //     
 //     if (stepButton) {

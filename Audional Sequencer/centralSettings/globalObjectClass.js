@@ -92,11 +92,11 @@ class UnifiedSequencerSettings {
   
 
     initializeSequences(numSequences, numChannels, numSteps) {
-        let sequences = {};
+        let sequenceData = {};
         for (let seq = 0; seq < numSequences; seq++) {
-            sequences[`Sequence${seq}`] = this.initializeChannels(numChannels, numSteps);
+            sequenceData[`Sequence${seq}`] = this.initializeChannels(numChannels, numSteps);
         }
-        return sequences;
+        return sequenceData;
     }
     
     initializeChannels(numChannels, numSteps) {
@@ -204,9 +204,9 @@ class UnifiedSequencerSettings {
         console.log(`[setProjectURLNames] Project URL names set:`, names);
     }
 
-    setProjectSequences(sequences) {
-        this.settings.masterSettings.projectSequences = sequences;
-        console.log(`[setProjectSequences] Project sequences set:`, sequences);
+    setProjectSequences(sequenceData) {
+        this.settings.masterSettings.projectSequences = sequenceData;
+        console.log(`[setProjectSequences] Project sequences set:`, sequenceData);
     }
 
     
@@ -301,9 +301,9 @@ class UnifiedSequencerSettings {
         });
     }
 
-    updateProjectSequencesUI(sequences) {
-        Object.keys(sequences).forEach(sequenceKey => {
-            const sequence = sequences[sequenceKey];
+    updateProjectSequencesUI(sequenceData) {
+        Object.keys(sequenceData).forEach(sequenceKey => {
+            const sequence = sequenceData[sequenceKey];
             Object.keys(sequence).forEach(channelKey => {
                 const steps = sequence[channelKey];
                 steps.forEach((step, index) => {
@@ -318,7 +318,7 @@ class UnifiedSequencerSettings {
                 });
             });
         });
-        console.log("Project sequences UI updated:", sequences);
+        console.log("Project sequences UI updated:", sequenceData);
     }
 }
 

@@ -228,7 +228,7 @@ const loadPreset = (preset) => {
             return;
         }
 
-        const { url, steps, toggleMuteSteps, mute } = channelData;
+        const { url, steps, mute } = channelData;
 
         if (url) {
             const loadSampleButton = document.querySelector(`.channel[data-id="Channel-${index}"] .load-sample-button`);
@@ -250,15 +250,15 @@ const loadPreset = (preset) => {
         }
 
         steps.forEach(pos => {
-            const btn = document.querySelector(`.channel[data-id="Channel-${index}"] .step-button:nth-child(${pos + 1})`);
+            const btn = document.querySelector(`.channel[data-id="Channel-${index}"] .step-button:nth-child(${pos})`);
             if (btn) btn.classList.add('selected');
         });
 
-        toggleMuteSteps.forEach(pos => {
-            const btn = document.querySelector(`.channel[data-id="Channel-${index}"] .step-button:nth-child(${pos + 1})`);
-            if (btn) btn.classList.add('toggle-mute');
-            console.log(`Channel-${index} loadPreset classList.add`);
-        });
+        // toggleMuteSteps.forEach(pos => {
+        //     const btn = document.querySelector(`.channel[data-id="Channel-${index}"] .step-button:nth-child(${pos})`);
+        //     if (btn) btn.classList.add('toggle-mute');
+        //     console.log(`Channel-${index} loadPreset classList.add`);
+        // });
 
         const channelElement = document.querySelector(`.channel[data-id="Channel-${index}"]`);
         if (channelElement) {
