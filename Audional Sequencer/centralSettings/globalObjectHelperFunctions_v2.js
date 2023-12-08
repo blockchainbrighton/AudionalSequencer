@@ -3,16 +3,16 @@
 function updateProjectURLsUI(urls) {
     console.log("{debugGlobalObjectToUI} updateProjectURLsUI: updating with URLs", urls);
 
-    // Implement logic to update UI for project URLs
-    console.log("Project URLs UI updated:", urls);
-    // Example: Update each URL input field
     urls.forEach((url, index) => {
-        const urlInput = document.getElementById(`url-input-${index}`);
-        if (urlInput) {
-            urlInput.value = url;
+        const urlButton = document.getElementById(`load-sample-button-${index}`);
+        if (urlButton) {
+            urlButton.textContent = url || 'Load New Audional'; // Default text if URL is empty
         }
     });
+
+    console.log("Project URLs UI updated:", urls);
 }
+
 // 
 function updateTrimSettingsUI(trimSettings) {
     console.log("{debugGlobalObjectToUI} updateTrimSettingsUI: updating with trimSettings", trimSettings);

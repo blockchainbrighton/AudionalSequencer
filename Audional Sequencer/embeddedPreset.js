@@ -17,7 +17,31 @@ const presets = {
       },
       {
         "triggers": [],
-        "mute": true,
+        "mute": false,
+        "toggleMuteSteps": [],
+        "url": ""
+      },
+      {
+        "triggers": [],
+        "mute": false,
+        "toggleMuteSteps": [],
+        "url": ""
+      },
+      {
+        "triggers": [],
+        "mute": false,
+        "toggleMuteSteps": [],
+        "url": ""
+      },
+      {
+        "triggers": [],
+        "mute": false,
+        "toggleMuteSteps": [],
+        "url": ""
+      },
+      {
+        "triggers": [],
+        "mute": false,
         "toggleMuteSteps": [],
         "url": ""
       },
@@ -29,79 +53,55 @@ const presets = {
       },
       {
         "triggers": [],
-        "mute": true,
+        "mute": false,
         "toggleMuteSteps": [],
         "url": ""
       },
       {
         "triggers": [],
-        "mute": true,
+        "mute": false,
         "toggleMuteSteps": [],
         "url": ""
       },
       {
         "triggers": [],
-        "mute": true,
+        "mute": false,
         "toggleMuteSteps": [],
         "url": ""
       },
       {
         "triggers": [],
-        "mute": true,
+        "mute": false,
         "toggleMuteSteps": [],
         "url": ""
       },
       {
         "triggers": [],
-        "mute": true,
+        "mute": false,
         "toggleMuteSteps": [],
         "url": ""
       },
       {
         "triggers": [],
-        "mute": true,
+        "mute": false,
         "toggleMuteSteps": [],
         "url": ""
       },
       {
         "triggers": [],
-        "mute": true,
+        "mute": false,
         "toggleMuteSteps": [],
         "url": ""
       },
       {
         "triggers": [],
-        "mute": true,
+        "mute": false,
         "toggleMuteSteps": [],
         "url": ""
       },
       {
         "triggers": [],
-        "mute": true,
-        "toggleMuteSteps": [],
-        "url": ""
-      },
-      {
-        "triggers": [],
-        "mute": true,
-        "toggleMuteSteps": [],
-        "url": ""
-      },
-      {
-        "triggers": [],
-        "mute": true,
-        "toggleMuteSteps": [],
-        "url": ""
-      },
-      {
-        "triggers": [],
-        "mute": true,
-        "toggleMuteSteps": [],
-        "url": ""
-      },
-      {
-        "triggers": [],
-        "mute": true,
+        "mute": false,
         "toggleMuteSteps": [],
         "url": ""
       }

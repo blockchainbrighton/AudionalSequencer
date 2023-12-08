@@ -102,11 +102,15 @@ class UnifiedSequencerSettings {
     initializeChannels(numChannels, numSteps) {
         let channels = {};
         for (let ch = 1; ch <= numChannels; ch++) {
-            channels[`ch${ch}`] = Array(numSteps).fill(false);
+            channels[`ch${ch}`] = {
+                triggers: Array(numSteps).fill(false),
+                mute: false, // Ensure mute is off by default
+                toggleMuteSteps: Array(numSteps).fill(false),
+                url: '' // Default URL can be empty or set to a default value
+            };
         }
         return channels;
     }
-
     updateStepState(sequenceNumber, channelIndex, stepIndex, state) {
         const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber + 1}`];
         const channel = sequence && sequence[`ch${channelIndex + 1}`];
