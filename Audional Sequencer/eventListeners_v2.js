@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         // Call fetchAudio for each URL
                         // Assuming you have a way to get the corresponding loadSampleButton
                         const loadSampleButton = document.getElementById(`load-sample-button-${i}`);
-                        console.log('loadSampleButton:', loadSampleButton);
+                        console.log(loadSampleButton); // This should not be null
 
                         await fetchAudio(url, i, loadSampleButton);
                         // Extract ID from URL and update button text

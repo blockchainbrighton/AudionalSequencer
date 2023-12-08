@@ -37,6 +37,7 @@ function openAudioTrimmerModal(channelIndex) {
 
                 // Retrieve the URL from the global settings
                 const url = window.unifiedSequencerSettings.settings.masterSettings.projectURLs[channelIndex];
+                console.log('calling updateAudioTrimmerWithBufferHelper:', url, channelIndex);
                 updateAudioTrimmerWithBufferHelper(url, channelIndex);
             });           
             document.getElementById('audio-trimmer-modal').style.display = 'block';
