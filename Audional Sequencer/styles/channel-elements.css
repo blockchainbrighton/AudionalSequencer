@@ -49,18 +49,18 @@
     max-height: 20px;
 }
  
- .step-button:nth-child(4n):not(:nth-child(16n)) {
+ .step-button:nth-child(4n+1):not(:nth-child(16n+1)) {
      background-color: #add8e6; /* light blue */
  }
  
- .step-button:nth-child(16n) {
+ .step-button:nth-child(16n+1) {
      background-color: #ffff00; /* yellow */
  }
  
  /* Increase specificity for selected state to override nth colors */
  .step-button.selected,
- .step-button.selected:nth-child(4n):not(:nth-child(16n)),
- .step-button.selected:nth-child(16n) {
+ .step-button.selected:nth-child(4n+1):not(:nth-child(16n+1)),
+ .step-button.selected:nth-child(16n+1) {
      background-color: var(--accent-color);
  }
  
