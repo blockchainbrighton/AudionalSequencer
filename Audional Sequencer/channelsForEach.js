@@ -161,7 +161,7 @@ channels.forEach((channel, index) => {
                 let currentStepState = window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, i);
                 window.unifiedSequencerSettings.updateStepState(currentSequence, channelIndex, i, !currentStepState);
     
-                console.log(`Step button clicked: Sequence ${currentSequence}, Channel ${channelIndex}, Step ${i}, New State: ${!currentStepState}`);
+                console.log(`[calling - updateSpecificStepUI] Step button clicked: Sequence ${currentSequence}, Channel ${channelIndex}, Step ${i}, New State: ${!currentStepState}`);
     
                 // Update the UI for the specific step
                 updateSpecificStepUI(currentSequence, channelIndex, i);
