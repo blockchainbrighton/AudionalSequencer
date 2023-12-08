@@ -42,14 +42,11 @@ document.addEventListener("DOMContentLoaded", function() {
         let reader = new FileReader();
         reader.onload = function(e) {
             console.log("File read start");
-            let loadedSettings = e.target.result; // Renamed to 'loadedSettings' to avoid confusion
+            let loadedSettings = JSON.parse(e.target.result);
             console.log("[loadFileInput] File content:", loadedSettings);
         
-            // Clear existing settings before loading new ones
-            clearSettings();
-    
             // Load new settings and update UI
-            loadNewSettings(loadedSettings);
+            window.unifiedSequencerSettings.loadSettings(loadedSettings);
         };
     
         reader.readAsText(file);
@@ -60,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log(`Loading preset from: ${filePath}`);
         fetch(filePath)
             .then(response => response.json())
-            .then(jsonString => window.unifiedSequencerSettings.loadSettings(JSON.stringify(jsonString)))
+            .then(jsonSettings => window.unifiedSequencerSettings.loadSettings(jsonSettings))
             .catch(error => console.error(`Error loading preset from ${filePath}:`, error));
         loadOptions.style.display = "none";
     }

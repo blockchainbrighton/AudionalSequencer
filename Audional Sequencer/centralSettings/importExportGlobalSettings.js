@@ -26,20 +26,5 @@ function importSettings(jsonSettings) {
 }
 
 
-function updateBPMUI(bpm) {
-    const bpmSlider = document.getElementById('bpm-slider');
-    const bpmDisplay = document.getElementById('bpm-display');
-    if (bpmSlider && bpmDisplay) {
-        bpmSlider.value = bpm;
-        bpmDisplay.textContent = bpm;
-    }
-}
-
-function updateProjectNameUI(projectName) {
-    const projectNameInput = document.getElementById('project-name');
-    if (projectNameInput) {
-        projectNameInput.value = projectName;
-    }
-}
 
 
