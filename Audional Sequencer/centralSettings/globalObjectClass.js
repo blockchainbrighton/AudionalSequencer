@@ -2,6 +2,8 @@
 
 class UnifiedSequencerSettings {
     constructor() {
+        this.observers = [];
+
         this.settings = {
             masterSettings: {
                 projectName: '',
@@ -20,6 +22,22 @@ class UnifiedSequencerSettings {
 
         // Expose the checkSettings function for manual checking
         this.checkSettings = this.checkSettings.bind(this);
+    }
+
+    // Method to register an observer
+    addObserver(observerFunction) {
+        this.observers.push(observerFunction);
+    }
+
+    // Method to notify all observers
+    notifyObservers() {
+        this.observers.forEach(observerFunction => observerFunction(this.settings));
+    }
+
+    // Example of a method that changes settings
+    setProjectName(name) {
+        this.settings.masterSettings.projectName = name;
+        this.notifyObservers(); // Notify observers about the change
     }
 
     // Method to update the current sequence
