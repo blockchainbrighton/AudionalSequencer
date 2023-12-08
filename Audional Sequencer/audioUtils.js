@@ -108,7 +108,7 @@ function playSound(channel, currentStep) {
   // Extract channelIndex from the channel element's dataset
   const channelIndex = parseInt(channel.dataset.id.split('-')[1]) - 1;
 
-  console.log(`[playSound] Processing channel index: ${channelIndex}`);
+  console.log(`[playSound] Processing channel index: ${channel}`);
 
   // Retrieve the step state from the global object
   const stepState = window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, currentStep);
