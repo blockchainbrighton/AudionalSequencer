@@ -43,11 +43,11 @@ function updateProjectURLNamesUI(urlNames) {
     });
 }
 // 
-function updateProjectSequencesUI(sequences) {
-    console.log("{debugGlobalObjectToUI} updateProjectSequencesUI: updating with sequences", sequences);
+function updateProjectSequencesUI(sequenceData) {
+    console.log("{debugGlobalObjectToUI} updateProjectSequencesUI: updating with sequences", sequenceData);
 
-    Object.keys(sequences).forEach(sequenceKey => {
-        const sequence = sequences[sequenceKey];
+    Object.keys(sequenceData).forEach(sequenceKey => {
+        const sequence = sequenceData[sequenceKey];
         Object.keys(sequence).forEach(channelKey => {
             const steps = sequence[channelKey].steps; // Access the steps array
             if (Array.isArray(steps)) {

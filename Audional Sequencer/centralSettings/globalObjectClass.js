@@ -301,25 +301,25 @@ class UnifiedSequencerSettings {
         });
     }
 
-    updateProjectSequencesUI(sequenceData) {
-        Object.keys(sequenceData).forEach(sequenceKey => {
-            const sequence = sequenceData[sequenceKey];
-            Object.keys(sequence).forEach(channelKey => {
-                const steps = sequence[channelKey];
-                steps.forEach((step, index) => {
-                    const stepButton = document.getElementById(`${sequenceKey}-${channelKey}-step-${index}`);
-                    if (stepButton) {
-                        if (step) {
-                            stepButton.classList.add('selected');
-                        } else {
-                            stepButton.classList.remove('selected');
-                        }
-                    }
-                });
-            });
-        });
-        console.log("Project sequences UI updated:", sequenceData);
-    }
+    // updateProjectSequencesUI(sequenceData) {
+    //     Object.keys(sequenceData).forEach(sequenceKey => {
+    //         const sequence = sequenceData[sequenceKey];
+    //         Object.keys(sequence).forEach(channelKey => {
+    //             const steps = sequence[channelKey];
+    //             steps.forEach((step, index) => {
+    //                 const stepButton = document.getElementById(`${sequenceKey}-${channelKey}-step-${index}`);
+    //                 if (stepButton) {
+    //                     if (step) {
+    //                         stepButton.classList.add('selected');
+    //                     } else {
+    //                         stepButton.classList.remove('selected');
+    //                     }
+    //                 }
+    //             });
+    //         });
+    //     });
+    //     console.log("Project sequences UI updated:", sequenceData);
+    // }
 }
 
 
