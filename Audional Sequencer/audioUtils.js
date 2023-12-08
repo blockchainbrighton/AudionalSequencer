@@ -102,13 +102,12 @@ function bufferToBase64(buffer) {
   }
   return window.btoa(binary);
 }
-
 // Function to play sound
 function playSound(channel, currentStep) {
   // Extract channelIndex from the channel element's dataset
   const channelIndex = parseInt(channel.dataset.id.split('-')[1]);
 
-  console.log(`[playSound] Processing channel index: ${channel}`);
+  console.log(`[playSound] Processing channel index: ${channelIndex}`);
 
   // Retrieve the step state from the global object
   const stepState = window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, currentStep);
@@ -128,10 +127,13 @@ function playSound(channel, currentStep) {
           const source = audioContext.createBufferSource();
           source.buffer = audioBuffer;
 
+          // Retrieve trim settings for the channel
           const trimSettings = window.unifiedSequencerSettings.getTrimSettingsForChannel(channelIndex);
+          // Calculate the start and end times based on trim settings
           let trimStart = (trimSettings.startSliderValue / 100) * audioBuffer.duration;
           let trimEnd = (trimSettings.endSliderValue / 100) * audioBuffer.duration;
 
+          // Ensure the start and end times are within the buffer's duration
           trimStart = Math.max(0, Math.min(trimStart, audioBuffer.duration));
           trimEnd = Math.max(trimStart, Math.min(trimEnd, audioBuffer.duration));
 
@@ -140,6 +142,7 @@ function playSound(channel, currentStep) {
           source.connect(gainNodes[channelIndex]);
           gainNodes[channelIndex].connect(audioContext.destination);
 
+          // Start playback at the trimStart position and play for the calculated duration
           source.start(0, trimStart, duration);
       } else {
           console.log("[playSound] No audio buffer found for URL:", url);
