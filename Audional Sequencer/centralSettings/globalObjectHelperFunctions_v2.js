@@ -43,28 +43,50 @@ function updateProjectURLNamesUI(urlNames) {
     });
 }
 // 
-function updateProjectSequencesUI(sequenceData) {
-    console.log("{debugGlobalObjectToUI} updateProjectSequencesUI: updating with sequences", sequenceData);
-
-    Object.keys(sequenceData).forEach(sequenceKey => {
-        const sequence = sequenceData[sequenceKey];
-        Object.keys(sequence).forEach(channelKey => {
-            const steps = sequence[channelKey].steps; // Access the steps array
-            if (Array.isArray(steps)) {
-                steps.forEach((step, index) => {
-                    const stepControl = document.getElementById(`${sequenceKey}-${channelKey}-step-${index}`);
-                    if (stepControl) {
-                        if (step === true) {
-                            stepControl.classList.add('selected');
-                        } else {
-                            stepControl.classList.remove('selected');
-                        }
-                    }
-                });
+document.addEventListener('DOMContentLoaded', () => {
+    // Assuming there are 16 sequences and 16 channels per sequence
+    for (let seq = 0; seq < 16; seq++) {
+        for (let ch = 0; ch < 16; ch++) {
+            // Find or create a container for each channel's steps
+            let channelStepsContainer = document.querySelector(`#channel-${ch}-steps-container`);
+            if (!channelStepsContainer) {
+                channelStepsContainer = document.createElement('div');
+                channelStepsContainer.id = `channel-${ch}-steps-container`;
+                channelStepsContainer.classList.add('steps-container');
+                // Append the container to the appropriate place in the DOM
+                // (This needs to be adjusted based on your actual DOM structure)
+                document.body.appendChild(channelStepsContainer);
             }
-        });
-    });
-}
+
+            // Clear any existing buttons
+            channelStepsContainer.innerHTML = '';
+
+            // Create step buttons for each step in the channel
+            for (let step = 0; step < 64; step++) {
+                const button = document.createElement('button');
+                button.classList.add('step-button');
+
+                // Assign an ID to the button based on sequence, channel, and step index
+                button.id = `Sequence${seq}-ch${ch}-step-${step}`;
+
+                button.addEventListener('click', () => {
+                    // Toggle the step state in the global object
+                    let currentStepState = window.unifiedSequencerSettings.getStepState(seq, ch, step);
+                    window.unifiedSequencerSettings.updateStepState(seq, ch, step, !currentStepState);
+
+                    console.log(`[updateSpecificStepUI] Step button clicked: Sequence ${seq}, Channel ${ch}, Step ${step}, New State: ${!currentStepState}`);
+
+                    // Update the UI for the specific step
+                    updateSpecificStepUI(seq, ch, step);
+                });
+
+                channelStepsContainer.appendChild(button);
+            }
+        }
+    }
+});
+
+
 
 
 
@@ -135,49 +157,28 @@ function setGlobalProjectURLs(urls) {
 // 
 // // UI Update Functions
 // 
-// function updateUIFromLoadedSettings() {
-// 
-//     const settings = window.unifiedSequencerSettings.getSettings('masterSettings');
-//     console.log("Loaded settings:", settings);
-// 
-//     if (!settings) {
-//         console.error("Settings are not loaded or undefined.");
-//         return;
-//     }
-// 
-//     updateProjectNameUI(settings.projectName);
-//     updateBPMUI(settings.projectBPM);
-//     updateProjectURLsUI(settings.projectURLs);
-//     updateTrimSettingsUI(settings.trimSettings);
-//     updateProjectURLNamesUI(settings.projectURLNames);
-//     updateProjectSequencesUI(settings.projectSequences);
-// }
-// 
-// function updateProjectNameUI(projectName) {
-//     console.log("{debugGlobalObjectToUI} updateProjectNameUI: updating with projectName", projectName);
-// 
-//     const projectNameInput = document.getElementById('project-name');
-//     if (projectNameInput) {
-//         projectNameInput.value = projectName || "AUDX Project";
-//         console.log("Project name UI updated:", projectName);
-//     }
-// }
-// 
-// function updateBPMUI(bpm) {
-//     console.log("{debugGlobalObjectToUI} updateBPMUI: updating with BPM", bpm);
-// 
-//     const bpmSlider = document.getElementById('bpm-slider');
-//     const bpmDisplay = document.getElementById('bpm-display');
-//     if (bpmSlider && bpmDisplay) {
-//         bpmSlider.value = bpm;
-//         bpmDisplay.textContent = bpm;
-//         console.log("BPM UI updated:", bpm);
-//     }
-// }
-// 
+function updateUIFromLoadedSettings() {
 
-// 
-// 
+    const settings = window.unifiedSequencerSettings.getSettings('masterSettings');
+    console.log("Loaded settings:", settings);
+
+    if (!settings) {
+        console.error("Settings are not loaded or undefined.");
+        return;
+    }
+
+    updateProjectNameUI(settings.projectName);
+    updateBPMUI(settings.projectBPM);
+    updateProjectURLsUI(settings.projectURLs);
+    updateTrimSettingsUI(settings.trimSettings);
+    updateProjectURLNamesUI(settings.projectURLNames);
+    updateProjectSequencesUI(settings.projectSequences);
+}
+
+
+
+
+
 // function reflectStepStateInUI(sequenceNumber, channelIndex, stepIndex) {
 //     const state = window.unifiedSequencerSettings.getStepState(sequenceNumber, channelIndex, stepIndex);
 //     const stepButtonId = `${sequenceNumber}-ch${channelIndex}-step-${stepIndex}`;
