@@ -76,14 +76,20 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.open-audio-trimmer').forEach((button, channelIndex) => {
         button.addEventListener('click', () => {
             console.log('Clicked button with channelIndex:', channelIndex); // Log the channel index
-        // Get the URL for the audio sample
-        const channel = document.querySelector(`.channel[data-id="Channel-${channelIndex + 1}"]`);
-        const url = channel.dataset.originalUrl;
 
-        // Call the helper function to update the audio trimmer with the buffer
-        updateAudioTrimmerWithBufferHelper(url, channelIndex);
+            // Get the URL for the audio sample from the global settings
+            const url = window.unifiedSequencerSettings.settings.masterSettings.projectURLs[channelIndex];
 
-        openAudioTrimmerModal(channelIndex);        });
+            if (!url) {
+                console.error(`No URL found for channel index: ${channelIndex}`);
+                return; // Exit if no URL is found
+            }
+
+            // Call the helper function to update the audio trimmer with the buffer
+            updateAudioTrimmerWithBufferHelper(url, channelIndex);
+
+            openAudioTrimmerModal(channelIndex);
+        });
     });
 });
 

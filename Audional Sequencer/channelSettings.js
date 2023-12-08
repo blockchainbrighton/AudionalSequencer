@@ -7,10 +7,10 @@ function setChannelVolume(channelIndex, volume) {
   updateChannelVolume(channel);
 
   // Update sequence data
-  updateSequenceData({
-      channelIndex: channelIndex,
-      volume: volume
-  });
+  // updateSequenceData({
+  //     channelIndex: channelIndex,
+  //     volume: volume
+  // });
 
 }
 
