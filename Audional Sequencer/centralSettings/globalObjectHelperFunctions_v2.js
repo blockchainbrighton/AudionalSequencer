@@ -4,13 +4,17 @@ function updateProjectURLsUI(urls) {
     console.log("{debugGlobalObjectToUI} updateProjectURLsUI: updating with URLs", urls);
 
     urls.forEach((url, index) => {
-        const urlButton = document.getElementById(`load-sample-button-${index}`);
-        if (urlButton) {
-            urlButton.textContent = url || 'Load New Audional'; // Default text if URL is empty
+        const loadButton = document.getElementById(`load-sample-button-${index}`);
+        if (loadButton) {
+            if (url) {
+                // Update the button text to indicate that a URL is loaded
+                loadButton.textContent = "URL Loaded";
+            } else {
+                // Reset the button text to the default
+                loadButton.textContent = "Load New";
+            }
         }
     });
-
-    console.log("Project URLs UI updated:", urls);
 }
 
 // 
