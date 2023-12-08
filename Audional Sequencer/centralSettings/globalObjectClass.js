@@ -215,6 +215,8 @@ class UnifiedSequencerSettings {
         } catch (error) {
             console.error('Error loading settings:', error);
         }
+        // Notify all observers about the change
+        this.notifyObservers();
     }
     
 

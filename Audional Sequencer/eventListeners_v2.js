@@ -99,7 +99,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectNameInput = document.getElementById('project-name');
 
     projectNameInput.addEventListener('input', () => {
-        const projectName = projectNameInput.value;
+        const projectName = projectNameInput.value.trim();
+        
+        // Update the global settings with the new project name
         window.unifiedSequencerSettings.updateSetting('projectName', projectName);
+
+        // Check if the project name is empty and handle accordingly
+        if (!projectName) {
+            // Handle the case where no project name is provided
+            // For example, you might want to set a default name or display a placeholder
+            projectNameInput.value = "Default Project Name"; // Example placeholder
+        }
     });
 });

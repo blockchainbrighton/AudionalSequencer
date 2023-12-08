@@ -6,6 +6,8 @@
 // Observer for Project Name
 function updateProjectNameObserver(settings) {
     if (settings && settings.masterSettings && settings.masterSettings.projectName) {
+        console.log("[observers] Updating Project Name UI:", settings.masterSettings.projectName);
+
         updateProjectNameUI(settings.masterSettings.projectName);
     }
 }
@@ -13,6 +15,8 @@ function updateProjectNameObserver(settings) {
 // Observer for BPM
 function updateBPMObserver(settings) {
     if (settings && settings.masterSettings && settings.masterSettings.projectBPM) {
+        console.log("Updating BPM UI:", settings.masterSettings.projectBPM);
+
         updateBPMUI(settings.masterSettings.projectBPM);
     }
 }
@@ -20,6 +24,8 @@ function updateBPMObserver(settings) {
 // Observer for Project URLs
 function updateProjectURLsObserver(settings) {
     if (settings && settings.masterSettings && settings.masterSettings.projectURLs) {
+        console.log("Updating Project URLs UI:", settings.masterSettings.projectURLs);
+
         updateProjectURLsUI(settings.masterSettings.projectURLs);
     }
 }
@@ -27,6 +33,8 @@ function updateProjectURLsObserver(settings) {
 // Observer for Trim Settings
 function updateTrimSettingsObserver(settings) {
     if (settings && settings.masterSettings && settings.masterSettings.trimSettings) {
+        console.log("Updating Trim Settings UI:", settings.masterSettings.trimSettings);
+
         updateTrimSettingsUI(settings.masterSettings.trimSettings);
     }
 }
@@ -34,6 +42,8 @@ function updateTrimSettingsObserver(settings) {
 // Observer for Project URL Names
 function updateProjectURLNamesObserver(settings) {
     if (settings && settings.masterSettings && settings.masterSettings.projectURLNames) {
+        console.log("Updating Project URL Names UI:", settings.masterSettings.projectURLNames);
+
         updateProjectURLNamesUI(settings.masterSettings.projectURLNames);
     }
 }
@@ -41,6 +51,8 @@ function updateProjectURLNamesObserver(settings) {
 // Observer for Project Sequences
 function updateProjectSequencesObserver(settings) {
     if (settings && settings.masterSettings && settings.masterSettings.projectSequences) {
+        console.log("Updating Project Sequences UI:", settings.masterSettings.projectSequences);
+
         updateProjectSequencesUI(settings.masterSettings.projectSequences);
     }
 }
