@@ -74,10 +74,13 @@ function loadNextSequence() {
 }
 
 function updateUIForSequence(sequenceNumber) {
+    console.log(`[updateUIForSequence] Updating UI for Sequence ${sequenceNumber}`);
     const masterSettings = window.unifiedSequencerSettings.getSettings('masterSettings');
     const sequenceSettings = masterSettings.projectSequences[`Sequence${sequenceNumber}`];
 
-    if (sequenceNumber > 0 && sequenceNumber <= masterSettings.projectSequences.length) {
+    console.log("[debugging Step Button IDs] Updating UI for Sequence:", sequenceNumber);
+
+    if (sequenceNumber >= 0 && sequenceNumber < masterSettings.projectSequences.length) {
 
         // Mark the sequence as active
         markSequenceAsLive(sequenceNumber);
@@ -86,26 +89,33 @@ function updateUIForSequence(sequenceNumber) {
             const stepButtons = channel.querySelectorAll('.step-button');
             const toggleMuteButtons = channel.querySelectorAll('.toggle-mute');
 
+            console.log(`[debugging Step Button IDs] Processing Channel: ${index}, Step Buttons Found: ${stepButtons.length}`);
+
             // Clear all step buttons and toggle mute states
             stepButtons.forEach(button => button.classList.remove('selected'));
             toggleMuteButtons.forEach(button => button.classList.remove('toggle-mute'));
 
             // Update the steps based on the sequence settings
-            sequenceSettings[index].forEach((stepState, pos) => {
-                // Skip the 0th position (our placeholder)
-                if (pos === 0) return;
+            sequenceSettings[`ch${index}`].steps.forEach((stepState, pos) => {
+                console.log(`[debugging Step Button IDs] Channel: ${index}, Position: ${pos}, Step State: ${stepState}`);
 
                 if (stepState) {
-                    stepButtons[pos].classList.add('selected');
+                    if (stepButtons[pos]) {
+                        stepButtons[pos].classList.add('selected');
+                        console.log(`[debugging Step Button IDs] Adding 'selected' class to Step Button at Position: ${pos} in Channel: ${index}`);
+                    } else {
+                        console.error(`[debugging Step Button IDs] Step Button not found at Position: ${pos} in Channel: ${index}`);
+                    }
                 }
             });
 
             // Additional logic for updating other UI elements like toggle mute states, volume, etc.
         });
     } else {
-        console.error("Invalid sequence number:", sequenceNumber);
+        console.error("[debugging Step Button IDs] Invalid sequence number:", sequenceNumber);
     }
 }
+
 
 // Call this function whenever the sequence changes
 function changeSequence(seq) {

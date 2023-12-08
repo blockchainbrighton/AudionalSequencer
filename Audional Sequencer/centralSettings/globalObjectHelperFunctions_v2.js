@@ -157,47 +157,72 @@ function setGlobalProjectURLs(urls) {
 // 
 // // UI Update Functions
 // 
-function updateUIFromLoadedSettings() {
-
-    const settings = window.unifiedSequencerSettings.getSettings('masterSettings');
-    console.log("Loaded settings:", settings);
-
-    if (!settings) {
-        console.error("Settings are not loaded or undefined.");
-        return;
-    }
-
-    updateProjectNameUI(settings.projectName);
-    updateBPMUI(settings.projectBPM);
-    updateProjectURLsUI(settings.projectURLs);
-    updateTrimSettingsUI(settings.trimSettings);
-    updateProjectURLNamesUI(settings.projectURLNames);
-    updateProjectSequencesUI(settings.projectSequences);
-}
+// function updateUIFromLoadedSettings() {
+// 
+//     const settings = window.unifiedSequencerSettings.getSettings('masterSettings');
+//     console.log("Loaded settings:", settings);
+// 
+//     if (!settings) {
+//         console.error("Settings are not loaded or undefined.");
+//         return;
+//     }
+// 
+//     updateProjectNameUI(settings.projectName);
+//     updateBPMUI(settings.projectBPM);
+//     updateProjectURLsUI(settings.projectURLs);
+//     updateTrimSettingsUI(settings.trimSettings);
+//     updateProjectURLNamesUI(settings.projectURLNames);
+//     updateProjectSequencesUI(settings.projectSequences);
+// }
 
 
 function updateProjectSequencesUI(sequenceData) {
-    console.log("{debugGlobalObjectToUI} updateProjectSequencesUI: updating with sequences", sequenceData);
+    console.log("{debugGlobalObjectToUI} [updateProjectSequencesUI] updateProjectSequencesUI: updating with sequences", sequenceData);
+
+    // Log the total number of sequences being processed
+    console.log(`[updateProjectSequencesUI] Total sequences to process: ${Object.keys(sequenceData).length}`);
 
     Object.keys(sequenceData).forEach(sequenceKey => {
         const sequence = sequenceData[sequenceKey];
+        console.log(`[updateProjectSequencesUI] Processing sequence: ${sequenceKey}`);
+
         Object.keys(sequence).forEach(channelKey => {
             const steps = sequence[channelKey].steps; // Corrected to directly access the steps array
+            console.log(`[updateProjectSequencesUI] Processing channel: ${channelKey} in sequence: ${sequenceKey}`);
+
             if (Array.isArray(steps)) {
+                console.log(`[updateProjectSequencesUI] Total steps in channel ${channelKey}: ${steps.length}`);
+
                 steps.forEach((step, index) => {
-                    const stepControl = document.getElementById(`${sequenceKey}-${channelKey}-step-${index}`);
+                    const stepControlId = `${sequenceKey}-${channelKey}-step-${index}`;
+                    const stepControl = document.getElementById(stepControlId);
+
+                    console.log(`[updateProjectSequencesUI] Processing stepControl ID: ${stepControlId}, State: ${step}`);
+
                     if (stepControl) {
                         if (step === true) {
-                            stepControl.classList.add('selected');
+                            if (!stepControl.classList.contains('selected')) {
+                                console.log(`[updateProjectSequencesUI] Adding 'selected' class to stepControl: ${stepControlId}`);
+                                stepControl.classList.add('selected');
+                            }
                         } else {
-                            stepControl.classList.remove('selected');
+                            if (stepControl.classList.contains('selected')) {
+                                console.log(`[updateProjectSequencesUI] Removing 'selected' class from stepControl: ${stepControlId}`);
+                                stepControl.classList.remove('selected');
+                            }
                         }
+                    } else {
+                        console.log(`[updateProjectSequencesUI] Step control not found for ID: ${stepControlId}`);
                     }
                 });
+            } else {
+                console.log(`[updateProjectSequencesUI] Steps data for channel ${channelKey} in sequence ${sequenceKey} is not an array`);
             }
         });
     });
 }
+
+
 
 
 
