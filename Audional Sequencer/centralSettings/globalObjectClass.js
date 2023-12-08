@@ -34,6 +34,21 @@ class UnifiedSequencerSettings {
         this.observers.forEach(observerFunction => observerFunction(this.settings));
     }
 
+    setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
+        if (this.isValidIndex(channelIndex, this.settings.masterSettings.trimSettings.length)) {
+            const currentSettings = this.settings.masterSettings.trimSettings[channelIndex];
+            Object.assign(currentSettings, { startSliderValue, endSliderValue });
+        } else {
+            console.error(`Invalid channel index: ${channelIndex}`);
+        }
+    }
+
+    getTrimSettings(channelIndex) {
+        const trimSettings = this.settings.masterSettings.trimSettings[channelIndex];
+        return trimSettings || { startSliderValue: 0.01, endSliderValue: 100.00 };
+    }
+
+
     // Example of a method that changes settings
     setProjectName(name) {
         this.settings.masterSettings.projectName = name;
@@ -164,20 +179,7 @@ class UnifiedSequencerSettings {
         this.settings.masterSettings.projectBPM = newBPM;
     }
 
-    setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
-        if (this.isValidIndex(channelIndex, this.settings.masterSettings.trimSettings.length)) {
-            const currentSettings = this.settings.masterSettings.trimSettings[channelIndex];
-            Object.assign(currentSettings, { startSliderValue, endSliderValue });
-        } else {
-            console.error(`Invalid channel index: ${channelIndex}`);
-        }
-    }
-
-    getTrimSettingsForChannel(channelIndex) {
-        const trimSettings = this.settings.masterSettings.trimSettings[channelIndex];
-        return trimSettings || { startSliderValue: 0.01, endSliderValue: 100.00 };
-    }
-
+    
    
 
     getAudioUrlForChannel(channelIndex) {

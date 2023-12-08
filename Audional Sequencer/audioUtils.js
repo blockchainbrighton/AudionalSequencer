@@ -104,53 +104,71 @@ function bufferToBase64(buffer) {
 }
 // Function to play sound
 function playSound(channel, currentStep) {
-  // Extract channelIndex from the channel element's dataset
-  const channelIndex = parseInt(channel.dataset.id.split('-')[1]);
-
+  const channelIndex = getChannelIndex(channel);
   console.log(`[playSound] Processing channel index: ${channelIndex}`);
 
-  // Retrieve the step state from the global object
-  const stepState = window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, currentStep);
-
-  console.log(`[playSound] Step state for Channel ${channelIndex}, Step ${currentStep}:`, stepState);
-
-  if (stepState) {
-      const url = window.unifiedSequencerSettings.getAudioUrlForChannel(channelIndex);
-      console.log("[playSound] URL of the audio:", url);
-
-      const audioBuffer = audioBuffers.get(url);
-      console.log(`[playSound] Audio buffer for URL ${url}:`, audioBuffer);
-
-      if (audioBuffer) {
-          console.log("[playSound] Audio buffer found for URL:", url);
-
-          const source = audioContext.createBufferSource();
-          source.buffer = audioBuffer;
-
-          // Retrieve trim settings for the channel
-          const trimSettings = window.unifiedSequencerSettings.getTrimSettings(channelIndex);
-          // Calculate the start and end times based on trim settings
-          let trimStart = (trimSettings.startSliderValue / 100) * audioBuffer.duration;
-          let trimEnd = (trimSettings.endSliderValue / 100) * audioBuffer.duration;
-
-          // Ensure the start and end times are within the buffer's duration
-          trimStart = Math.max(0, Math.min(trimStart, audioBuffer.duration));
-          trimEnd = Math.max(trimStart, Math.min(trimEnd, audioBuffer.duration));
-
-          const duration = trimEnd - trimStart;
-
-          source.connect(gainNodes[channelIndex]);
-          gainNodes[channelIndex].connect(audioContext.destination);
-
-          // Start playback at the trimStart position and play for the calculated duration
-          source.start(0, trimStart, duration);
-      } else {
-          console.log("[playSound] No audio buffer found for URL:", url);
-      }
-  } else {
+  const stepState = getStepState(channelIndex, currentStep);
+  if (!stepState) {
       console.log("[playSound] Current step is not selected. Skipping playback.");
+      return;
   }
+
+  const url = getAudioUrl(channelIndex);
+  const audioBuffer = getAudioBuffer(url);
+  if (!audioBuffer) {
+      console.log("[playSound] No audio buffer found for URL:", url);
+      return;
+  }
+
+  playTrimmedAudio(channelIndex, audioBuffer, url);
 }
+
+function getChannelIndex(channel) {
+  return parseInt(channel.dataset.id.split('-')[1]);
+}
+
+function getStepState(channelIndex, currentStep) {
+  return window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, currentStep);
+}
+
+function getAudioUrl(channelIndex) {
+  return window.unifiedSequencerSettings.getAudioUrlForChannel(channelIndex);
+}
+
+function getAudioBuffer(url) {
+  return audioBuffers.get(url);
+}
+
+function playTrimmedAudio(channelIndex, audioBuffer, url) {
+  console.log("[playSound] Audio buffer found for URL:", url);
+
+  const source = audioContext.createBufferSource();
+  source.buffer = audioBuffer;
+
+  const { trimStart, duration } = calculateTrimValues(channelIndex, audioBuffer);
+  source.connect(gainNodes[channelIndex]);
+  gainNodes[channelIndex].connect(audioContext.destination);
+
+  
+  console.log(`[debug - playSound] Playing audio from URL: ${url} for channel index: ${channelIndex} at trimStart: ${trimStart} and duration: ${duration}`);
+
+  source.start(0, trimStart, duration);
+}
+
+function calculateTrimValues(channelIndex, audioBuffer) {
+  const trimSettings = window.unifiedSequencerSettings.getTrimSettings(channelIndex);
+  let trimStart = (trimSettings.startSliderValue / 100) * audioBuffer.duration;
+  let trimEnd = (trimSettings.endSliderValue / 100) * audioBuffer.duration;
+
+  trimStart = Math.max(0, Math.min(trimStart, audioBuffer.duration));
+  trimEnd = Math.max(trimStart, Math.min(trimEnd, audioBuffer.duration));
+
+  return {
+      trimStart: trimStart,
+      duration: trimEnd - trimStart
+  };
+}
+
 
 
 
