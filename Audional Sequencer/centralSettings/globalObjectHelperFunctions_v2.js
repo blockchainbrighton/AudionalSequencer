@@ -176,6 +176,28 @@ function updateUIFromLoadedSettings() {
 }
 
 
+function updateProjectSequencesUI(sequenceData) {
+    console.log("{debugGlobalObjectToUI} updateProjectSequencesUI: updating with sequences", sequenceData);
+
+    Object.keys(sequenceData).forEach(sequenceKey => {
+        const sequence = sequenceData[sequenceKey];
+        Object.keys(sequence).forEach(channelKey => {
+            const steps = sequence[channelKey].steps; // Corrected to directly access the steps array
+            if (Array.isArray(steps)) {
+                steps.forEach((step, index) => {
+                    const stepControl = document.getElementById(`${sequenceKey}-${channelKey}-step-${index}`);
+                    if (stepControl) {
+                        if (step === true) {
+                            stepControl.classList.add('selected');
+                        } else {
+                            stepControl.classList.remove('selected');
+                        }
+                    }
+                });
+            }
+        });
+    });
+}
 
 
 
