@@ -94,7 +94,7 @@ class UnifiedSequencerSettings {
     initializeSequences(numSequences, numChannels, numSteps) {
         let sequences = {};
         for (let seq = 0; seq < numSequences; seq++) {
-            sequences[`Sequence${seq + 1}`] = this.initializeChannels(numChannels, numSteps);
+            sequences[`Sequence${seq}`] = this.initializeChannels(numChannels, numSteps);
         }
         return sequences;
     }
@@ -102,10 +102,9 @@ class UnifiedSequencerSettings {
     initializeChannels(numChannels, numSteps) {
         let channels = {};
         for (let ch = 0; ch < numChannels; ch++) {
-            channels[`ch${ch + 1}`] = {
+            channels[`ch${ch}`] = {
                 steps: Array(numSteps).fill(false),
                 mute: false, // Ensure mute is off by default
-                toggleMuteSteps: Array(numSteps).fill(false),
                 url: '' // Default URL can be empty or set to a default value
             };
         }

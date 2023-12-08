@@ -53,7 +53,6 @@ function playStep() {
             console.warn(`No preset data for channel index: ${channelIndex}`);
             channelData = {
                 steps: defaultStepsArray.slice(),
-                toggleMuteSteps: [],
                 mute: false,
                 url: null
             };
