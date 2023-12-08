@@ -55,13 +55,17 @@ document.addEventListener("DOMContentLoaded", function() {
                     const url = loadedSettings.projectURLs[i];
                     if (url) {
                         // Call fetchAudio for each URL
-                        // Assuming you have a way to get the corresponding loadSampleButtonElement
-                        const loadSampleButtonElement = document.getElementById(`load-sample-button-${i}`);
-                        await fetchAudio(url, i, loadSampleButtonElement);
+                        // Assuming you have a way to get the corresponding loadSampleButton
+                        const loadSampleButton = document.getElementById(`load-sample-button-${i}`);
+                        console.log('loadSampleButton:', loadSampleButton);
+
+                        await fetchAudio(url, i, loadSampleButton);
                         // Extract ID from URL and update button text
                         const loadedSampleId = extractURLID(url); // Implement this function based on your URL structure
-                        loadSampleButtonElement.textContent = `Loaded: ${loadedSampleId}`;
-                   }
+                        loadSampleButton.textContent = `Loaded: ${loadedSampleId}`;
+                    } else {
+                        console.error(`Load sample button not found for index: ${i}`);
+                    }
                 }
             }
         };
