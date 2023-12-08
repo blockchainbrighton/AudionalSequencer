@@ -111,13 +111,17 @@ function updateProjectNameUI(projectName) {
 // // Utility Functions
 // 
 function updateSpecificStepUI(sequenceNumber, channelIndex, stepIndex) {
-    const stepState = window.unifiedSequencerSettings.getStepState(sequenceNumber, channelIndex, stepIndex);
-    const stepButtonId = `${sequenceNumber}-ch${channelIndex}-step-${stepIndex}`;
+    // Use the correct ID format to match the updated step button IDs
+    const stepButtonId = `Sequence${sequenceNumber}-ch${channelIndex}-step-${stepIndex}`;
     const stepButton = document.getElementById(stepButtonId);
 
     if (stepButton) {
-        stepButton.classList.toggle('selected', stepState);
-        console.log(`updateSpecificStepUI called: Sequence ${sequenceNumber}, Channel ${channelIndex}, Step ${stepIndex}, State: ${stepState}`);
+        let currentStepState = window.unifiedSequencerSettings.getStepState(sequenceNumber, channelIndex, stepIndex);
+        if (currentStepState) {
+            stepButton.classList.add('selected');
+        } else {
+            stepButton.classList.remove('selected');
+        }
     } else {
         console.error(`Step button not found for the given IDs: ${stepButtonId}`);
     }
