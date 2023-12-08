@@ -1,4 +1,4 @@
-// Global Object Update Functions
+// globalObjectHelperFunctions_v2.js
 
 function updateProjectURLsUI(urls) {
     console.log("{debugGlobalObjectToUI} updateProjectURLsUI: updating with URLs", urls);
@@ -91,7 +91,7 @@ function updateProjectNameUI(projectName) {
 // 
 function updateSpecificStepUI(sequenceNumber, channelIndex, stepIndex) {
     const stepState = window.unifiedSequencerSettings.getStepState(sequenceNumber, channelIndex, stepIndex);
-    const stepButtonId = `${sequenceNumber}-ch${channelIndex + 1}-step-${stepIndex}`;
+    const stepButtonId = `${sequenceNumber}-ch${channelIndex}-step-${stepIndex}`;
     const stepButton = document.getElementById(stepButtonId);
 
     if (stepButton) {

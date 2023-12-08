@@ -103,43 +103,45 @@ document.addEventListener('click', () => {
 
 
 
-        if (playButton && stopButton) {
-          const channel1 = document.querySelector('#channel-0 .step-button:nth-child(4n+1)');
-          if (channel1) channel1.classList.add('selected');
+if (playButton && stopButton) {
+    const channel0 = document.querySelector('#channel-0 .step-button:nth-child(4n)');
+    if (channel0) channel0.classList.add('selected');
 
-          const channel2Beat1 = document.querySelector('#channel-1 .step-button:nth-child(1)');
-          if (channel2Beat1) channel2Beat1.classList.add('selected');
+    const channel1Beat0 = document.querySelector('#channel-1 .step-button:nth-child(1)');
+    if (channel1Beat0) channel1Beat0.classList.add('selected');
 
-          const channel2Beat6 = document.querySelector('#channel-1 .step-button:nth-child(6)');
-          if (channel2Beat6) channel2Beat6.classList.add('selected');
+    const channel1Beat5 = document.querySelector('#channel-1 .step-button:nth-child(6)');
+    if (channel1Beat5) channel1Beat5.classList.add('selected');
 
-          let isPaused = false;  // Add this line to declare the isPaused flag
+    let isPaused = false;  // Add this line to declare the isPaused flag
 
-          function checkContinuousPlay() {
-            const continuousPlayCheckbox = document.getElementById('continuous-play');
-            let isContinuousPlay = continuousPlayCheckbox.checked;
-        
-            if (isContinuousPlay && totalStepCount >= allSequencesLength) {
-                // Reset counters for the next sequence
-                beatCount = 0;
-                barCount = 0;
-                currentStep = 0;
-                totalStepCount = 0;
-        
-                // Simulate a click on the "Next Sequence" button
-                document.getElementById('next-sequence').click();
-            }
+    function checkContinuousPlay() {
+        const continuousPlayCheckbox = document.getElementById('continuous-play');
+        let isContinuousPlay = continuousPlayCheckbox.checked;
+
+        if (isContinuousPlay && totalStepCount >= allSequencesLength) {
+            // Reset counters for the next sequence
+            beatCount = 0;
+            barCount = 0;
+            currentStep = 0;
+            totalStepCount = 0;
+
+            // Simulate a click on the "Next Sequence" button
+            document.getElementById('next-sequence').click();
         }
+    }
+
+
         
         
         
         // function updateCollectedURLsForSequences() {
         //     // Assuming collectedURLsForSequences is a 2D array where each inner array represents URLs for a sequence.
-        //     if (!collectedURLsForSequences[currentSequence - 1]) {
-        //         collectedURLsForSequences[currentSequence - 1] = [];
+        //     if (!collectedURLsForSequences[currentSequence]) {
+        //         collectedURLsForSequences[currentSequence] = [];
         //     }
-        //     collectedURLsForSequences[currentSequence - 1] = [...collectedURLs];
-        //     console.log(`index.js loadButton: Updated collectedURLsForSequences for sequence ${currentSequence}:`, collectedURLsForSequences[currentSequence - 1]);
+        //     collectedURLsForSequences[currentSequence] = [...collectedURLs];
+        //     console.log(`index.js loadButton: Updated collectedURLsForSequences for sequence ${currentSequence}:`, collectedURLsForSequences[currentSequence]);
         // }
         
         // Inside your playButton event listener, after the play logic
@@ -222,14 +224,14 @@ const loadPreset = (preset) => {
     channels.forEach((channel, index) => {
         const channelData = presetData.channels[index];
         if (!channelData) {
-            console.warn(`No preset data for channel index: ${index + 1}`);
+            console.warn(`No preset data for channel index: ${index}`);
             return;
         }
 
-        const { url, triggers, toggleMuteSteps, mute } = channelData;
+        const { url, steps, toggleMuteSteps, mute } = channelData;
 
         if (url) {
-            const loadSampleButton = document.querySelector(`.channel[data-id="Channel-${index + 1}"] .load-sample-button`);
+            const loadSampleButton = document.querySelector(`.channel[data-id="Channel-${index}"] .load-sample-button`);
             fetchAudio(url, index, loadSampleButton).then(() => {
                 const audioTrimmer = getAudioTrimmerInstanceForChannel(index);
                 if (audioTrimmer) {
@@ -247,29 +249,29 @@ const loadPreset = (preset) => {
             });
         }
 
-    triggers.forEach(pos => {
-      const btn = document.querySelector(`.channel[data-id="Channel-${index + 1}"] .step-button:nth-child(${pos})`);
-      if (btn) btn.classList.add('selected');
+        steps.forEach(pos => {
+            const btn = document.querySelector(`.channel[data-id="Channel-${index}"] .step-button:nth-child(${pos + 1})`);
+            if (btn) btn.classList.add('selected');
+        });
+
+        toggleMuteSteps.forEach(pos => {
+            const btn = document.querySelector(`.channel[data-id="Channel-${index}"] .step-button:nth-child(${pos + 1})`);
+            if (btn) btn.classList.add('toggle-mute');
+            console.log(`Channel-${index} loadPreset classList.add`);
+        });
+
+        const channelElement = document.querySelector(`.channel[data-id="Channel-${index}"]`);
+        if (channelElement) {
+            updateMuteState(channelElement, mute);
+            // console.log(`Channel-${index} updateMuteState toggled by the loadPreset function - Muted: ${mute}`);
+
+            // Add the 'ordinal-loaded' class to the channel element
+            channelElement.classList.add('ordinal-loaded');
+        }
     });
-
-    toggleMuteSteps.forEach(pos => {
-      const btn = document.querySelector(`.channel[data-id="Channel-${index + 1}"] .step-button:nth-child(${pos})`);
-      if (btn) btn.classList.add('toggle-mute');
-      console.log(`Channel-${index + 1} loadPreset classList.add`);
-    });
-
-    const channelElement = document.querySelector(`.channel[data-id="Channel-${index + 1}"]`);
-    if (channelElement) {
-      updateMuteState(channelElement, mute); 
-      // console.log(`Channel-${index + 1} updateMuteState toggled by the loadPreset function - Muted: ${mute}`);
-      
-      // Add the 'ordinal-loaded' class to the channel element
-      channelElement.classList.add('ordinal-loaded');
-    }
-  });
-  console.log(preset);
-  // Load settings into the internal array
-  loadChannelSettingsFromPreset(presets[preset]);
-  console.log("loadPreset: After loadPreset, gainNodes values:", gainNodes.map(gn => gn.gain.value));
-
+    console.log(preset);
+    // Load settings into the internal array
+    loadChannelSettingsFromPreset(presets[preset]);
+    console.log("loadPreset: After loadPreset, gainNodes values:", gainNodes.map(gn => gn.gain.value));
 };
+

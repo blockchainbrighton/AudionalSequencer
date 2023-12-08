@@ -4,7 +4,7 @@ import { setupLoadSampleButton } from './loadSampleButtonModal.js';
 
 
 channels.forEach((channel, index) => {
-    channel.dataset.id = `Channel-${index + 1}`;
+    channel.dataset.id = `Channel-${index}`;
     
     // Create a gain node for the channel
     const gainNode = audioContext.createGain();
@@ -13,7 +13,7 @@ channels.forEach((channel, index) => {
     gainNodes[index] = gainNode;
     
       // Logging to confirm gain node creation and attachment
-      // console.log(`Gain node created for Channel-${index + 1}. Current gain value: ${gainNode.gain.value}`);
+      // console.log(`Gain node created for Channel-${index}. Current gain value: ${gainNode.gain.value}`);
     
       
       const muteButton = channel.querySelector('.mute-button');
@@ -150,11 +150,11 @@ channels.forEach((channel, index) => {
             button.classList.add('step-button');
     
             // Retrieve the channel index from the channel's id attribute
-            let channelIndex = parseInt(channel.id.split('-')[1]) - 1;
+            let channelIndex = parseInt(channel.id.split('-')[1]);
     
             // Assign an ID to the button based on sequence, channel, and step index
             // Assuming 'currentSequence' is defined and holds the current sequence key
-            button.id = `${currentSequence}-ch${channelIndex + 1}-step-${i}`;
+            button.id = `${currentSequence}-ch${channelIndex}-step-${i}`;
     
             button.addEventListener('click', () => {
                 // Toggle the step state in the global object

@@ -45,14 +45,14 @@ function playStep() {
         let channelData = presetData.channels[channelIndex];
         console.log(`[playStep] Channel data for channel index ${channelIndex}:`, channelData);
 
-        const defaultTriggerArray = Array(4096).fill(false);
+        const defaultStepsArray = Array(4096).fill(false);
         renderPlayhead(buttons, currentStep, channel.dataset.muted === 'true');
 
         // If no channelData is found for the current channel, use a default set of values
         if (!channelData) {
-            console.warn(`No preset data for channel index: ${channelIndex + 1}`);
+            console.warn(`No preset data for channel index: ${channelIndex}`);
             channelData = {
-                triggers: defaultTriggerArray.slice(),
+                steps: defaultStepsArray.slice(),
                 toggleMuteSteps: [],
                 mute: false,
                 url: null
@@ -114,13 +114,13 @@ function playStep() {
 }
 
 function updateStepButtonsUI() {
-    const currentSequence = sequences[sequenceCount - 1]; // Get the current sequence based on sequenceCount
+    const currentSequence = sequences[sequenceCount]; // Get the current sequence based on sequenceCount
     const stepButtons = document.querySelectorAll('.step-button');
     
     stepButtons.forEach((button, index) => {
         // Determine the channel index from the button's parent container
         let channelElement = button.closest('.channel');
-        let channelIndex = parseInt(channelElement.id.split('-')[1]) - 1; // Assuming the id is in the format 'channel-x'
+        let channelIndex = parseInt(channelElement.id.split('-')[1]); // Assuming the id is in the format 'channel-x'
 
         // Update each button's state based on the currentSequence
         let stepState = currentSequence[index];

@@ -8,7 +8,7 @@ class UnifiedSequencerSettings {
             masterSettings: {
                 projectName: '',
                 projectBPM: 120,
-                currentSequence: 1, // Initialize with a default value
+                currentSequence: 0, // Initialize with a default value
                 projectURLs: new Array(16).fill(''),
                 trimSettings: Array.from({ length: 16 }, () => ({
                     startSliderValue: 0.01,
@@ -93,17 +93,17 @@ class UnifiedSequencerSettings {
 
     initializeSequences(numSequences, numChannels, numSteps) {
         let sequences = {};
-        for (let seq = 1; seq <= numSequences; seq++) {
-            sequences[`Sequence${seq}`] = this.initializeChannels(numChannels, numSteps);
+        for (let seq = 0; seq < numSequences; seq++) {
+            sequences[`Sequence${seq + 1}`] = this.initializeChannels(numChannels, numSteps);
         }
         return sequences;
     }
-
+    
     initializeChannels(numChannels, numSteps) {
         let channels = {};
-        for (let ch = 1; ch <= numChannels; ch++) {
-            channels[`ch${ch}`] = {
-                triggers: Array(numSteps).fill(false),
+        for (let ch = 0; ch < numChannels; ch++) {
+            channels[`ch${ch + 1}`] = {
+                steps: Array(numSteps).fill(false),
                 mute: false, // Ensure mute is off by default
                 toggleMuteSteps: Array(numSteps).fill(false),
                 url: '' // Default URL can be empty or set to a default value
@@ -111,12 +111,13 @@ class UnifiedSequencerSettings {
         }
         return channels;
     }
+    
     updateStepState(sequenceNumber, channelIndex, stepIndex, state) {
         console.log(`[updateStepState] Called with Sequence: ${sequenceNumber}, Channel: ${channelIndex}, Step: ${stepIndex}, State: ${state}`);
         const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber}`];
         const channel = sequence && sequence[`ch${channelIndex}`];
-        if (channel && stepIndex < channel.triggers.length) {
-            channel.triggers[stepIndex] = state;
+        if (channel && stepIndex < channel.steps.length) {
+            channel.steps[stepIndex] = state;
         } else {
             console.error('Invalid sequence, channel, or step index in updateStepState');
         }
@@ -127,8 +128,8 @@ class UnifiedSequencerSettings {
         console.log(`[getStepState] Called with Sequence: ${sequenceNumber}, Channel: ${channelIndex}, Step: ${stepIndex}`);
         const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber}`];
         const channel = sequence && sequence[`ch${channelIndex}`];
-        if (channel && stepIndex < channel.triggers.length) {
-            return channel.triggers[stepIndex];
+        if (channel && stepIndex < channel.steps.length) {
+            return channel.steps[stepIndex];
         } else {
             console.error('Invalid sequence, channel, or step index in getStepState');
             return null;

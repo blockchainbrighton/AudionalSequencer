@@ -106,7 +106,7 @@ function bufferToBase64(buffer) {
 // Function to play sound
 function playSound(channel, currentStep) {
   // Extract channelIndex from the channel element's dataset
-  const channelIndex = parseInt(channel.dataset.id.split('-')[1]) - 1;
+  const channelIndex = parseInt(channel.dataset.id.split('-')[1]);
 
   console.log(`[playSound] Processing channel index: ${channel}`);
 
@@ -195,7 +195,7 @@ function togglePlayState(isPlaying, startStopFunction, firstButton, secondButton
 
 // Function to update the mute state in a single function
 function updateMuteState(channel, shouldMute) {
-  const channelIndex = parseInt(channel.dataset.id.split('-')[1]) - 1;
+  const channelIndex = parseInt(channel.dataset.id.split('-')[1]);
   channel.dataset.muted = shouldMute ? 'true' : 'false';
   const muteButton = channel.querySelector('.mute-button');
 
@@ -222,7 +222,7 @@ function updateMuteState(channel, shouldMute) {
 
 // Function to handle manual toggle of the mute button
 function toggleMute(channelElement) {
-  const channelIndex = parseInt(channelElement.dataset.id.split('-')[1]) - 1;
+  const channelIndex = parseInt(channelElement.dataset.id.split('-')[1]);
   const isMuted = channelMutes[channelIndex];
   updateMuteState(channelElement, !isMuted, channelIndex);
   console.log('Mute has been toggled by the toggleMute function');

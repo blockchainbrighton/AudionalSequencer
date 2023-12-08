@@ -2,7 +2,7 @@
 
 function startScheduler() {
     channels.forEach(channel => {
-        const channelIndex = parseInt(channel.dataset.id.split('-')[1]) - 1;
+        const channelIndex = parseInt(channel.dataset.id.split('-')[1]);
         if (!channelMutes[channelIndex]) {  // If channel is not muted
             setChannelVolume(channelIndex, 1);
         }
@@ -54,7 +54,7 @@ function scheduleNextStep() {
 
 function stopScheduler() {
     channels.forEach(channel => {
-        setChannelVolume(parseInt(channel.dataset.id.split('-')[1]) - 1, 0);
+        setChannelVolume(parseInt(channel.dataset.id.split('-')[1]), 0);
       });
     clearTimeout(timeoutId);
     // Reset counters

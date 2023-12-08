@@ -80,7 +80,7 @@ function updateUIForSequence(sequenceNumber) {
     if (sequenceNumber > 0 && sequenceNumber <= masterSettings.projectSequences.length) {
 
         // Mark the sequence as active
-        markSequenceAsLive(sequenceNumber - 1);
+        markSequenceAsLive(sequenceNumber);
 
         channels.forEach((channel, index) => {
             const stepButtons = channel.querySelectorAll('.step-button');
@@ -96,7 +96,7 @@ function updateUIForSequence(sequenceNumber) {
                 if (pos === 0) return;
 
                 if (stepState) {
-                    stepButtons[pos - 1].classList.add('selected');
+                    stepButtons[pos].classList.add('selected');
                 }
             });
 
@@ -114,28 +114,28 @@ function changeSequence(seq) {
   }
 
 
-  function loadChannelSettingsFromPreset(preset) {
-    preset.channels.forEach((channelData, channelIndex) => {
-        let stepSettings = [null].concat(Array(64).fill(false));  // Add placeholder for 0th index
-        channelData.triggers.forEach(trigger => {
-            // Account for 1-indexing
-            stepSettings[trigger] = true;
-        });
-        channelSettings[channelIndex] = stepSettings;
-       // console.log(`Loaded settings for Channel-${channelIndex + 1}:`, channelSettings[channelIndex]);
-        
-        // Fetch audio data
-        if (channelData.url) {
-            const loadSampleButton = document.querySelector(`.channel[data-id="Channel-${channelIndex + 1}"] .load-sample-button`);
-            fetchAudio(channelData.url, channelIndex, loadSampleButton);
-            // console.log(`Channel-${channelIndex + 1} fetchAudio called`);
-        }
-    });
-
-
-    // console.log("loadChannelSettingsFromPreset: After loadChannelSettingsFromPreset, gainNodes values:", gainNodes.map(gn => gn.gain.value));
-
-}
+  //function loadChannelSettingsFromPreset(preset) {
+  //  preset.channels.forEach((channelData, channelIndex) => {
+  //      let stepSettings = [null].concat(Array(64).fill(false));  // Add placeholder for 0th index
+  //      channelData.triggers.forEach(trigger => {
+  //          // Account for 1-indexing
+  //          stepSettings[trigger] = true;
+  //      });
+  //      channelSettings[channelIndex] = stepSettings;
+  //     // console.log(`Loaded settings for Channel-${channelIndex + 1}:`, channelSettings[channelIndex]);
+  //      
+  //      // Fetch audio data
+  //      if (channelData.url) {
+  //          const loadSampleButton = document.querySelector(`.channel[data-id="Channel-${channelIndex + 1}"] .load-sample-button`);
+  //          fetchAudio(channelData.url, channelIndex, loadSampleButton);
+  //          // console.log(`Channel-${channelIndex + 1} fetchAudio called`);
+  //      }
+  //  });
+//
+//
+  //  // console.log("loadChannelSettingsFromPreset: After loadChannelSettingsFromPreset, gainNodes values:", gainNodes.map(gn => gn.gain.value));
+//
+//}
 
 
 /**
@@ -156,7 +156,7 @@ function updateStep(channelIndex, stepIndex, state) {
     // console.log(`Updated settings for Channel-${channelIndex + 1}:`, channelSettings[channelIndex]);
 
     // Update the global object
-    window.unifiedSequencerSettings.updateStepState(currentSequence - 1, channelIndex, stepIndex, state);
+    window.unifiedSequencerSettings.updateStepState(currentSequence, channelIndex, stepIndex, state);
 
     // Add console log for debugging
     console.log(`updateStepState called with sequence: ${currentSequence}, channelIndex: ${channelIndex}, stepIndex: ${stepIndex}, state: ${state}`);
