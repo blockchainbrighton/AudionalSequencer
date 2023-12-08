@@ -121,7 +121,8 @@ class UnifiedSequencerSettings {
         }
     }
 
-    getStepState(sequenceNumber, channelIndex, stepIndex) {
+     getStepState(sequenceNumber, channelIndex, stepIndex) {
+        // console.log(`getStepState called with Sequence ${sequenceNumber}, Channel ${channelIndex}, Step ${stepIndex}`);
         const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber + 1}`];
         const channel = sequence && sequence[`ch${channelIndex + 1}`];
         if (channel && stepIndex < channel.length) {

@@ -71,6 +71,8 @@ continuousPlayButton.addEventListener('click', () => {
     }
     // Function to update the dim state based on gain value
     function updateDimState(channel, index) {
+        console.log(`updateDimState called for channel ${index}`);
+
         const stepButtons = channel.querySelectorAll('.step-button');
         if (gainNodes[index].gain.value === 0) {
             stepButtons.forEach(button => button.classList.add('dimmed'));
