@@ -15,7 +15,7 @@ class UnifiedSequencerSettings {
                     endSliderValue: 100.00,
                     totalSampleDuration: 0
                 })),
-                projectURLNames: new Array(16).fill(''),
+                projectChannelNames: new Array(16).fill(''),
                 projectSequences: this.initializeSequences(16, 16, 64)
             }
         };
@@ -99,7 +99,7 @@ class UnifiedSequencerSettings {
                 endSliderValue: 100.00,
                 totalSampleDuration: 0
             })),
-            projectURLNames: new Array(16).fill(''),
+            projectChannelNames: new Array(16).fill(''),
             projectSequences: this.initializeSequences(16, 16, 64)
         };
         console.log("[clearMasterSettings] Master settings cleared.");
@@ -201,9 +201,9 @@ class UnifiedSequencerSettings {
     //     console.log(`[setTrimSettings] Trim settings set:`, settings);
     // }
 
-    setProjectURLNames(names) {
-        this.settings.masterSettings.projectURLNames = names;
-        console.log(`[setProjectURLNames] Project URL names set:`, names);
+    setProjectChannelNames(names) {
+        this.settings.masterSettings.projectChannelNames = names;
+        console.log(`[setProjectChannelNames] Project URL names set:`, names);
     }
 
     setProjectSequences(sequenceData) {
@@ -291,7 +291,7 @@ class UnifiedSequencerSettings {
         });
     }
 
-    updateProjectURLNamesUI(urlNames) {
+    updateProjectChannelNamesUI(urlNames) {
         // Implement logic to update UI for project URL names
         console.log("Project URL names UI updated:", urlNames);
         // Example: Update each URL name display

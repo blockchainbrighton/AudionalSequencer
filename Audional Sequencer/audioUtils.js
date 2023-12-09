@@ -44,7 +44,7 @@ async function fetchAndParseContentType(url) {
 }
 
 // Function to fetch audio data
-const fetchAudio = async (url, channelIndex, loadSampleButtonElement = null) => {
+const fetchAudio = async (url, channelIndex,) => {
   try {
       console.log(`[fetchAudio] Fetching audio from URL: ${url} for channel index: ${channelIndex}`);
 
@@ -81,12 +81,6 @@ const fetchAudio = async (url, channelIndex, loadSampleButtonElement = null) => 
       window.unifiedSequencerSettings.updateSampleDuration(audioBuffer.duration, channelIndex);
       console.log(`[fetchAudio] Updated global object with URL: ${url} and duration: ${audioBuffer.duration} for channel index: ${channelIndex}`);
 
-      if (loadSampleButtonElement) {
-          loadSampleButtonElement.classList.add('button-fixed-width');
-          loadSampleButtonElement.style.width = '200px';
-          loadSampleButtonElement.textContent = filename ? filename.substring(0, 20) : 'Loaded Sample';
-          loadSampleButtonElement.title = filename ? filename : 'Loaded Sample';
-      }
   } catch (error) {
       console.error('Error fetching audio:', error);
   }

@@ -30,8 +30,8 @@ function updateTrimSettingsUI(trimSettings) {
     });
 }
 // 
-function updateProjectURLNamesUI(urlNames) {
-    console.log("{debugGlobalObjectToUI} updateProjectURLNamesUI: updating with URL names", urlNames); 
+function updateProjectChannelNamesUI(urlNames) {
+    console.log("{debugGlobalObjectToUI} updateProjectChannelNamesUI: updating with URL names", urlNames); 
     // Implement logic to update UI for project URL names
     console.log("Project URL names UI updated:", urlNames);
     // Example: Update each URL name display
@@ -157,9 +157,9 @@ function setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
 }
 
 // 
-// function setGlobalProjectURLNames(urlNames) {
-//     window.unifiedSequencerSettings.setProjectURLNames(urlNames);
-//     console.log(`[setGlobalProjectURLNames] Project URL names updated:`, urlNames);
+// function setGlobalProjectChannelNames(urlNames) {
+//     window.unifiedSequencerSettings.setProjectChannelNames(urlNames);
+//     console.log(`[setGlobalProjectChannelNames] Project URL names updated:`, urlNames);
 // }
 // 
 // function setGlobalProjectSequences(sequences) {
@@ -183,7 +183,7 @@ function setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
 //     updateBPMUI(settings.projectBPM);
 //     updateProjectURLsUI(settings.projectURLs);
 //     updateTrimSettingsUI(settings.trimSettings);
-//     updateProjectURLNamesUI(settings.projectURLNames);
+//     updateProjectChannelNamesUI(settings.projectChannelNames);
 //     updateProjectSequencesUI(settings.projectSequences);
 // }
 
@@ -311,8 +311,8 @@ function updateProjectSequencesUI(sequenceData) {
 //     window.unifiedSequencerSettings.setTrimSettings(settings);
 // }
 // 
-// function setGlobalProjectURLNames(names) {
-//     window.unifiedSequencerSettings.setProjectURLNames(names);
+// function setGlobalProjectChannelNames(names) {
+//     window.unifiedSequencerSettings.setProjectChannelNames);
 // }
 // 
 // function setGlobalProjectSequences(sequences) {

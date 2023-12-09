@@ -178,10 +178,77 @@ clearButton.addEventListener('click', (e) => {
     
 
 
-        const loadSampleButton = channel.querySelector('.load-sample-button');
+    const loadSampleButton = channel.querySelector('.load-sample-button');
+
+        // Left-click event listener
         loadSampleButton.addEventListener('click', () => {
             setupLoadSampleButton(channel, index);
-     
-    });
+            // Additional logic for closing the modal can be added within setupLoadSampleButton if needed
+        });
+
+        // Right-click event listener
+        loadSampleButton.addEventListener('contextmenu', (event) => {
+            event.preventDefault(); // Prevent the default context menu
+
+            // Create and show the custom context menu
+            showCustomContextMenu(event.pageX, event.pageY, () => {
+                const userChannelName = prompt("Enter a name for this channel:");
+                if (userChannelName) {
+                    // Update the button or relevant element with the new channel name
+                    loadSampleButton.textContent = userChannelName;
+                }
+            });
+        });
+
+        function showCustomContextMenu(x, y, onAddChannelName) {
+            // Remove any existing custom context menus
+            closeCustomContextMenu();
+
+            // Create the custom context menu
+            const menu = document.createElement('div');
+            menu.classList.add('custom-context-menu');
+            menu.style.top = `${y}px`;
+            menu.style.left = `${x}px`;
+
+            // Add menu options
+            const addChannelNameOption = document.createElement('div');
+            addChannelNameOption.textContent = 'Add User Channel Name';
+            addChannelNameOption.addEventListener('click', onAddChannelName);
+            menu.appendChild(addChannelNameOption);
+
+            // Append the menu to the body and show it
+            document.body.appendChild(menu);
+        }
+
+        // Function to close the custom context menu
+        function closeCustomContextMenu() {
+            const existingMenu = document.querySelector('.custom-context-menu');
+            if (existingMenu) {
+                existingMenu.remove();
+            }
+        }
+
+        // Hide the custom context menu or modal when clicking elsewhere
+        document.addEventListener('click', (event) => {
+            // Close the custom context menu if the click is outside
+            const existingMenu = document.querySelector('.custom-context-menu');
+            if (existingMenu && !existingMenu.contains(event.target)) {
+                closeCustomContextMenu();
+            }
+
+            // Logic to close the left-click modal if the click is outside
+            const modal = document.querySelector('.load-sample-buttor'); // Replace with your actual modal selector
+            if (modal && !modal.contains(event.target) && !loadSampleButton.contains(event.target)) {
+                closeModal(modal); // Replace with your function to close the modal
+            }
+        });
+
+        // Function to close the modal
+        function closeModal(modal) {
+            // Add logic to close the modal, e.g., hide it or remove it from the DOM
+            modal.style.display = 'none'; // Example: hide the modal
+        }
+
+    
 
 });

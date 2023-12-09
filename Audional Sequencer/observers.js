@@ -40,11 +40,11 @@ function updateTrimSettingsObserver(settings) {
 }
 
 // Observer for Project URL Names
-function updateProjectURLNamesObserver(settings) {
-    if (settings && settings.masterSettings && settings.masterSettings.projectURLNames) {
-        console.log("Updating Project URL Names UI:", settings.masterSettings.projectURLNames);
+function updateProjectChannelNamesObserver(settings) {
+    if (settings && settings.masterSettings && settings.masterSettings.projectChannelNames) {
+        console.log("Updating Project URL Names UI:", settings.masterSettings.projectChannelNames);
 
-        updateProjectURLNamesUI(settings.masterSettings.projectURLNames);
+        updateProjectChannelNamesUI(settings.masterSettings.projectChannelNames);
     }
 }
 
@@ -64,7 +64,7 @@ function registerObservers() {
         window.unifiedSequencerSettings.addObserver(updateBPMObserver);
         window.unifiedSequencerSettings.addObserver(updateProjectURLsObserver);
         window.unifiedSequencerSettings.addObserver(updateTrimSettingsObserver);
-        window.unifiedSequencerSettings.addObserver(updateProjectURLNamesObserver);
+        window.unifiedSequencerSettings.addObserver(updateProjectChannelNamesObserver);
         window.unifiedSequencerSettings.addObserver(updateProjectSequencesObserver);
     } else {
         console.error("UnifiedSequencerSettings instance not found.");
