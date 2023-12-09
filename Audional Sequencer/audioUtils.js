@@ -79,6 +79,7 @@ const fetchAudio = async (url, channelIndex,) => {
       // Update the global object with the new URL and audio data
       window.unifiedSequencerSettings.updateSetting('projectURLs', url, channelIndex);
       window.unifiedSequencerSettings.updateSampleDuration(audioBuffer.duration, channelIndex);
+      window.unifiedSequencerSettings.updateAllLoadSampleButtonTexts();
       console.log(`[fetchAudio] Updated global object with URL: ${url} and duration: ${audioBuffer.duration} for channel index: ${channelIndex}`);
 
   } catch (error) {

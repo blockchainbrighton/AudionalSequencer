@@ -25,8 +25,8 @@ function updateBPMObserver(settings) {
 function updateProjectURLsObserver(settings) {
     if (settings && settings.masterSettings && settings.masterSettings.projectURLs) {
         console.log("Updating Project URLs UI:", settings.masterSettings.projectURLs);
-
-        updateProjectURLsUI(settings.masterSettings.projectURLs);
+        unifiedSequencerSettings.updateAllLoadSampleButtonTexts();
+        // updateProjectURLsUI(settings.masterSettings.projectURLs);
     }
 }
 

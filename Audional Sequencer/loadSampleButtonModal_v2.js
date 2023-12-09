@@ -1,6 +1,9 @@
     // loadSampleButtonModal.js
     function setupLoadSampleButton(channel, index) {
         const loadSampleButton = channel.querySelector('.load-sample-button');
+        // Update the button text with the corresponding URL from projectURLs array
+        loadSampleButton.textContent = projectSettings.masterSettings.projectURLs[channelIndex];
+        // Add event listener to open the modal
         loadSampleButton.addEventListener('click', () => openModal(index));
     }
 

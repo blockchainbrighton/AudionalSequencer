@@ -6,17 +6,17 @@ class UnifiedSequencerSettings {
 
         this.settings = {
             masterSettings: {
-                projectName: '',
+                projectName: 'New Audx Project', // Set the project name placeholder
                 projectBPM: 120,
                 currentSequence: 0, // Initialize with a default value
-                projectURLs: new Array(16).fill(''),
-                trimSettings: Array.from({ length: 16 }, () => ({
+                projectURLs: new Array(12).fill('Load New Audional'), // Set the URLs placeholders
+                trimSettings: Array.from({ length: 12 }, () => ({
                     startSliderValue: 0.01,
                     endSliderValue: 100.00,
                     totalSampleDuration: 0
                 })),
-                projectChannelNames: new Array(16).fill(''),
-                projectSequences: this.initializeSequences(16, 16, 64)
+                projectChannelNames: new Array(12).fill(''), // You can set placeholders for channel names if needed
+                projectSequences: this.initializeSequences(12, 16, 64) // You can adjust the dimensions as needed
             }
         };
 
@@ -194,6 +194,8 @@ class UnifiedSequencerSettings {
     setProjectURLs(urls) {
         this.settings.masterSettings.projectURLs = urls;
         console.log(`[setProjectURLs] Project URLs set:`, urls);
+        updateAllLoadSampleButtonTexts();
+
     }
 
     // setTrimSettings(settings) {
@@ -268,10 +270,7 @@ class UnifiedSequencerSettings {
     }
     
 
-    viewCurrentSettings() {
-        return JSON.stringify(this.settings, null, 2);
-    }
-
+  
     isValidIndex(index, length) {
         return index >= 0 && index < length;
     }
