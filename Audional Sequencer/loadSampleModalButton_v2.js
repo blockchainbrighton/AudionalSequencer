@@ -1,13 +1,14 @@
     // loadSampleModalButton_v2.js
+
     function setupLoadSampleModalButton(channel, index) {
         const loadSampleButton = channel.querySelector('.load-sample-button');
         // Update the button text with the corresponding URL from projectURLs array
         loadSampleButton.textContent = window.unifiedSequencerSettings.settings.masterSettings.projectURLs[index];
         // Add event listener to open the modal
-        loadSampleButton.addEventListener('click', () => openModal(index));
+        loadSampleButton.addEventListener('click', () => openModal(index, loadSampleButton));
     }
 
-    function openModal(index) {
+    function openModal(index, loadSampleButton) {
         const idModal = createModal();
         const idModalContent = createModalContent();
         idModal.appendChild(idModalContent);
@@ -24,7 +25,7 @@
         addInputListeners(audionalInput, ipfsInput);
 
         // Add Load and Cancel buttons
-        idModalContent.appendChild(createButton('Load', () => handleLoad(index, audionalInput, ipfsInput, idModal)));
+        idModalContent.appendChild(createButton('Load', () => handleLoad(index, audionalInput, ipfsInput, idModal, loadSampleButton)));
         idModalContent.appendChild(createButton('Cancel', () => document.body.removeChild(idModal)));
 
         document.body.appendChild(idModal);
@@ -74,10 +75,11 @@
         return button;
     }
 
-    function handleLoad(index, audionalInput, ipfsInput, idModal) {
-        console.log(`handleLoad called with index: ${index}, url: ${url}`);
+    function handleLoad(index, audionalInput, ipfsInput, idModal, loadSampleButton) {
 
         let url;
+        console.log(`handleLoad called with index: ${index}, url: ${url}`);
+
         if (audionalInput.value) {
             url = 'https://ordinals.com/content/' + getIDFromURL(audionalInput.value);
         } else if (ipfsInput.value) {
