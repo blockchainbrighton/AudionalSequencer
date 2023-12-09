@@ -15,7 +15,7 @@ class UnifiedSequencerSettings {
                     endSliderValue: 100.00,
                     totalSampleDuration: 0
                 })),
-                projectURLNames: new Array(16).fill(''),
+                projectChannelNames: new Array(16).fill(''),
                 projectSequences: this.initializeSequences(16, 16, 64)
             }
         };
@@ -33,6 +33,21 @@ class UnifiedSequencerSettings {
     notifyObservers() {
         this.observers.forEach(observerFunction => observerFunction(this.settings));
     }
+
+    setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
+        if (this.isValidIndex(channelIndex, this.settings.masterSettings.trimSettings.length)) {
+            const currentSettings = this.settings.masterSettings.trimSettings[channelIndex];
+            Object.assign(currentSettings, { startSliderValue, endSliderValue });
+        } else {
+            console.error(`Invalid channel index: ${channelIndex}`);
+        }
+    }
+
+    getTrimSettings(channelIndex) {
+        const trimSettings = this.settings.masterSettings.trimSettings[channelIndex];
+        return trimSettings || { startSliderValue: 0.01, endSliderValue: 100.00 };
+    }
+
 
     // Example of a method that changes settings
     setProjectName(name) {
@@ -84,7 +99,7 @@ class UnifiedSequencerSettings {
                 endSliderValue: 100.00,
                 totalSampleDuration: 0
             })),
-            projectURLNames: new Array(16).fill(''),
+            projectChannelNames: new Array(16).fill(''),
             projectSequences: this.initializeSequences(16, 16, 64)
         };
         console.log("[clearMasterSettings] Master settings cleared.");
@@ -164,20 +179,7 @@ class UnifiedSequencerSettings {
         this.settings.masterSettings.projectBPM = newBPM;
     }
 
-    setTrimSettingsForChannel(channelIndex, startSliderValue, endSliderValue) {
-        if (this.isValidIndex(channelIndex, this.settings.masterSettings.trimSettings.length)) {
-            const currentSettings = this.settings.masterSettings.trimSettings[channelIndex];
-            Object.assign(currentSettings, { startSliderValue, endSliderValue });
-        } else {
-            console.error(`Invalid channel index: ${channelIndex}`);
-        }
-    }
-
-    getTrimSettingsForChannel(channelIndex) {
-        const trimSettings = this.settings.masterSettings.trimSettings[channelIndex];
-        return trimSettings || { startSliderValue: 0.01, endSliderValue: 100.00 };
-    }
-
+    
    
 
     getAudioUrlForChannel(channelIndex) {
@@ -194,14 +196,14 @@ class UnifiedSequencerSettings {
         console.log(`[setProjectURLs] Project URLs set:`, urls);
     }
 
-    setTrimSettings(settings) {
-        this.settings.masterSettings.trimSettings = settings;
-        console.log(`[setTrimSettings] Trim settings set:`, settings);
-    }
+    // setTrimSettings(settings) {
+    //     this.settings.masterSettings.trimSettings = settings;
+    //     console.log(`[setTrimSettings] Trim settings set:`, settings);
+    // }
 
-    setProjectURLNames(names) {
-        this.settings.masterSettings.projectURLNames = names;
-        console.log(`[setProjectURLNames] Project URL names set:`, names);
+    setProjectChannelNames(names) {
+        this.settings.masterSettings.projectChannelNames = names;
+        console.log(`[setProjectChannelNames] Project URL names set:`, names);
     }
 
     setProjectSequences(sequenceData) {
@@ -289,7 +291,7 @@ class UnifiedSequencerSettings {
         });
     }
 
-    updateProjectURLNamesUI(urlNames) {
+    updateProjectChannelNamesUI(urlNames) {
         // Implement logic to update UI for project URL names
         console.log("Project URL names UI updated:", urlNames);
         // Example: Update each URL name display

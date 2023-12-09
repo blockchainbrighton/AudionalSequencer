@@ -93,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
 // Close modal functionality
 document.querySelector('.close-button').addEventListener('click', function() {
     if (currentTrimmerInstance) {

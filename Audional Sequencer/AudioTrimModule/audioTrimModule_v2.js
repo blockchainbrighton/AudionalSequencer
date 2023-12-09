@@ -9,11 +9,52 @@ class AudioTrimmer {
         this.audioBuffer = null;
         this.isPlaying = false;
         this.isLooping = false;
-        this.trimSettings = getTrimSettings(this.channelIndex);
+        
+        const trimSettings = getTrimSettings(this.channelIndex);
+        this.startSliderValue = trimSettings.startSliderValue;
+        this.endSliderValue = trimSettings.endSliderValue;
 
         this.displayTimeout = null;
 
     }
+
+    updateTrimmedSampleDuration() {
+        const startValue = this.startSliderValue;
+        const endValue = this.endSliderValue;
+        this.trimmedSampleDuration = Math.max(0, endValue - startValue);
+        this.debounceDisplayValues();
+    }
+
+    // Method to get the current value of the start slider
+    getStartSliderValue() {
+        return this.startSliderValue;
+    }
+
+    // Method to get the current value of the end slider
+    getEndSliderValue() {
+        return this.endSliderValue;
+    }
+
+    sliderValueToTimecode(sliderValue, totalDuration) {
+        return (sliderValue / 100) * totalDuration;
+    }
+
+// Method to debounce the display of values
+debounceDisplayValues() {
+    if (this.displayTimeout) {
+        clearTimeout(this.displayTimeout);
+    }
+    this.displayTimeout = setTimeout(() => this.displayValues(), 300); // Adjust the delay as needed
+}
+
+// Method to display values (for debugging or UI update)
+displayValues() {
+    console.log("Start Slider Value:", this.startSliderValue);
+    console.log("End Slider Value:", this.endSliderValue);
+    console.log("Trimmed Sample Duration:", this.trimmedSampleDuration);
+    // Add any other values you wish to display
+}
+
 
       // Method to set the audio buffer and update the waveform
       setAudioBuffer(audioBuffer) {
@@ -103,43 +144,7 @@ class AudioTrimmer {
             this.debounceDisplayValues();
         }
 
-        updateTrimmedSampleDuration() {
-            const startValue = this.startSliderValue;
-            const endValue = this.endSliderValue;
-            this.trimmedSampleDuration = Math.max(0, endValue - startValue);
-            this.debounceDisplayValues();
-        }
-    
-        // Method to get the current value of the start slider
-        getStartSliderValue() {
-            return this.startSliderValue;
-        }
-    
-        // Method to get the current value of the end slider
-        getEndSliderValue() {
-            return this.endSliderValue;
-        }
-    
-        sliderValueToTimecode(sliderValue, totalDuration) {
-            return (sliderValue / 100) * totalDuration;
-        }
-
-    // Method to debounce the display of values
-    debounceDisplayValues() {
-        if (this.displayTimeout) {
-            clearTimeout(this.displayTimeout);
-        }
-        this.displayTimeout = setTimeout(() => this.displayValues(), 300); // Adjust the delay as needed
-    }
-
-    // Method to display values (for debugging or UI update)
-    displayValues() {
-        console.log("Start Slider Value:", this.startSliderValue);
-        console.log("End Slider Value:", this.endSliderValue);
-        console.log("Trimmed Sample Duration:", this.trimmedSampleDuration);
-        // Add any other values you wish to display
-    }
-
+        
   
 
     addEventListeners() {
