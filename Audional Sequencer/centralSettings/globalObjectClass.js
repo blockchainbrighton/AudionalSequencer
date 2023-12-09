@@ -219,16 +219,46 @@ class UnifiedSequencerSettings {
             console.log("[loadSettings] Received JSON Settings:", jsonSettings);
             const parsedSettings = typeof jsonSettings === 'string' ? JSON.parse(jsonSettings) : jsonSettings;
             console.log("[loadSettings] Parsed Settings:", parsedSettings);
-
+    
             console.log("[loadSettings] Current masterSettings before loading new settings:", this.settings.masterSettings);
             this.settings.masterSettings = parsedSettings;
             console.log("[loadSettings] Updated masterSettings:", this.settings.masterSettings);
+    
+            // Update the text of each loadSampleButton with the loaded URL
+            this.updateAllLoadSampleButtonTexts();
         } catch (error) {
             console.error('Error loading settings:', error);
         }
         // Notify all observers about the change
         this.notifyObservers();
     }
+    
+    updateAllLoadSampleButtonTexts() {
+        const channels = document.querySelectorAll('.channel');
+        channels.forEach((channel, index) => {
+            const loadSampleButton = channel.querySelector('.load-sample-button');
+            if (loadSampleButton) {
+                // Call the modified updateLoadSampleButtonText function
+                this.updateLoadSampleButtonText(index, loadSampleButton);
+            }
+        });
+    }
+    
+    
+    updateLoadSampleButtonText(channelIndex, button) {
+        const loadedUrl = this.getprojectUrlforChannel(channelIndex);
+        if (loadedUrl) {
+            // Extract the desired portion of the URL
+            const urlParts = loadedUrl.split('/');
+            const lastPart = urlParts[urlParts.length - 1];
+    
+            // Update button text with the extracted portion
+            button.textContent = lastPart;
+        } else {
+            button.textContent = 'Load New Audional'; // Default text if no URL is loaded
+        }
+    }
+    
     
 
     exportSettings() {

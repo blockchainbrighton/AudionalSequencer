@@ -251,15 +251,8 @@ const loadPreset = (preset) => {
                 }
             });
         }
+       
         
-        function updateLoadSampleButtonText(channelIndex, button) {
-            const loadedUrl = window.unifiedSequencerSettings.getprojectUrlforChannel(channelIndex);
-            if (loadedUrl) {
-                button.textContent = loadedUrl; // Update button text to show the loaded URL
-            } else {
-                button.textContent = 'Load New Audional'; // Default text if no URL is loaded
-            }
-        }
         
 
         steps.forEach(pos => {
@@ -288,3 +281,39 @@ const loadPreset = (preset) => {
     console.log("loadPreset: After loadPreset, gainNodes values:", gainNodes.map(gn => gn.gain.value));
 };
 
+ 
+function updateLoadSampleButtonText(channelIndex, button) {
+    console.log(`[updateLoadSampleButtonText] Called for channel index: ${channelIndex}`);
+
+    const loadedUrl = window.unifiedSequencerSettings.getprojectUrlforChannel(channelIndex);
+    console.log(`[updateLoadSampleButtonText] Loaded URL for channel ${channelIndex}: ${loadedUrl}`);
+
+    if (loadedUrl) {
+        button.textContent = loadedUrl; // Update button text to show the loaded URL
+        console.log(`[updateLoadSampleButtonText] Button text updated to: ${loadedUrl}`);
+    } else {
+        button.textContent = 'Load New Audional'; // Default text if no URL is loaded
+        console.log(`[updateLoadSampleButtonText] Default text set for button`);
+    }
+}
+
+
+
+// Function to test updating the text of all loadSampleButton elements
+function testUpdateLoadSampleButtonText() {
+    console.log("[testUpdateLoadSampleButtonText] Function called");
+
+    const channels = document.querySelectorAll('.channel');
+    channels.forEach((channel, index) => {
+        const loadSampleButton = channel.querySelector('.load-sample-button');
+        if (loadSampleButton) {
+            loadSampleButton.textContent = `Channel ${index + 1}`; // Update with placeholder text
+            console.log(`[testUpdateLoadSampleButtonText] Button text updated for channel ${index + 1}`);
+        } else {
+            console.log(`[testUpdateLoadSampleButtonText] No loadSampleButton found for channel ${index + 1}`);
+        }
+    });
+}
+
+
+console.log("index.js loaded");
