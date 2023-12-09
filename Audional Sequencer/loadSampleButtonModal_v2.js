@@ -2,7 +2,7 @@
     function setupLoadSampleButton(channel, index) {
         const loadSampleButton = channel.querySelector('.load-sample-button');
         // Update the button text with the corresponding URL from projectURLs array
-        loadSampleButton.textContent = projectSettings.masterSettings.projectURLs[channelIndex];
+        loadSampleButton.textContent = window.unifiedSequencerSettings.settings.masterSettings.projectURLs[index];
         // Add event listener to open the modal
         loadSampleButton.addEventListener('click', () => openModal(index));
     }
@@ -93,22 +93,22 @@
             const channelContainer = document.querySelector(`.channel:nth-child(${index + 1}) .channel-container`);
             if (channelContainer) {
                 channelContainer.classList.toggle('ordinal-loaded', audionalInput.value !== undefined);
-                console.log(`Updated channelContainer class for channel ${index + 1}`); // Debug log
+                console.log(`Updated channelContainer class for channel ${index}`); // Debug log
     
                 updateButtonAfterLoading(index, loadSampleButton); // Call the helper function
-                console.log(`Updated button text for channel ${index + 1}`); // Debug log
+                console.log(`Updated button text for channel ${index}`); // Debug log
             }
         }
         document.body.removeChild(idModal);
-        console.log(`Removed modal for channel ${index + 1}`); // Debug log
+        console.log(`Removed modal for channel ${index}`); // Debug log
     }
     
     // Helper function to update button text after loading a sample
     function updateButtonAfterLoading(channelIndex, button) {
         if (window.unifiedSequencerSettings && typeof window.unifiedSequencerSettings.updateLoadSampleButtonText === 'function') {
-            window.unifiedSequencerSettings.updateAllLoadSampleButtonTexts(channelIndex, button);
+            window.unifiedSequencerSettings.updateLoadSampleButtonText(channelIndex, button);
         }
-        console.log(`Updated button text for channel ${channelIndex + 1}`); // Debug log
+        console.log(`Updated button text for channel ${channelIndex}`); // Debug log
     }
     
     export { setupLoadSampleButton };

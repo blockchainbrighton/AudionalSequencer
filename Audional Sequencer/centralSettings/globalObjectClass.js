@@ -154,6 +154,7 @@ class UnifiedSequencerSettings {
     
 
     updateSetting(key, value, channelIndex = null) {
+        console.log(`[updateSetting] Called with key: ${key}, value: ${value}, channelIndex: ${channelIndex}`);
         if (channelIndex !== null && Array.isArray(this.settings.masterSettings[key])) {
             this.settings.masterSettings[key][channelIndex] = value;
         } else if (key in this.settings.masterSettings) {
