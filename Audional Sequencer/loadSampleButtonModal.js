@@ -3,8 +3,6 @@ function setupLoadSampleButton(channel, index) {
 
 const loadSampleButton = channel.querySelector('.load-sample-button');
                 loadSampleButton.addEventListener('click', () => {
-                    event.stopPropagation(); // Prevent this click event from propagating
-
 
                     // Create a basic modal for audional ID input
                     const idModal = document.createElement('div');
@@ -178,13 +176,6 @@ const loadSampleButton = channel.querySelector('.load-sample-button');
                             fetchAudio(audionalUrl, index, loadSampleButton);
                         });
                         idModalContent.appendChild(idLink);
-                    });
-
-                    // Add a click event listener to the document to close the modal if clicked outside
-                    document.addEventListener('click', (event) => {
-                        if (!idModal.contains(event.target)) {
-                            document.body.removeChild(idModal);
-                        }
                     });
 
                     idModal.appendChild(idModalContent);
