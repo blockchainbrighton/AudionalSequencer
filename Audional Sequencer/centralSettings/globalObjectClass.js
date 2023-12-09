@@ -9,7 +9,7 @@ class UnifiedSequencerSettings {
                 projectName: 'New Audx Project', // Set the project name placeholder
                 projectBPM: 120,
                 currentSequence: 0, // Initialize with a default value
-                projectURLs: new Array(12).fill('Load New Audional'), // Set the URLs placeholders
+                projectURLs: new Array(12).fill(''), 
                 trimSettings: Array.from({ length: 12 }, () => ({
                     startSliderValue: 0.01,
                     endSliderValue: 100.00,
