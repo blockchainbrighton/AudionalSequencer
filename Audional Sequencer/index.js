@@ -231,6 +231,7 @@ const loadPreset = (preset) => {
         const { url, steps, mute } = channelData;
 
         if (url) {
+            
             const loadSampleButton = document.querySelector(`.channel[data-id="Channel-${index}"] .load-sample-button`);
             fetchAudio(url, index, loadSampleButton).then(() => {
                 const audioTrimmer = getAudioTrimmerInstanceForChannel(index);
@@ -244,6 +245,12 @@ const loadPreset = (preset) => {
 
                         // Update global settings
                         window.unifiedSequencerSettings.setTrimSettings(index, startSliderValue, endSliderValue);
+
+                        // Update the text of the loadSampleButton with the loaded URL
+                        const loadedUrl = getProjectUrlForChannel(index);
+                        if (loadedUrl) {
+                            loadSampleButton.textContent = loadedUrl; // Update button text to show the loaded URL
+                        }
                     });
                 }
             });

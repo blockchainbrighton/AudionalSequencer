@@ -182,7 +182,7 @@ class UnifiedSequencerSettings {
     
    
 
-    getAudioUrlForChannel(channelIndex) {
+    getprojectUrlforChannel(channelIndex) {
         return this.settings.masterSettings.projectURLs[channelIndex];
     }
 
