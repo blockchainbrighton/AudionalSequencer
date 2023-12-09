@@ -13,6 +13,11 @@ function updateProjectURLsUI(urls) {
     console.log("Project URLs UI updated:", urls);
 }
 
+// Helper function to get the project URL for a channel
+function getProjectUrlForChannel(channelIndex) {
+    return window.unifiedSequencerSettings.getprojectUrlforChannel(channelIndex);
+}
+
 // 
 function updateTrimSettingsUI(trimSettings) {
     console.log("{debugGlobalObjectToUI} updateTrimSettingsUI: updating with trimSettings", trimSettings);

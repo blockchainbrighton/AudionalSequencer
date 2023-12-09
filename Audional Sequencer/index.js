@@ -231,7 +231,6 @@ const loadPreset = (preset) => {
         const { url, steps, mute } = channelData;
 
         if (url) {
-            
             const loadSampleButton = document.querySelector(`.channel[data-id="Channel-${index}"] .load-sample-button`);
             fetchAudio(url, index, loadSampleButton).then(() => {
                 const audioTrimmer = getAudioTrimmerInstanceForChannel(index);
@@ -242,19 +241,26 @@ const loadPreset = (preset) => {
                         const endSliderValue = channelData.trimSettings?.endSliderValue || audioTrimmer.totalSampleDuration;
                         audioTrimmer.setStartSliderValue(startSliderValue);
                         audioTrimmer.setEndSliderValue(endSliderValue);
-
+        
                         // Update global settings
                         window.unifiedSequencerSettings.setTrimSettings(index, startSliderValue, endSliderValue);
-
+        
                         // Update the text of the loadSampleButton with the loaded URL
-                        const loadedUrl = getProjectUrlForChannel(index);
-                        if (loadedUrl) {
-                            loadSampleButton.textContent = loadedUrl; // Update button text to show the loaded URL
-                        }
+                        updateLoadSampleButtonText(index, loadSampleButton);
                     });
                 }
             });
         }
+        
+        function updateLoadSampleButtonText(channelIndex, button) {
+            const loadedUrl = window.unifiedSequencerSettings.getprojectUrlforChannel(channelIndex);
+            if (loadedUrl) {
+                button.textContent = loadedUrl; // Update button text to show the loaded URL
+            } else {
+                button.textContent = 'Load New Audional'; // Default text if no URL is loaded
+            }
+        }
+        
 
         steps.forEach(pos => {
             const btn = document.querySelector(`.channel[data-id="Channel-${index}"] .step-button:nth-child(${pos})`);
