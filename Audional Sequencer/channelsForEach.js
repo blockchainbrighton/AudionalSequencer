@@ -1,6 +1,6 @@
 // channelsForeach.js
 
-import { setupLoadSampleButton } from './loadSampleButtonModal.js';
+import { setupLoadSampleModalButton } from './loadSampleModalButton_v2.js';
 
 
 channels.forEach((channel, index) => {
@@ -182,8 +182,8 @@ clearButton.addEventListener('click', (e) => {
 
         // Left-click event listener
         loadSampleButton.addEventListener('click', () => {
-            setupLoadSampleButton(channel, index);
-            // Additional logic for closing the modal can be added within setupLoadSampleButton if needed
+            setupLoadSampleModalButton(channel, index);
+            // Additional logic for closing the modal can be added within setupLoadSampleModalButton if needed
         });
 
         // Right-click event listener

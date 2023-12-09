@@ -1,5 +1,5 @@
-    // loadSampleButtonModal.js
-    function setupLoadSampleButton(channel, index) {
+    // loadSampleModalButton_v2.js
+    function setupLoadSampleModalButton(channel, index) {
         const loadSampleButton = channel.querySelector('.load-sample-button');
         // Update the button text with the corresponding URL from projectURLs array
         loadSampleButton.textContent = window.unifiedSequencerSettings.settings.masterSettings.projectURLs[index];
@@ -32,20 +32,20 @@
 
     function createModal() {
         const modal = document.createElement('div');
-        modal.className = 'loadSampleButtonModal'; // Updated class name
+        modal.className = 'loadSampleModalButton'; // Updated class name
         return modal;
     }
 
     function createModalContent() {
         const content = document.createElement('div');
-        content.className = 'loadSampleButtonModal-content'; // Updated class name
+        content.className = 'loadSampleModalButton-content'; // Updated class name
         return content;
     }
 
     function createTextParagraph(text) {
         const paragraph = document.createElement('p');
         paragraph.textContent = text;
-        paragraph.className = 'loadSampleButtonModal-text'; // Updated class name
+        paragraph.className = 'loadSampleModalButton-text'; // Updated class name
         return paragraph;
     }
 
@@ -53,7 +53,7 @@
         const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = placeholder;
-        input.className = 'loadSampleButtonModal-input'; // Updated class name
+        input.className = 'loadSampleModalButton-input'; // Updated class name
         return input;
     }
 
@@ -75,6 +75,8 @@
     }
 
     function handleLoad(index, audionalInput, ipfsInput, idModal) {
+        console.log(`handleLoad called with index: ${index}, url: ${url}`);
+
         let url;
         if (audionalInput.value) {
             url = 'https://ordinals.com/content/' + getIDFromURL(audionalInput.value);
@@ -84,13 +86,14 @@
     
         if (url) {
             // Update the URL in the global settings object at the specific channel index
+            console.log("Before updateSetting:", window.unifiedSequencerSettings.settings.masterSettings.projectURLs);
             window.unifiedSequencerSettings.updateSetting('projectURLs', url, index);
-            console.log(`Updated URL for channel ${index + 1}:`, url); // Debug log
+            console.log("After updateSetting:", window.unifiedSequencerSettings.settings.masterSettings.projectURLs);
             // Fetch and load the audio
             fetchAudio(url, index, loadSampleButton);
-            console.log(`Fetched audio for channel ${index + 1}`); // Debug log
+            console.log(`Fetched audio for channel ${index}`); // Debug log
             // Update the class of the channel container
-            const channelContainer = document.querySelector(`.channel:nth-child(${index + 1}) .channel-container`);
+            const channelContainer = document.querySelector(`.channel:nth-child(${index}) .channel-container`);
             if (channelContainer) {
                 channelContainer.classList.toggle('ordinal-loaded', audionalInput.value !== undefined);
                 console.log(`Updated channelContainer class for channel ${index}`); // Debug log
@@ -111,5 +114,5 @@
         console.log(`Updated button text for channel ${channelIndex}`); // Debug log
     }
     
-    export { setupLoadSampleButton };
+    export { setupLoadSampleModalButton };
     

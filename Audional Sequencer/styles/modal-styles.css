@@ -1,5 +1,5 @@
 /* Modal Styles */
-.loadSampleButtonModal {
+.loadSampleModalButton {
     position: fixed;
     left: 0;
     top: 0;
@@ -12,7 +12,7 @@
     z-index: 9999;
 }
 
-.loadSampleButtonModal-content {
+.loadSampleModalButton-content {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
@@ -22,20 +22,20 @@
 }
 
 /* Text Paragraph Styles */
-.loadSampleButtonModal-text {
+.loadSampleModalButton-text {
     color: black;
     margin-bottom: 10px; /* Space between text and input field */
 }
 
 /* Input Field Styles */
-.loadSampleButtonModal-input {
+.loadSampleModalButton-input {
     margin-bottom: 10px;
     width: 100%;
     box-sizing: border-box;
 }
 
 /* Button Styles */
-.loadSampleButtonModal button {
+.loadSampleModalButton button {
     margin-top: 10px; /* Space above the button */
     padding: 10px 15px; /* Padding inside the button */
     border: none;
@@ -45,7 +45,7 @@
     cursor: pointer;
 }
 
-.loadSampleButtonModal button:hover {
+.loadSampleModalButton button:hover {
     background-color: #0056b3; /* Darker shade for hover effect */
 }
 
