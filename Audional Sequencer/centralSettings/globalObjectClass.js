@@ -37,12 +37,16 @@ class UnifiedSequencerSettings {
     setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
         if (this.isValidIndex(channelIndex)) {
             const currentSettings = this.settings.masterSettings.trimSettings[channelIndex];
-            Object.assign(currentSettings, { startSliderValue, endSliderValue });
+            if (currentSettings) {
+                Object.assign(currentSettings, { startSliderValue, endSliderValue });
+            } else {
+                console.error(`Trim settings not found for channel index: ${channelIndex}`);
+            }
         } else {
             console.error(`Invalid channel index: ${channelIndex}`);
         }
     }
-
+    
     getTrimSettings(channelIndex) {
         const trimSettings = this.settings.masterSettings.trimSettings[channelIndex];
         return trimSettings || { startSliderValue: 0.01, endSliderValue: 100.00 };
