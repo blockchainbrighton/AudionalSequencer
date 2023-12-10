@@ -207,9 +207,12 @@ class UnifiedSequencerSettings {
     // Method to update the name of a specific channel
     setProjectChannelName(channelIndex, name) {
         if (channelIndex >= 0 && channelIndex < this.settings.masterSettings.projectChannelNames.length) {
-            this.settings.masterSettings.projectChannelNames[channelIndex] = name;
-            console.log(`[setChannelName] Channel ${channelIndex} name set to: ${name}`);
-            this.notifyObservers(); // Notify observers about the change
+            // Update only if the name is different
+            if (this.settings.masterSettings.projectChannelNames[channelIndex] !== name) {
+                this.settings.masterSettings.projectChannelNames[channelIndex] = name;
+                console.log(`[setChannelName] Channel ${channelIndex} name set to: ${name}`);
+                this.notifyObservers(); // Notify observers about the change
+            }
         } else {
             console.error(`[setChannelName] Invalid channel index: ${channelIndex}`);
         }
@@ -255,18 +258,25 @@ class UnifiedSequencerSettings {
     
     
     updateLoadSampleButtonText(channelIndex, button) {
-        const loadedUrl = this.getprojectUrlforChannel(channelIndex);
-        if (loadedUrl) {
+        let buttonText = 'Load New Audional'; // Default text
+    
+        // Accessing projectChannelNames and projectURLs from settings
+        const channelName = this.settings.masterSettings.projectChannelNames[channelIndex];
+        const loadedUrl = this.settings.masterSettings.projectURLs[channelIndex];
+    
+        if (channelName) {
+            buttonText = channelName;
+        } else if (loadedUrl) {
             // Extract the desired portion of the URL
             const urlParts = loadedUrl.split('/');
             const lastPart = urlParts[urlParts.length - 1];
-    
-            // Update button text with the extracted portion
-            button.textContent = lastPart;
-        } else {
-            button.textContent = 'Load New Audional'; // Default text if no URL is loaded
+            buttonText = lastPart;
         }
+    
+        // Update button text
+        button.textContent = buttonText;
     }
+    
     
     
 

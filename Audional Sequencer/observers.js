@@ -39,12 +39,17 @@ function updateTrimSettingsObserver(settings) {
     }
 }
 
-// Observer for Project URL Names
+// Observer for Project Channel Names
 function updateProjectChannelNamesObserver(settings) {
     if (settings && settings.masterSettings && settings.masterSettings.projectChannelNames) {
-        console.log("Updating Project URL Names UI:", settings.masterSettings.projectChannelNames);
+        console.log("Updating Project channel Names UI:", settings.masterSettings.projectChannelNames);
 
-        updateProjectChannelNamesUI(settings.masterSettings.projectChannelNames);
+        settings.masterSettings.projectChannelNames.forEach((name, index) => {
+            const channelLabel = document.querySelector(`#channel-name-${index}`);
+            if (channelLabel) {
+                channelLabel.textContent = name || 'Default Channel Name'; // Use a default name if empty
+            }
+        });
     }
 }
 
