@@ -5,7 +5,8 @@
         // Update the button text with the corresponding URL from projectURLs array
         loadSampleButton.textContent = window.unifiedSequencerSettings.settings.masterSettings.projectURLs[index];
         // Add event listener to open the modal
-        loadSampleButton.addEventListener('click', () => openModal(index, loadSampleButton));
+        // loadSampleButton.addEventListener('click', () => 
+        openModal(index, loadSampleButton);
     }
 
     function openModal(index, loadSampleButton) {
