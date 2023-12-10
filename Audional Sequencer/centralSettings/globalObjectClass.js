@@ -171,7 +171,7 @@ class UnifiedSequencerSettings {
             console.error(`Invalid channel index: ${channelIndex}`);
         }
     }
-    
+
     getBPM() {
         return this.settings.masterSettings.projectBPM;
     }
@@ -204,9 +204,9 @@ class UnifiedSequencerSettings {
     //     console.log(`[setTrimSettings] Trim settings set:`, settings);
     // }
 
-    // Method to update the name of a specific channel
+        // Method to update the name of a specific channel
     setProjectChannelName(channelIndex, name) {
-        if (channelIndex >= 0 && channelIndex < this.settings.masterSettings.projectChannelNames.length) {
+        if (this.isValidIndex(channelIndex)) {
             // Update only if the name is different
             if (this.settings.masterSettings.projectChannelNames[channelIndex] !== name) {
                 this.settings.masterSettings.projectChannelNames[channelIndex] = name;
@@ -218,13 +218,11 @@ class UnifiedSequencerSettings {
         }
     }
 
+
     setProjectSequences(sequenceData) {
         this.settings.masterSettings.projectSequences = sequenceData;
         console.log(`[setProjectSequences] Project sequences set:`, sequenceData);
     }
-
-    
-    
 
     loadSettings(jsonSettings) {
         try {
@@ -277,16 +275,11 @@ class UnifiedSequencerSettings {
         button.textContent = buttonText;
     }
     
-    
-    
-
     exportSettings() {
         const exportedSettings = JSON.stringify(this.settings.masterSettings);
         console.log("[exportSettings] Exported Settings:", exportedSettings);
         return exportedSettings;
     }
-    
-
   
     isValidIndex(index) {
         return index >= 0 && index < 16; // Directly checking against 16
@@ -349,6 +342,19 @@ class UnifiedSequencerSettings {
         });
     }
 
+    ensureArrayLength(array, maxLength) {
+        while (array.length < maxLength) {
+            array.push(this.getDefaultArrayElement());
+        }
+    }
+    
+    getDefaultArrayElement() {
+        // Return the default element structure
+        // For example, for trimSettings:
+        return { startSliderValue: 0.01, endSliderValue: 100.00, totalSampleDuration: 0 };
+    }
+    
+   
     
 }
 

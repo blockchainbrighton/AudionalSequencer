@@ -23,7 +23,14 @@ function importSettings(jsonSettings) {
     } catch (error) {
         console.error('Error importing settings:', error);
     }
+
+ // Call this function for each array when loading a project
+ this.ensureArrayLength(this.settings.masterSettings.projectURLs, 16);
+ this.ensureArrayLength(this.settings.masterSettings.trimSettings, 16);
+ // ... and so on for other arrays
 }
+
+
 
 
 
