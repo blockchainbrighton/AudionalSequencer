@@ -1,84 +1,35 @@
 // channelsForeach.js
 
-import { setupLoadSampleModalButton } from './loadSampleModalButton_v2.js';
+    import { setupLoadSampleModalButton } from './loadSampleModalButton_v2.js';
 
+    channels.forEach((channel, index) => {
+        channel.dataset.id = `Channel-${index}`;
 
-channels.forEach((channel, index) => {
-    channel.dataset.id = `Channel-${index}`;
-    
-    // Create a gain node for the channel
-    const gainNode = audioContext.createGain();
-    gainNode.gain.value = 1; // Initial volume set to 1 (full volume)
-    gainNode.connect(audioContext.destination);
-    gainNodes[index] = gainNode;
-    
-      // Logging to confirm gain node creation and attachment
-      // console.log(`Gain node created for Channel-${index}. Current gain value: ${gainNode.gain.value}`);
-    
-      
-      const muteButton = channel.querySelector('.mute-button');
+        // Create a gain node for the channel
+        const gainNode = audioContext.createGain();
+        gainNode.gain.value = 1; // Initial volume set to 1 (full volume)
+        gainNode.connect(audioContext.destination);
+        gainNodes[index] = gainNode;
+
+        const muteButton = channel.querySelector('.mute-button');
         muteButton.addEventListener('click', () => {
-            if (muteButton.classList.contains('selected')) {
-                muteButton.classList.remove('selected');
-                
-                // Check if any channel is soloed
-                if (!soloedChannels.some(state => state) || soloedChannels[index]) {
-                    gainNodes[index].gain.value = 1;
-                }
-            } else {
-                muteButton.classList.add('selected');
-                gainNodes[index].gain.value = 0;
-
-                // If the current channel is soloed and being muted, remove its solo status
-                if (soloedChannels[index]) {
-                    soloedChannels[index] = false;
-                    const soloButton = channel.querySelector('.solo-button');
-                    soloButton.classList.remove('selected');
-                }
-            }
+            console.log(`Mute button clicked for Channel-${index}`);
+            muteButton.classList.toggle('selected');
+            updateVolume(channel, index);
             updateDimState(channel, index);
         });
 
-      
-
         const soloButton = channel.querySelector('.solo-button');
         soloButton.addEventListener('click', () => {
-            // Toggle solo state for the current channel
             soloedChannels[index] = !soloedChannels[index];
             soloButton.classList.toggle('selected', soloedChannels[index]);
-
-            // If this channel is now soloed
-            if (soloedChannels[index]) {
-                gainNodes[index].gain.value = 1; // Ensure its gain is set to 1
-                muteButton.classList.remove('selected'); // Ensure it's not muted
-                updateDimState(channel, index);
-
-                // Mute and dim all other non-soloed channels
-                channels.forEach((otherChannel, otherIndex) => {
-                    if (!soloedChannels[otherIndex] && otherIndex !== index) {
-                        gainNodes[otherIndex].gain.value = 0;
-                        updateDimState(otherChannel, otherIndex);
-                    }
-                });
-            } else {
-                // If this channel is now unsoloed and no other channels are soloed
-                if (!soloedChannels.some(state => state)) {
-                    channels.forEach((otherChannel, otherIndex) => {
-                        gainNodes[otherIndex].gain.value = otherChannel.querySelector('.mute-button').classList.contains('selected') ? 0 : 1;
-                        updateDimState(otherChannel, otherIndex);
-                    });
-                } else {
-                    // If other channels are still soloed, mute the current channel regardless of its mute button state
-                    gainNodes[index].gain.value = 0;
-                    updateDimState(channel, index);
-                }
-            }
+            channels.forEach((otherChannel, otherIndex) => {
+                updateVolume(otherChannel, otherIndex);
+                updateDimState(otherChannel, otherIndex);
+            });
         });
 
 
-
-
-    
         const clearButton = channel.querySelector('.clear-button');
         const clearConfirm = channel.querySelector('.clear-confirm');
         let clearConfirmTimeout;
