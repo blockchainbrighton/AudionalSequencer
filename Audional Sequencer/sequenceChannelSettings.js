@@ -1,6 +1,5 @@
 // sequenceChannelSettings.js
 
-let totalSequenceCount = 64;
 
 // A function to be called whenever the sequence changes or JSON data is loaded
 // function onSequenceOrDataChange() {
@@ -35,4 +34,3 @@ let totalSequenceCount = 64;
 // Assuming your load button calls a function that updates the global object, make sure to also call onSequenceOrDataChange after loading new JSON data
 
 // Log initial channel settings
-console.log("Initial channel settings:", window.unifiedSequencerSettings.getSettings('projectSequences'));

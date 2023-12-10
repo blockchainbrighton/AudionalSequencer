@@ -41,13 +41,13 @@ let activeChannels = 16;// new Set();
 let clearClickedOnce = Array(channels.length).fill(false);
 let clearConfirmTimeout = Array(channels.length).fill(null);
 
-let isContinuousPlay = false;
-
-const continuousPlayButton = document.getElementById('continuous-play');
-continuousPlayButton.addEventListener('click', () => {
-    isContinuousPlay = !isContinuousPlay;  // Toggle the continuous play mode
-    continuousPlayButton.classList.toggle('selected', isContinuousPlay);
-});
+// let isContinuousPlay = false;
+// 
+// const continuousPlayButton = document.getElementById('continuous-play');
+// continuousPlayButton.addEventListener('click', () => {
+//     isContinuousPlay = !isContinuousPlay;  // Toggle the continuous play mode
+//     continuousPlayButton.classList.toggle('selected', isContinuousPlay);
+// });
 
 
     if (!audioContext) {

@@ -1,5 +1,18 @@
 // sequenceChannelSettings_Part2.js
 
+let totalSequenceCount = 1;
+
+let isContinuousPlay = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const continuousPlayButton = document.getElementById('continuous-play');
+    continuousPlayButton.addEventListener('click', () => {
+        isContinuousPlay = !isContinuousPlay;  // Toggle the continuous play mode
+        continuousPlayButton.classList.toggle('selected', isContinuousPlay);
+        // Other logic that needs to be executed when the mode changes
+    });
+});
+
 function loadSequence(sequenceNumber) {
     // Retrieve the sequence from the global object
     let sequenceChannels = window.unifiedSequencerSettings.getCurrentSequence(sequenceNumber);
@@ -47,26 +60,50 @@ function loadSequence(sequenceNumber) {
 }
 
 function loadNextSequence() {
-    if (window.unifiedSequencerSettings.getCurrentSequence() < totalSequenceCount) {
+    let currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
+
+    if (currentSequence < totalSequenceCount) {
         // Save current sequence's settings
 
         // Increment the current sequence number
-        const newSequence = window.unifiedSequencerSettings.getCurrentSequence() + 1;
+        const newSequence = currentSequence + 1;
         window.unifiedSequencerSettings.setCurrentSequence(newSequence);
 
         // Load the next sequence's settings
         loadSequence(newSequence);
 
-        // Update the displayed number
-        const sequenceDisplayElement = document.getElementById('current-sequence-display');
-        if (sequenceDisplayElement) {
-            sequenceDisplayElement.textContent = 'Sequence ' + newSequence;
-        }
-        
-        updateActiveQuickPlayButton();
+        // Update the displayed number and UI
+        updateSequenceDisplay(newSequence);
+    } else if (isContinuousPlay) {
+        // Create a new sequence if continuous play is active and we're at the last sequence
+        const newSequence = totalSequenceCount;
+        totalSequenceCount++; // Increment the total sequence count
+
+        // Initialize the new sequence
+        initializeNewSequence(newSequence);
+
+        // Load the new sequence
+        loadSequence(newSequence);
+
+        // Update the displayed number and UI
+        updateSequenceDisplay(newSequence);
     } else {
         console.warn("You've reached the last sequence.");
     }
+}
+
+function initializeNewSequence(sequenceNumber) {
+    // Initialize the sequence with default settings
+    let sequenceChannels = Array(16).fill().map(() => [null].concat(Array(64).fill(false)));
+    window.unifiedSequencerSettings.setCurrentSequence(sequenceNumber, sequenceChannels);
+}
+
+function updateSequenceDisplay(sequenceNumber) {
+    const sequenceDisplayElement = document.getElementById('current-sequence-display');
+    if (sequenceDisplayElement) {
+        sequenceDisplayElement.textContent = 'Sequence ' + sequenceNumber;
+    }
+    updateActiveQuickPlayButton();
 }
 
 function updateUIForSequence(sequenceNumber) {
@@ -190,4 +227,5 @@ document.getElementById('prev-sequence').addEventListener('click', function() {
 //
 //}
 
+console.log("Initial channel settings:", window.unifiedSequencerSettings.getSettings('projectSequences'));
 
