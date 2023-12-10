@@ -9,14 +9,14 @@ class UnifiedSequencerSettings {
                 projectName: 'New Audx Project', // Set the project name placeholder
                 projectBPM: 120,
                 currentSequence: 0, // Initialize with a default value
-                projectURLs: new Array(12).fill(''), 
-                trimSettings: Array.from({ length: 12 }, () => ({
+                projectURLs: new Array(16).fill(''), 
+                trimSettings: Array.from({ length: 16 }, () => ({
                     startSliderValue: 0.01,
                     endSliderValue: 100.00,
                     totalSampleDuration: 0
                 })),
-                projectChannelNames: new Array(12).fill(''), // You can set placeholders for channel names if needed
-                projectSequences: this.initializeSequences(12, 16, 64) // You can adjust the dimensions as needed
+                projectChannelNames: new Array(16).fill(''), // You can set placeholders for channel names if needed
+                projectSequences: this.initializeSequences(16, 16, 64) // You can adjust the dimensions as needed
             }
         };
 
@@ -35,14 +35,18 @@ class UnifiedSequencerSettings {
     }
 
     setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
-        if (this.isValidIndex(channelIndex, this.settings.masterSettings.trimSettings.length)) {
+        if (this.isValidIndex(channelIndex)) {
             const currentSettings = this.settings.masterSettings.trimSettings[channelIndex];
-            Object.assign(currentSettings, { startSliderValue, endSliderValue });
+            if (currentSettings) {
+                Object.assign(currentSettings, { startSliderValue, endSliderValue });
+            } else {
+                console.error(`Trim settings not found for channel index: ${channelIndex}`);
+            }
         } else {
             console.error(`Invalid channel index: ${channelIndex}`);
         }
     }
-
+    
     getTrimSettings(channelIndex) {
         const trimSettings = this.settings.masterSettings.trimSettings[channelIndex];
         return trimSettings || { startSliderValue: 0.01, endSliderValue: 100.00 };
@@ -165,7 +169,7 @@ class UnifiedSequencerSettings {
     }
 
     updateSampleDuration(duration, channelIndex) {
-        if (this.isValidIndex(channelIndex, this.settings.masterSettings.trimSettings.length)) {
+        if (this.isValidIndex(channelIndex)) {
             this.settings.masterSettings.trimSettings[channelIndex].totalSampleDuration = duration;
         } else {
             console.error(`Invalid channel index: ${channelIndex}`);
@@ -204,9 +208,9 @@ class UnifiedSequencerSettings {
     //     console.log(`[setTrimSettings] Trim settings set:`, settings);
     // }
 
-    // Method to update the name of a specific channel
+        // Method to update the name of a specific channel
     setProjectChannelName(channelIndex, name) {
-        if (channelIndex >= 0 && channelIndex < this.settings.masterSettings.projectChannelNames.length) {
+        if (this.isValidIndex(channelIndex)) {
             // Update only if the name is different
             if (this.settings.masterSettings.projectChannelNames[channelIndex] !== name) {
                 this.settings.masterSettings.projectChannelNames[channelIndex] = name;
@@ -218,13 +222,12 @@ class UnifiedSequencerSettings {
         }
     }
 
+
     setProjectSequences(sequenceData) {
         this.settings.masterSettings.projectSequences = sequenceData;
         console.log(`[setProjectSequences] Project sequences set:`, sequenceData);
     }
 
-    
-    
 
     loadSettings(jsonSettings) {
         try {
@@ -232,8 +235,15 @@ class UnifiedSequencerSettings {
             const parsedSettings = typeof jsonSettings === 'string' ? JSON.parse(jsonSettings) : jsonSettings;
             console.log("[loadSettings] Parsed Settings:", parsedSettings);
     
-            console.log("[loadSettings] Current masterSettings before loading new settings:", this.settings.masterSettings);
-            this.settings.masterSettings = parsedSettings;
+            // Update the masterSettings with the parsed settings
+            this.settings.masterSettings.projectName = parsedSettings.projectName;
+            this.settings.masterSettings.projectBPM = parsedSettings.projectBPM;
+            this.settings.masterSettings.currentSequence = parsedSettings.currentSequence;
+            this.settings.masterSettings.projectURLs = parsedSettings.projectURLs;
+            this.settings.masterSettings.trimSettings = parsedSettings.trimSettings;
+            this.settings.masterSettings.projectChannelNames = parsedSettings.projectChannelNames;
+            // ... (any other properties you need to update)
+    
             console.log("[loadSettings] Updated masterSettings:", this.settings.masterSettings);
     
             // Update the text of each loadSampleButton with the loaded URL
@@ -244,6 +254,15 @@ class UnifiedSequencerSettings {
         // Notify all observers about the change
         this.notifyObservers();
     }
+    
+        
+        // Helper function to ensure array length
+        ensureArrayLength(array, length, defaultValue) {
+            while (array.length < length) {
+                array.push(defaultValue);
+            }
+        }
+            
     
     updateAllLoadSampleButtonTexts() {
         const channels = document.querySelectorAll('.channel');
@@ -277,19 +296,14 @@ class UnifiedSequencerSettings {
         button.textContent = buttonText;
     }
     
-    
-    
-
     exportSettings() {
         const exportedSettings = JSON.stringify(this.settings.masterSettings);
         console.log("[exportSettings] Exported Settings:", exportedSettings);
         return exportedSettings;
     }
-    
-
   
-    isValidIndex(index, length) {
-        return index >= 0 && index < length;
+    isValidIndex(index) {
+        return index >= 0 && index < 16; // Directly checking against 16
     }
 
     // Additional methods for updating UI
@@ -349,6 +363,19 @@ class UnifiedSequencerSettings {
         });
     }
 
+    ensureArrayLength(array, maxLength) {
+        while (array.length < maxLength) {
+            array.push(this.getDefaultArrayElement());
+        }
+    }
+    
+    getDefaultArrayElement() {
+        // Return the default element structure
+        // For example, for trimSettings:
+        return { startSliderValue: 0.01, endSliderValue: 100.00, totalSampleDuration: 0 };
+    }
+    
+   
     
 }
 

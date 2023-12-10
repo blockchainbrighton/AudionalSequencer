@@ -32,6 +32,8 @@
     font-size: 16px;
     position: relative; /* Add this to enable positioning */
     left: -5px; /* Move the letters 5 pixels to the left */
+    top: -3px;
+    color: rgb(0, 0, 0); /* Change the letter color to white */
 }
 
 #play {
@@ -58,6 +60,12 @@
 .solo-button.selected .letter {
     color: white; /* Change the letter color to white */
 }
+
+.clear-button, .mute-button, .solo-button {
+    aspect-ratio: 1 / 1; /* Maintain a 1:1 aspect ratio */
+    /* Other styles */
+}
+
 
 .clear-button {
     background-color: rgb(153, 153, 2);

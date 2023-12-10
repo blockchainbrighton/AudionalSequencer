@@ -1,5 +1,12 @@
 // eventListeners_v2.js
 
+const appContainer = document.getElementById('drum-machine'); // Adjust the ID as per your HTML
+appContainer.addEventListener('click', () => {
+    audioContext.resume().then(() => {
+        console.log('Playback resumed successfully');
+    });
+});
+
 document.addEventListener("DOMContentLoaded", function() {
     let saveButton = document.getElementById('save-button');
     let loadFileInput = document.getElementById('load-file-input');

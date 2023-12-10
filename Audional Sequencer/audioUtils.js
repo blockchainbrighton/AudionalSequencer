@@ -210,16 +210,17 @@ function togglePlayState(isPlaying, startStopFunction, firstButton, secondButton
 }
 
 // Function to update the mute state in a single function
-function updateMuteState(channel, shouldMute) {
+function updateMuteState(channel, isMuted) {
+  console.log("updateMuteState - isMuted: " + isMuted);
   const channelIndex = parseInt(channel.dataset.id.split('-')[1]);
-  channel.dataset.muted = shouldMute ? 'true' : 'false';
+  channel.dataset.muted = isMuted ? 'true' : 'false';
   const muteButton = channel.querySelector('.mute-button');
 
-  muteButton.classList.toggle('selected', shouldMute);
-  channelMutes[channelIndex] = shouldMute;
+  muteButton.classList.toggle('selected', isMuted);
+  channelMutes[channelIndex] = isMuted;
 
   // Mute or unmute using gain node
-  if (shouldMute) {
+  if (isMuted) {
       gainNodes[channelIndex].gain.value = 0; // Mute the channel
       // console.log("updateMuteState - Channel-" + channel.dataset.id.replace("Channel-", "") + " Muted");
   } else {
@@ -230,7 +231,7 @@ function updateMuteState(channel, shouldMute) {
   // Update the dim state of the channel
   updateDimState(channel, channelIndex);
 
-  // console.log(`Channel-${channel.dataset.id.replace("Channel-", "")} Muted: ${shouldMute}`);
+  // console.log(`Channel-${channel.dataset.id.replace("Channel-", "")} Muted: ${isMuted}`);
 }
 
 
