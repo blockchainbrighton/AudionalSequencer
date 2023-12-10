@@ -80,49 +80,49 @@ channels.forEach((channel, index) => {
 
     
         const clearButton = channel.querySelector('.clear-button');
-const clearConfirm = channel.querySelector('.clear-confirm');
+        const clearConfirm = channel.querySelector('.clear-confirm');
 
-clearButton.addEventListener('click', (e) => {
-    e.stopPropagation();
+        clearButton.addEventListener('click', (e) => {
+            e.stopPropagation();
 
-    if (!clearClickedOnce[index]) {
-        // Start the flashing effect
-        clearButton.classList.add('flashing');
-        clearButton.classList.remove('dimmed');
+            if (!clearClickedOnce[index]) {
+                // Start the flashing effect
+                clearButton.classList.add('flashing');
+                clearButton.classList.remove('dimmed');
 
-        // Show the visual indication
-        clearClickedOnce[index] = true;
+                // Show the visual indication
+                clearClickedOnce[index] = true;
 
-        // Set a timer to hide the confirmation after 2 seconds
-        clearConfirmTimeout[index] = setTimeout(() => {
-            clearConfirm.style.display = "none";
-            clearClickedOnce[index] = false;
-            // Stop the flashing effect
-            clearButton.classList.remove('flashing');
-            clearButton.classList.add('dimmed');
-        }, 2000);
-    } else {
-        // Clear the steps
-        const stepButtons = channel.querySelectorAll('.step-button');
-        stepButtons.forEach(button => {
-            button.classList.remove('selected');
+                // Set a timer to hide the confirmation after 2 seconds
+                clearConfirmTimeout[index] = setTimeout(() => {
+                    clearConfirm.style.display = "none";
+                    clearClickedOnce[index] = false;
+                    // Stop the flashing effect
+                    clearButton.classList.remove('flashing');
+                    clearButton.classList.add('dimmed');
+                }, 2000);
+            } else {
+                // Clear the steps
+                const stepButtons = channel.querySelectorAll('.step-button');
+                stepButtons.forEach(button => {
+                    button.classList.remove('selected');
+                });
+
+                // Update the step settings in the sequence data
+                let stepSettings = Array(64).fill(false); // Reset all steps to false
+                for (let stepIndex = 0; stepIndex < stepSettings.length; stepIndex++) {
+                    window.unifiedSequencerSettings.updateStepState(currentSequence, index, stepIndex, stepSettings[stepIndex]);
+                }
+
+                // Hide the visual indication
+                clearConfirm.style.display = "none";
+                clearTimeout(clearConfirmTimeout[index]);
+                clearClickedOnce[index] = false;
+                // Stop the flashing effect
+                clearButton.classList.remove('flashing');
+                clearButton.classList.add('dimmed');
+            }
         });
-
-        // Update the step settings in the sequence data
-        let stepSettings = Array(64).fill(false); // Reset all steps to false
-        for (let stepIndex = 0; stepIndex < stepSettings.length; stepIndex++) {
-            window.unifiedSequencerSettings.updateStepState(currentSequence, index, stepIndex, stepSettings[stepIndex]);
-        }
-
-        // Hide the visual indication
-        clearConfirm.style.display = "none";
-        clearTimeout(clearConfirmTimeout[index]);
-        clearClickedOnce[index] = false;
-        // Stop the flashing effect
-        clearButton.classList.remove('flashing');
-        clearButton.classList.add('dimmed');
-    }
-});
         
     
 
@@ -180,6 +180,8 @@ clearButton.addEventListener('click', (e) => {
 
     const loadSampleButton = channel.querySelector('.load-sample-button');
 
+    
+
         // Left-click event listener
         loadSampleButton.addEventListener('click', () => {
             setupLoadSampleModalButton(channel, index);
@@ -189,7 +191,8 @@ clearButton.addEventListener('click', (e) => {
         // Right-click event listener
         loadSampleButton.addEventListener('contextmenu', (event) => {
             event.preventDefault(); // Prevent the default context menu
-
+            showChannelNamingModal(index); // Show the channel naming modal
+       
             // Create and show the custom context menu
             showCustomContextMenu(event.pageX, event.pageY, () => {
                 const userChannelName = prompt("Enter a name for this channel:");
@@ -197,10 +200,11 @@ clearButton.addEventListener('click', (e) => {
                     // Update the button or relevant element with the new channel name
                     loadSampleButton.textContent = userChannelName;
                 }
-            });
         });
+    });
 
-        function showCustomContextMenu(x, y, onAddChannelName) {
+        // Function to create and show the custom context menu
+        function showCustomContextMenu(x, y, channelIndex) {
             // Remove any existing custom context menus
             closeCustomContextMenu();
 
@@ -213,11 +217,38 @@ clearButton.addEventListener('click', (e) => {
             // Add menu options
             const addChannelNameOption = document.createElement('div');
             addChannelNameOption.textContent = 'Add User Channel Name';
-            addChannelNameOption.addEventListener('click', onAddChannelName);
+            addChannelNameOption.addEventListener('click', () => {
+                showChannelNamingModal(channelIndex);
+                closeCustomContextMenu(); // Close the menu after opening the naming modal
+            });
             menu.appendChild(addChannelNameOption);
 
             // Append the menu to the body and show it
             document.body.appendChild(menu);
+        }
+
+        // Function to create and show the channel naming modal
+        function showChannelNamingModal(channelIndex) {
+            const modal = document.createElement('div');
+            modal.className = 'channel-naming-modal';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Give this channel a name';
+            input.className = 'channel-name-input';
+
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Submit';
+            submitButton.onclick = () => {
+                if (input.value) {
+                    window.unifiedSequencerSettings.setProjectChannelName(channelIndex, input.value);
+                }
+                document.body.removeChild(modal);
+            };
+
+            modal.appendChild(input);
+            modal.appendChild(submitButton);
+            document.body.appendChild(modal);
         }
 
         // Function to close the custom context menu

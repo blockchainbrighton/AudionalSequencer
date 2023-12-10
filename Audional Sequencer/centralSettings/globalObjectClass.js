@@ -50,8 +50,8 @@ class UnifiedSequencerSettings {
 
 
     // Example of a method that changes settings
-    setProjectName(name) {
-        this.settings.masterSettings.projectName = name;
+    setProjectName(channelIndex, name) {
+        this.settings.masterSettings.projectName[channelIndex] = name;
         this.notifyObservers(); // Notify observers about the change
     }
 
@@ -204,9 +204,18 @@ class UnifiedSequencerSettings {
     //     console.log(`[setTrimSettings] Trim settings set:`, settings);
     // }
 
-    setProjectChannelNames(names) {
-        this.settings.masterSettings.projectChannelNames = names;
-        console.log(`[setProjectChannelNames] Project URL names set:`, names);
+    // Method to update the name of a specific channel
+    setProjectChannelName(channelIndex, name) {
+        if (channelIndex >= 0 && channelIndex < this.settings.masterSettings.projectChannelNames.length) {
+            // Update only if the name is different
+            if (this.settings.masterSettings.projectChannelNames[channelIndex] !== name) {
+                this.settings.masterSettings.projectChannelNames[channelIndex] = name;
+                console.log(`[setChannelName] Channel ${channelIndex} name set to: ${name}`);
+                this.notifyObservers(); // Notify observers about the change
+            }
+        } else {
+            console.error(`[setChannelName] Invalid channel index: ${channelIndex}`);
+        }
     }
 
     setProjectSequences(sequenceData) {
@@ -249,18 +258,25 @@ class UnifiedSequencerSettings {
     
     
     updateLoadSampleButtonText(channelIndex, button) {
-        const loadedUrl = this.getprojectUrlforChannel(channelIndex);
-        if (loadedUrl) {
+        let buttonText = 'Load New Audional'; // Default text
+    
+        // Accessing projectChannelNames and projectURLs from settings
+        const channelName = this.settings.masterSettings.projectChannelNames[channelIndex];
+        const loadedUrl = this.settings.masterSettings.projectURLs[channelIndex];
+    
+        if (channelName) {
+            buttonText = channelName;
+        } else if (loadedUrl) {
             // Extract the desired portion of the URL
             const urlParts = loadedUrl.split('/');
             const lastPart = urlParts[urlParts.length - 1];
-    
-            // Update button text with the extracted portion
-            button.textContent = lastPart;
-        } else {
-            button.textContent = 'Load New Audional'; // Default text if no URL is loaded
+            buttonText = lastPart;
         }
+    
+        // Update button text
+        button.textContent = buttonText;
     }
+    
     
     
 
