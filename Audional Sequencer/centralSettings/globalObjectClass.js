@@ -15,13 +15,61 @@ class UnifiedSequencerSettings {
                     endSliderValue: 100.00,
                     totalSampleDuration: 0
                 })),
-                projectChannelNames: new Array(16).fill(''), // You can set placeholders for channel names if needed
-                projectSequences: this.initializeSequences(16, 16, 64) // You can adjust the dimensions as needed
+                projectChannelNames: new Array(16).fill(''), // Placeholder for channel names
+                projectSequences: this.initializeSequences(16, 16, 64) // Adjust dimensions as needed
             }
         };
 
-        // Expose the checkSettings function for manual checking
-        this.checkSettings = this.checkSettings.bind(this);
+        // Bind methods
+            this.checkSettings = this.checkSettings.bind(this);
+            this.clearMasterSettings = this.clearMasterSettings.bind(this);
+        }
+
+        clearMasterSettings() {
+            console.log("[clearMasterSettings] Current masterSettings before clearing:", this.settings.masterSettings);
+
+            this.settings.masterSettings = {
+                projectName: '',
+                projectBPM: 120,
+                projectURLs: new Array(16).fill(''),
+                trimSettings: Array.from({ length: 16 }, () => ({
+                    startSliderValue: 0.01,
+                    endSliderValue: 100.00,
+                    totalSampleDuration: 0
+                })),
+                projectChannelNames: new Array(16).fill(''),
+                projectSequences: this.initializeSequences(16, 16, 64)
+            };
+            console.log("[clearMasterSettings] Master settings cleared.");
+        }
+
+        initializeSequences(numSequences, numChannels, numSteps) {
+            let sequenceData = {};
+            for (let seq = 0; seq < numSequences; seq++) {
+                sequenceData[`Sequence${seq}`] = this.initializeChannels(numChannels, numSteps);
+            }
+            return sequenceData;
+        }
+        
+        initializeChannels(numChannels, numSteps) {
+            let channels = {};
+            for (let ch = 0; ch < numChannels; ch++) {
+                channels[`ch${ch}`] = {
+                    steps: new Array(numSteps).fill(false),
+                    mute: false, // Ensure mute is off by default
+                    url: '' // Default URL can be empty or set to a default value
+                };
+            }
+            return channels;
+        }
+
+
+    initializeTrimSettings(numSettings) {
+        return Array.from({ length: numSettings }, () => ({
+            startSliderValue: 0,
+            endSliderValue: 100,
+            totalSampleDuration: 0
+        }));
     }
 
     // Method to register an observer
@@ -91,45 +139,7 @@ class UnifiedSequencerSettings {
         return this.settings.masterSettings;
     }
 
-    clearMasterSettings() {
-        console.log("[clearMasterSettings] Current masterSettings before clearing:", this.settings.masterSettings);
-
-        this.settings.masterSettings = {
-            projectName: '',
-            projectBPM: 120,
-            projectURLs: new Array(16).fill(''),
-            trimSettings: Array.from({ length: 16 }, () => ({
-                startSliderValue: 0.01,
-                endSliderValue: 100.00,
-                totalSampleDuration: 0
-            })),
-            projectChannelNames: new Array(16).fill(''),
-            projectSequences: this.initializeSequences(16, 16, 64)
-        };
-        console.log("[clearMasterSettings] Master settings cleared.");
-    }
-  
-
-    initializeSequences(numSequences, numChannels, numSteps) {
-        let sequenceData = {};
-        for (let seq = 0; seq < numSequences; seq++) {
-            sequenceData[`Sequence${seq}`] = this.initializeChannels(numChannels, numSteps);
-        }
-        return sequenceData;
-    }
-    
-    initializeChannels(numChannels, numSteps) {
-        let channels = {};
-        for (let ch = 0; ch < numChannels; ch++) {
-            channels[`ch${ch}`] = {
-                steps: Array(numSteps).fill(false),
-                mute: false, // Ensure mute is off by default
-                url: '' // Default URL can be empty or set to a default value
-            };
-        }
-        return channels;
-    }
-
+   
     updateProjectSequencesUI() {
         const projectSequences = this.getSettings('projectSequences');
         // Assuming you have a method to update the UI for each sequence
