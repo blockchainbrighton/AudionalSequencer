@@ -20,15 +20,22 @@
         });
     
         const soloButton = channel.querySelector('.solo-button');
-        soloButton.addEventListener('click', () => {
-            soloedChannels[index] = !soloedChannels[index];
-            soloButton.classList.toggle('selected', soloedChannels[index]);
-            channels.forEach((otherChannel, otherIndex) => {
-                const isMuted = otherChannel.querySelector('.mute-button').classList.contains('selected');
-                updateMuteState(otherChannel, isMuted);
-                updateDimState(otherChannel, otherIndex);
+            soloButton.addEventListener('click', () => {
+                soloedChannels[index] = !soloedChannels[index];
+                soloButton.classList.toggle('selected', soloedChannels[index]);
+
+                // Update mute state for all channels based on solo state
+                channels.forEach((otherChannel, otherIndex) => {
+                    if (index === otherIndex) {
+                        // If this is the soloed channel, ensure it's not muted
+                        updateMuteState(otherChannel, false);
+                    } else {
+                        // Mute all other channels if this channel is soloed
+                        updateMuteState(otherChannel, soloedChannels[index]);
+                    }
+                    updateDimState(otherChannel, otherIndex);
+                });
             });
-        });
 
 
         const clearButton = channel.querySelector('.clear-button');
