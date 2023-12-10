@@ -205,16 +205,17 @@ function updateProjectSequencesUI(sequenceData) {
 
         Object.keys(sequence).forEach(channelKey => {
             const steps = sequence[channelKey].steps; // Corrected to directly access the steps array
-            console.log(`[updateProjectSequencesUI] Processing channel: ${channelKey} in sequence: ${sequenceKey}`);
+            // console.log(`[updateProjectSequencesUI] Processing channel: ${channelKey} in sequence: ${sequenceKey}`);
 
             if (Array.isArray(steps)) {
-                console.log(`[updateProjectSequencesUI] Total steps in channel ${channelKey}: ${steps.length}`);
+                // console.log(`[updateProjectSequencesUI] Total steps in channel ${channelKey}: ${steps.length}`);
 
                 steps.forEach((step, index) => {
-                    const stepControlId = `${sequenceKey}-${channelKey}-step-${index}`;
-                    const stepControl = document.getElementById(stepControlId);
+                    // Generate ID in the format used for step buttons
+                const stepControlId = `${sequenceKey}-${channelKey}-step-${index}`;
+                const stepControl = document.getElementById(stepControlId);
 
-                    console.log(`[updateProjectSequencesUI] Processing stepControl ID: ${stepControlId}, State: ${step}`);
+                    // console.log(`[updateProjectSequencesUI] Processing stepControl ID: ${stepControlId}, State: ${step}`);
 
                     if (stepControl) {
                         if (step === true) {
@@ -229,7 +230,7 @@ function updateProjectSequencesUI(sequenceData) {
                             }
                         }
                     } else {
-                        console.log(`[updateProjectSequencesUI] Step control not found for ID: ${stepControlId}`);
+                        // console.log(`[updateProjectSequencesUI] Step control not found for ID: ${stepControlId}`);
                     }
                 });
             } else {
@@ -238,6 +239,7 @@ function updateProjectSequencesUI(sequenceData) {
         });
     });
 }
+
 
 
 

@@ -50,3 +50,20 @@
 }
 
 /* Additional styles for specific buttons can be added as needed */
+.channel-naming-modal {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000;
+    /* Add more styling as needed */
+}
+
+.channel-name-input {
+    width: 100%;
+    margin-bottom: 10px;
+    /* Add more styling as needed */
+}
