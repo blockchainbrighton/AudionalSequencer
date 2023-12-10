@@ -35,7 +35,7 @@ class UnifiedSequencerSettings {
     }
 
     setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
-        if (this.isValidIndex(channelIndex, this.settings.masterSettings.trimSettings.length)) {
+        if (this.isValidIndex(channelIndex)) {
             const currentSettings = this.settings.masterSettings.trimSettings[channelIndex];
             Object.assign(currentSettings, { startSliderValue, endSliderValue });
         } else {
@@ -165,13 +165,13 @@ class UnifiedSequencerSettings {
     }
 
     updateSampleDuration(duration, channelIndex) {
-        if (this.isValidIndex(channelIndex, this.settings.masterSettings.trimSettings.length)) {
+        if (this.isValidIndex(channelIndex)) {
             this.settings.masterSettings.trimSettings[channelIndex].totalSampleDuration = duration;
         } else {
             console.error(`Invalid channel index: ${channelIndex}`);
         }
     }
-
+    
     getBPM() {
         return this.settings.masterSettings.projectBPM;
     }
@@ -288,8 +288,8 @@ class UnifiedSequencerSettings {
     
 
   
-    isValidIndex(index, length) {
-        return index >= 0 && index < length;
+    isValidIndex(index) {
+        return index >= 0 && index < 16; // Directly checking against 16
     }
 
     // Additional methods for updating UI
