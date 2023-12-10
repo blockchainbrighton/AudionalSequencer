@@ -8,6 +8,25 @@
 }
 
 /* --- Button Specific Styles --- */
+
+/* Styles for play and stop buttons */
+#play, #stop {
+    /* Define styles specific to play and stop buttons */
+    /* Example: flex-grow, flex-shrink, and flex-basis properties */
+    flex: 1; 
+    width: 50px; /* Fixed width */
+    height: 50px; /* Fixed height */
+    /* Add other common styles for play and stop buttons here */
+}
+
+/* Styles for clear, mute, and solo buttons */
+.clear-button, .mute-button, .solo-button {
+    flex: 1; /* Flex grow and shrink equally */
+    min-width: 18px; /* Minimum width */
+    max-width: 18px; /* Maximum width */
+    /* Add other common styles for clear, mute, and solo buttons here */
+}
+
 #play {
     animation: flash 2s infinite ease-in-out;
 }
