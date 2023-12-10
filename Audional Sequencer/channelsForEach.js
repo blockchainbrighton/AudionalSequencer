@@ -4,27 +4,28 @@
 
     channels.forEach((channel, index) => {
         channel.dataset.id = `Channel-${index}`;
-
+    
         // Create a gain node for the channel
         const gainNode = audioContext.createGain();
         gainNode.gain.value = 1; // Initial volume set to 1 (full volume)
         gainNode.connect(audioContext.destination);
         gainNodes[index] = gainNode;
-
+    
         const muteButton = channel.querySelector('.mute-button');
         muteButton.addEventListener('click', () => {
             console.log(`Mute button clicked for Channel-${index}`);
-            muteButton.classList.toggle('selected');
-            updateVolume(channel, index);
+            const isMuted = muteButton.classList.toggle('selected');
+            updateMuteState(channel, isMuted);
             updateDimState(channel, index);
         });
-
+    
         const soloButton = channel.querySelector('.solo-button');
         soloButton.addEventListener('click', () => {
             soloedChannels[index] = !soloedChannels[index];
             soloButton.classList.toggle('selected', soloedChannels[index]);
             channels.forEach((otherChannel, otherIndex) => {
-                updateVolume(otherChannel, otherIndex);
+                const isMuted = otherChannel.querySelector('.mute-button').classList.contains('selected');
+                updateMuteState(otherChannel, isMuted);
                 updateDimState(otherChannel, otherIndex);
             });
         });
