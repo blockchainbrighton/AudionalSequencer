@@ -27,17 +27,36 @@
     /* Add other common styles for clear, mute, and solo buttons here */
 }
 
+.letter {
+    z-index: 1;
+    font-size: 16px;
+    position: relative; /* Add this to enable positioning */
+    left: -5px; /* Move the letters 5 pixels to the left */
+}
+
 #play {
     animation: flash 2s infinite ease-in-out;
 }
 
-#play.selected, 
+#play.selected,
 #stop.selected ~ #play {
     animation: none;
 }
 
-#stop.selected ~ #play, .step-button.selected, .mute-button.selected, .solo-button.selected {
+#stop.selected ~ #play,
+.step-button.selected,
+.mute-button.selected,
+.solo-button.selected {
     background-color: var(--accent-color);
+}
+
+/* Style the letter inside the active button */
+#play.selected .letter,
+#stop.selected ~ #play .letter,
+.step-button.selected .letter,
+.mute-button.selected .letter,
+.solo-button.selected .letter {
+    color: white; /* Change the letter color to white */
 }
 
 .clear-button {

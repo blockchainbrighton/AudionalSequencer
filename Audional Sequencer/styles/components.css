@@ -22,7 +22,10 @@
 .letter {
     z-index: 1;
     font-size: 16px;
+    position: relative; /* Add this to enable positioning */
+    left: -5px; /* Move the letters 5 pixels to the left */
 }
+
 
 .play-button, .stop-button {
     position: relative;
