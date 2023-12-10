@@ -129,6 +129,15 @@ class UnifiedSequencerSettings {
         }
         return channels;
     }
+
+    updateProjectSequencesUI() {
+        const projectSequences = this.getSettings('projectSequences');
+        // Assuming you have a method to update the UI for each sequence
+        projectSequences.forEach((sequence, index) => {
+            updateSequenceUI(index, sequence);
+        });
+    }
+
     
     updateStepState(sequenceNumber, channelIndex, stepIndex, state) {
         console.log(`[updateStepState] Called with Sequence: ${sequenceNumber}, Channel: ${channelIndex}, Step: ${stepIndex}, State: ${state}`);
@@ -242,7 +251,11 @@ class UnifiedSequencerSettings {
             this.settings.masterSettings.projectURLs = parsedSettings.projectURLs;
             this.settings.masterSettings.trimSettings = parsedSettings.trimSettings;
             this.settings.masterSettings.projectChannelNames = parsedSettings.projectChannelNames;
-            // ... (any other properties you need to update)
+    
+            // Update projectSequences
+            if (parsedSettings.projectSequences) {
+                this.setProjectSequences(parsedSettings.projectSequences);
+            }
     
             console.log("[loadSettings] Updated masterSettings:", this.settings.masterSettings);
     
@@ -254,6 +267,7 @@ class UnifiedSequencerSettings {
         // Notify all observers about the change
         this.notifyObservers();
     }
+    
     
         
         // Helper function to ensure array length

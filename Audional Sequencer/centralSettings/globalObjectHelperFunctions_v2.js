@@ -131,6 +131,11 @@ function updateSpecificStepUI(sequenceNumber, channelIndex, stepIndex) {
         console.error(`Step button not found for the given IDs: ${stepButtonId}`);
     }
 }
+
+function getProjectSequences() {
+    const globalObject = window.unifiedSequencerSettings; // Assuming global object is accessible via window
+    return window.unifiedSequencerSettings.getSettings('projectSequences');
+}
 // 
 // let currentChannelIndex = null; // Define at a higher scope
 // 
