@@ -228,14 +228,22 @@ class UnifiedSequencerSettings {
         console.log(`[setProjectSequences] Project sequences set:`, sequenceData);
     }
 
+
     loadSettings(jsonSettings) {
         try {
             console.log("[loadSettings] Received JSON Settings:", jsonSettings);
             const parsedSettings = typeof jsonSettings === 'string' ? JSON.parse(jsonSettings) : jsonSettings;
             console.log("[loadSettings] Parsed Settings:", parsedSettings);
     
-            console.log("[loadSettings] Current masterSettings before loading new settings:", this.settings.masterSettings);
-            this.settings.masterSettings = parsedSettings;
+            // Update the masterSettings with the parsed settings
+            this.settings.masterSettings.projectName = parsedSettings.projectName;
+            this.settings.masterSettings.projectBPM = parsedSettings.projectBPM;
+            this.settings.masterSettings.currentSequence = parsedSettings.currentSequence;
+            this.settings.masterSettings.projectURLs = parsedSettings.projectURLs;
+            this.settings.masterSettings.trimSettings = parsedSettings.trimSettings;
+            this.settings.masterSettings.projectChannelNames = parsedSettings.projectChannelNames;
+            // ... (any other properties you need to update)
+    
             console.log("[loadSettings] Updated masterSettings:", this.settings.masterSettings);
     
             // Update the text of each loadSampleButton with the loaded URL
@@ -246,6 +254,15 @@ class UnifiedSequencerSettings {
         // Notify all observers about the change
         this.notifyObservers();
     }
+    
+        
+        // Helper function to ensure array length
+        ensureArrayLength(array, length, defaultValue) {
+            while (array.length < length) {
+                array.push(defaultValue);
+            }
+        }
+            
     
     updateAllLoadSampleButtonTexts() {
         const channels = document.querySelectorAll('.channel');
