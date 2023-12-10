@@ -14,16 +14,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
     saveButton.addEventListener('click', () => {
         let settings = window.unifiedSequencerSettings.exportSettings();
-
+    
         // Create a Blob with the settings
         let blob = new Blob([settings], { type: 'application/json' });
-
+    
         // Create a download link for the Blob
         let url = URL.createObjectURL(blob);
         let downloadLink = document.createElement('a');
         downloadLink.href = url;
-        downloadLink.download = 'sequencer-settings.json';
-
+    
+        // Use projectName from the settings for the file name
+        let projectName = window.unifiedSequencerSettings.settings.masterSettings.projectName;
+        downloadLink.download = `AUDX - Seq Settings - ${projectName}.json`;
+    
         // Trigger a click on the download link
         downloadLink.click();
     });
