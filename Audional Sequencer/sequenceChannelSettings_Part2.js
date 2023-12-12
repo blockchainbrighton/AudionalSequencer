@@ -15,40 +15,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function loadSequence(sequenceNumber) {
     // Retrieve the sequence from the global object
-    let sequenceChannels = window.unifiedSequencerSettings.getCurrentSequence(sequenceNumber);
+    let sequence = window.unifiedSequencerSettings.getSettings('projectSequences')[`Sequence${sequenceNumber}`];
 
     // Initialize the sequence if it doesn't exist
-    if (!sequenceChannels) {
-        sequenceChannels = Array(16).fill().map(() => [null].concat(Array(64).fill(false)));
-        window.unifiedSequencerSettings.setCurrentSequence(sequenceNumber, sequenceChannels);
+    if (!sequence) {
+        // Initialize a new sequence with default values
+        const newSequence = window.unifiedSequencerSettings.initializeSequences(1, 16, 64);
+        window.unifiedSequencerSettings.setProjectSequences({ ...window.unifiedSequencerSettings.getSettings('projectSequences'), ...newSequence });
+        sequence = newSequence[`Sequence${sequenceNumber}`];
     }
-
-    // Load the sequence data here
-    // Note: The code to load sequence data (e.g., steps, channel settings) should be added here
-
-    // Removed the code that updates the BPM as it's a master setting
-    // The BPM should remain constant and managed by a separate control
-
-    // Check if sequenceChannels is an array
-    if (!Array.isArray(sequenceChannels)) {
-        console.error(`Sequence ${sequenceNumber} is not an array.`, sequenceChannels);
-        return;
-    }
-
-    const urlsForSequence = sequenceChannels.map(channelData => channelData[0]);
-    // console.log(`URLs for Sequence ${sequenceNumber}:`, urlsForSequence);
-
-    // Loaded settings for Sequence
-    // console.log(`Loaded settings for Sequence ${sequenceNumber}:`, sequenceChannels);
-
-    // Update the UI to reflect the loaded sequence
-    updateUIForSequence(sequenceNumber);
 
     // Update the currentSequence in the global object
     window.unifiedSequencerSettings.setCurrentSequence(sequenceNumber);
 
-    sequenceChannels.forEach((channelData, channelIndex) => {
-        const currentUrl = channelData[0]; // Assuming the URL is at the 0th index of channelData array
+    // Check if sequence is an object
+    if (typeof sequence !== 'object') {
+        console.error(`Sequence ${sequenceNumber} is not an object.`, sequence);
+        return;
+    }
+
+    // Update the UI to reflect the loaded sequence
+    updateUIForSequence(sequenceNumber);
+
+    // Iterate over each channel in the sequence
+    Object.entries(sequence).forEach(([channelKey, channelData]) => {
+        const channelIndex = parseInt(channelKey.replace('ch', ''), 10);
+        const currentUrl = channelData.url; // Assuming the URL is stored in the channelData object
         const channelElement = document.querySelector(`.channel[data-id="Channel-${channelIndex + 1}"]`);
         const previousUrl = channelElement.dataset.originalUrl;
 
