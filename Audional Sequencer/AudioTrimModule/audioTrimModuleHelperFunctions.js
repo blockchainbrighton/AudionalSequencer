@@ -2,6 +2,38 @@
 let currentTrimmerInstance = null;
 let currentTrimmerChannelIndex = null; // Define at a higher scope
 
+
+
+
+// Helper function to update the audio trimmer with the buffer
+function updateAudioTrimmerWithBufferHelper(url, channelIndex) {
+    if (audioBuffers.has(url)) {
+        const audioBuffer = audioBuffers.get(url);
+        updateAudioTrimmerWithBuffer(audioBuffer, channelIndex);
+    } else {
+        console.error(`Audio buffer not found for URL: ${url}`);
+    }
+}
+
+function updateAudioTrimmerWithBuffer(audioBuffer) {
+    if (currentTrimmerInstance) {
+        currentTrimmerInstance.setAudioBuffer(audioBuffer);
+        currentTrimmerInstance.drawWaveform();
+        currentTrimmerInstance.updateDimmedAreas();
+    }
+}
+
+function playTrimmedAudioForChannel(channelIndex) {
+    if (currentTrimmerInstance && currentTrimmerChannelIndex === channelIndex) {
+        currentTrimmerInstance.playTrimmedAudio();
+    } else {
+        console.error('No active trimmer instance for the channel or channel index mismatch');
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+
 function openAudioTrimmerModal(channelIndex) {
     console.log('channelIndex:', channelIndex); // Log the channel index
     currentTrimmerChannelIndex = channelIndex; // Store the channel index
@@ -16,7 +48,8 @@ function openAudioTrimmerModal(channelIndex) {
             // Wait for the browser to render the injected HTML
             requestAnimationFrame(() => {
                 currentTrimmerInstance = new AudioTrimmer(channelIndex);
-        
+                currentTrimmerInstance.initialize(); // Call initialize which should call addEventListeners
+            
                 if (document.getElementById('waveformCanvas')) {
                     currentTrimmerInstance.initialize();
         
@@ -46,33 +79,6 @@ function openAudioTrimmerModal(channelIndex) {
         });
 }
 
-// Helper function to update the audio trimmer with the buffer
-function updateAudioTrimmerWithBufferHelper(url, channelIndex) {
-    if (audioBuffers.has(url)) {
-        const audioBuffer = audioBuffers.get(url);
-        updateAudioTrimmerWithBuffer(audioBuffer, channelIndex);
-    } else {
-        console.error(`Audio buffer not found for URL: ${url}`);
-    }
-}
-
-function updateAudioTrimmerWithBuffer(audioBuffer) {
-    if (currentTrimmerInstance) {
-        currentTrimmerInstance.setAudioBuffer(audioBuffer);
-        currentTrimmerInstance.drawWaveform();
-        currentTrimmerInstance.updateDimmedAreas();
-    }
-}
-
-function playTrimmedAudioForChannel(channelIndex) {
-    if (currentTrimmerInstance && currentTrimmerChannelIndex === channelIndex) {
-        currentTrimmerInstance.playTrimmedAudio();
-    } else {
-        console.error('No active trimmer instance for the channel or channel index mismatch');
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.open-audio-trimmer').forEach((button, channelIndex) => {
         button.addEventListener('click', () => {
             console.log('Clicked button with channelIndex:', channelIndex); // Log the channel index
@@ -91,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
             openAudioTrimmerModal(channelIndex);
         });
     });
-});
+
 
 // Close modal functionality
 document.querySelector('.close-button').addEventListener('click', function() {
@@ -109,8 +115,10 @@ document.querySelector('.close-button').addEventListener('click', function() {
     currentTrimmerChannelIndex = null;
 });
 
+
 function createAudioTrimmer(channelIndex) {
     const trimmer = new AudioTrimmer(channelIndex);
     trimmer.initialize();
     return trimmer;
 }
+});
