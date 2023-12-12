@@ -1,5 +1,6 @@
 // audioTrimModule.js
 
+
 class AudioTrimmer {
     constructor(channelIndex) {
         console.log("[Class Functions] constructor", { channelIndex });
@@ -9,7 +10,9 @@ class AudioTrimmer {
         this.audioBuffer = null;
         this.isPlaying = false;
         this.isLooping = false;
-        
+
+        this.initializeSliderTrack(channelIndex);
+
         const trimSettings = getTrimSettings(this.channelIndex);
         this.startSliderValue = trimSettings.startSliderValue;
         this.endSliderValue = trimSettings.endSliderValue;
@@ -17,6 +20,13 @@ class AudioTrimmer {
         this.displayTimeout = null;
 
     }
+
+    initializeSliderTrack() {
+    this.sliderTrack = document.querySelector('.slider-track');
+    if (!this.sliderTrack) {
+        console.error('Slider track not found');
+    }
+}
 
     updateTrimmedSampleDuration() {
         const startValue = this.startSliderValue;
@@ -147,36 +157,58 @@ displayValues() {
         
   
 
-    addEventListeners() {
-        console.log("[Class Functions] addEventListeners");
-    
-        const elements = [
-            { id: 'loadSampleButton', element: this.loadSampleButton, action: this.loadSample },
-            { id: 'playButton', element: this.playButton, action: this.playTrimmedAudio.bind(this) },
-            { id: 'stopButton', element: this.stopButton, action: this.stopAudio.bind(this) },
-            { id: 'loopButton', element: this.loopButton, action: this.toggleLoop },
-            { id: 'startSlider', element: this.startSlider },
-            { id: 'endSlider', element: this.endSlider }
-        ];
-    
-        elements.forEach(({ id, element, action }) => {
-            if (element) {
-                console.log(`[Class Functions] addEventListeners - Found element: ${id}`);
-                if (id === 'startSlider' || id === 'endSlider') {
-                    element.addEventListener('input', () => {
-                        console.log(`[Class Functions] ${id} Input Changed`);
-                        this.updateSliderValues();
-                        setTrimSettings(this.channelIndex, this.startSliderValue, this.endSliderValue);
-                    });
-                } else if (action) {
-                    element.addEventListener('click', action);
+        addEventListeners() {
+            console.log("[Class Functions] addEventListeners");
+        
+            const sliderMouseDown = (event, isStartSlider) => {
+                const slider = isStartSlider ? this.startSlider : this.endSlider;
+                console.log(`[Slider Mouse Down] Slider: ${isStartSlider ? 'Start' : 'End'}`);
+        
+                if (!slider) {
+                    console.error('Slider element is undefined');
+                    return;
                 }
-            } else {
-                console.error(`[Class Functions] addEventListeners - Element not found: ${id}`);
-            }
-        });
-    }
-    
+        
+                const shiftX = event.clientX - slider.getBoundingClientRect().left;
+        
+                document.onmousemove = (e) => {
+                    if (!this.sliderTrack) {
+                        console.error('Slider track is undefined');
+                        return;
+                    }
+        
+                    let newLeft = e.clientX - shiftX - this.sliderTrack.getBoundingClientRect().left;
+                    newLeft = Math.max(0, Math.min(newLeft, this.sliderTrack.offsetWidth - slider.offsetWidth));
+        
+                    if (isStartSlider) {
+                        if (!this.endSlider) {
+                            console.error('End slider element is undefined');
+                            return;
+                        }
+                        const endSliderLeft = this.endSlider.getBoundingClientRect().left - this.sliderTrack.getBoundingClientRect().left;
+                        newLeft = Math.min(newLeft, endSliderLeft - slider.offsetWidth);
+                    } else {
+                        if (!this.startSlider) {
+                            console.error('Start slider element is undefined');
+                            return;
+                        }
+                        const startSliderRight = this.startSlider.getBoundingClientRect().right - this.sliderTrack.getBoundingClientRect().left;
+                        newLeft = Math.max(newLeft, startSliderRight);
+                    }
+        
+                    slider.style.left = `${newLeft}px`;
+                    this.updateSliderValues();
+                };
+        
+                document.onmouseup = () => {
+                    document.onmousemove = document.onmouseup = null;
+                };
+            };
+        
+            this.startSlider.addEventListener('mousedown', (event) => sliderMouseDown(event, true));
+            this.endSlider.addEventListener('mousedown', (event) => sliderMouseDown(event, false));
+        }
+        
         
       
 
@@ -282,9 +314,6 @@ displayValues() {
         this.loopButton.classList.toggle('off', !this.isLooping);
     }
 
- 
-
-
     getCurrentPlaybackPosition() {
         if (!this.isPlaying) return 0;
         return (this.audioContext.currentTime - this.startTime) % this.audioBuffer.duration;
@@ -311,3 +340,6 @@ displayValues() {
         }
     }
 }
+
+
+
