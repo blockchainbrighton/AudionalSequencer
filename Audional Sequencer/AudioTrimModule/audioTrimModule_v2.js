@@ -105,7 +105,7 @@ displayValues() {
         async initialize() {
             console.log("[Class Functions] initialize");
         
-            const elementIds = ['ordinalIdInput', 'loadSampleButton', 'waveformCanvas', 'playbackCanvas', 'playButton', 'stopButton', 'loopButton', 'startDimmed', 'endDimmed', 'startSlider', 'endSlider'];
+            const elementIds = ['ordinalIdInput', 'loadSampleButton', 'waveformCanvas', 'playbackCanvas', 'trimmerPlayButton', 'trimmerStopButton', 'loopButton', 'startDimmed', 'endDimmed', 'startSlider', 'endSlider'];
             let allElementsAvailable = true;
         
             elementIds.forEach(id => {
@@ -185,15 +185,20 @@ displayValues() {
         addEventListeners() {
             console.log("[Class Functions] addEventListeners");
 
-            // Event listener for the play button
-            this.playButton.addEventListener('click', () => {
+          // Event listener for the play button
+            this.trimmerPlayButton.addEventListener('click', () => {
+                const elementId = this.trimmerPlayButton.id; // Capture the play button's element ID
+                console.log(`Play button clicked. Element ID: ${elementId}`);
                 this.playTrimmedAudio();
             });
 
-             // Event listener for the stop button
-             this.stopButton.addEventListener('click', () => {
+            // Event listener for the stop button
+            this.trimmerStopButton.addEventListener('click', () => {
+                const elementId = this.trimmerStopButton.id; // Capture the stop button's element ID
+                console.log(`Stop button clicked. Element ID: ${elementId}`);
                 this.stopAudio();
             });
+
         
             const sliderMouseDown = (event, isStartSlider) => {
                 const slider = isStartSlider ? this.startSlider : this.endSlider;
@@ -300,6 +305,11 @@ displayValues() {
         playTrimmedAudio() {
             console.log("[Class Functions] playTrimmedAudio");
         
+            // Stop any currently playing audio first
+            if (this.isPlaying) {
+                this.stopAudio();
+            }
+        
             if (!this.audioBuffer) {
                 console.error("No audio buffer loaded");
                 return;
@@ -331,6 +341,7 @@ displayValues() {
                 if (this.isLooping) this.playTrimmedAudio(); // Restart if looping
             };
         }
+        
         
 
         stopAudio() {
