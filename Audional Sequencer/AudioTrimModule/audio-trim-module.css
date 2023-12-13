@@ -59,7 +59,6 @@
     
     #endSlider {
         background-color: red;
-        right: 0;
+        left: 100%; /* Initially align left side with the right edge of the container */
         z-index: 100;
-    }
-    
+    }    

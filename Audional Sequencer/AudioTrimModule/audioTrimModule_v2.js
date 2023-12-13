@@ -218,7 +218,13 @@ displayValues() {
                     }
             
                     let newLeft = e.clientX - shiftX - this.sliderTrack.getBoundingClientRect().left;
-                    newLeft = Math.max(0, Math.min(newLeft, this.sliderTrack.offsetWidth - slider.offsetWidth));
+
+                    // Adjust the maximum position for the endSlider
+                    if (!isStartSlider) {
+                        // Allow the endSlider to move to the right edge of the slider track
+                        const maxPosition = this.sliderTrack.offsetWidth;
+                        newLeft = Math.min(newLeft, maxPosition);
+                    }
 
                     // Adjust this logic to allow sliders to meet
                     if (isStartSlider) {
