@@ -203,52 +203,67 @@ displayValues() {
             const sliderMouseDown = (event, isStartSlider) => {
                 const slider = isStartSlider ? this.startSlider : this.endSlider;
                 console.log(`[Slider Mouse Down] Slider: ${isStartSlider ? 'Start' : 'End'}`);
-        
+            
                 if (!slider) {
                     console.error('Slider element is undefined');
                     return;
                 }
-        
+            
                 const shiftX = event.clientX - slider.getBoundingClientRect().left;
-        
+            
                 document.onmousemove = (e) => {
                     if (!this.sliderTrack) {
                         console.error('Slider track is undefined');
                         return;
                     }
-        
+            
                     let newLeft = e.clientX - shiftX - this.sliderTrack.getBoundingClientRect().left;
-                    newLeft = Math.max(0, Math.min(newLeft, this.sliderTrack.offsetWidth - slider.offsetWidth));
-        
-                    const newValue = (newLeft / this.sliderTrack.offsetWidth) * 100; // Assuming the newValue is a percentage
+
+                    // Adjust the maximum position for the endSlider
+                    if (!isStartSlider) {
+                        // Allow the endSlider to move to the right edge of the slider track
+                        const maxPosition = this.sliderTrack.offsetWidth;
+                        newLeft = Math.min(newLeft, maxPosition);
+                    }
+
+                    // Adjust this logic to allow sliders to meet
+                    if (isStartSlider) {
+                        const endSliderLeft = this.endSlider.getBoundingClientRect().left - this.sliderTrack.getBoundingClientRect().left;
+                        newLeft = Math.min(newLeft, endSliderLeft); // Allow startSlider to meet endSlider
+                    } else {
+                        const startSliderRight = this.startSlider.getBoundingClientRect().right - this.sliderTrack.getBoundingClientRect().left;
+                        newLeft = Math.max(newLeft, startSliderRight); // Allow endSlider to meet startSlider
+                    }
+
+                    slider.style.left = `${newLeft}px`;
+            
+                    // Update slider values and UI
+                    const newValue = (newLeft / this.sliderTrack.offsetWidth) * 100;
                     if (isStartSlider) {
                         this.startSliderValue = newValue;
                     } else {
                         this.endSliderValue = newValue;
                     }
-        
-                    // Update the global settings with the new slider values
+            
                     let updatedTrimSettings = unifiedSequencerSettings.settings.masterSettings.trimSettings;
                     updatedTrimSettings[this.channelIndex] = {
                         ...updatedTrimSettings[this.channelIndex],
                         startSliderValue: this.startSliderValue,
                         endSliderValue: this.endSliderValue
                     };
-        
-                    // Call the function to update the UI
+            
                     updateTrimSettingsUI(updatedTrimSettings);
-        
                     this.updateSliderValues();
                 };
-        
+            
                 document.onmouseup = () => {
                     document.onmousemove = document.onmouseup = null;
                 };
             };
-        
+            
             this.startSlider.addEventListener('mousedown', (event) => sliderMouseDown(event, true));
             this.endSlider.addEventListener('mousedown', (event) => sliderMouseDown(event, false));
-        }
+        }            
         
         
       
