@@ -19,6 +19,8 @@ function updateAudioTrimmerWithBuffer(audioBuffer) {
     if (currentTrimmerInstance) {
         currentTrimmerInstance.setAudioBuffer(audioBuffer);
         currentTrimmerInstance.drawWaveform();
+        console.log(" updateDimmedAreas method called from updateaudioTrimmerWithBuffer");
+        currentTrimmerInstance.updateSliderValues();
         currentTrimmerInstance.updateDimmedAreas();
     }
 }
@@ -26,6 +28,14 @@ function updateAudioTrimmerWithBuffer(audioBuffer) {
 function playTrimmedAudioForChannel(channelIndex) {
     if (currentTrimmerInstance && currentTrimmerChannelIndex === channelIndex) {
         currentTrimmerInstance.playTrimmedAudio();
+    } else {
+        console.error('No active trimmer instance for the channel or channel index mismatch');
+    }
+}
+
+function stopAudioForChannel(channelIndex) {
+    if (currentTrimmerInstance && currentTrimmerInstance.channelIndex === channelIndex) {
+        currentTrimmerInstance.stopAudio();
     } else {
         console.error('No active trimmer instance for the channel or channel index mismatch');
     }
@@ -51,7 +61,7 @@ function openAudioTrimmerModal(channelIndex) {
                 currentTrimmerInstance.initialize(); // Call initialize which should call addEventListeners
             
                 if (document.getElementById('waveformCanvas')) {
-                    currentTrimmerInstance.initialize();
+                    // currentTrimmerInstance.initialize();
         
                     // Retrieve trim settings for the channel from the global object
                     const trimSettings = getTrimSettings(channelIndex);

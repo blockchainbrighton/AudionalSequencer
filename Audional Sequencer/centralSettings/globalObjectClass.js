@@ -18,7 +18,9 @@ class UnifiedSequencerSettings {
                 projectChannelNames: new Array(16).fill(''), // Placeholder for channel names
                 projectSequences: this.initializeSequences(16, 16, 64) // Adjust dimensions as needed
             }
+            
         };
+
 
         // Bind methods
             this.checkSettings = this.checkSettings.bind(this);
@@ -44,6 +46,8 @@ class UnifiedSequencerSettings {
         }
 
         initializeSequences(numSequences, numChannels, numSteps) {
+            console.log("initializeSequences", numSequences, numChannels, numSteps);
+            
             let sequenceData = {};
             for (let seq = 0; seq < numSequences; seq++) {
                 sequenceData[`Sequence${seq}`] = this.initializeChannels(numChannels, numSteps);
@@ -52,6 +56,8 @@ class UnifiedSequencerSettings {
         }
         
         initializeChannels(numChannels, numSteps) {
+            console.log("initializeChannels", numChannels, numSteps);
+            
             let channels = {};
             for (let ch = 0; ch < numChannels; ch++) {
                 channels[`ch${ch}`] = {
@@ -59,12 +65,17 @@ class UnifiedSequencerSettings {
                     mute: false, // Ensure mute is off by default
                     url: '' // Default URL can be empty or set to a default value
                 };
+
             }
-            return channels;
+            return channels; 
         }
+        
 
 
     initializeTrimSettings(numSettings) {
+        if (channelIndex < 1) {
+        console.log("initializeTrimSettings", numSettings);
+        }
         return Array.from({ length: numSettings }, () => ({
             startSliderValue: 0,
             endSliderValue: 100,
@@ -74,15 +85,24 @@ class UnifiedSequencerSettings {
 
     // Method to register an observer
     addObserver(observerFunction) {
+     
+        console.log("addObserver", observerFunction);
+        
         this.observers.push(observerFunction);
     }
 
     // Method to notify all observers
     notifyObservers() {
+   
+        console.log("notifyObservers");
+        
         this.observers.forEach(observerFunction => observerFunction(this.settings));
     }
 
     setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
+        if (channelIndex < 1) {
+            console.log("setTrimSettings", channelIndex, startSliderValue, endSliderValue);
+        }
         if (this.isValidIndex(channelIndex)) {
             const currentSettings = this.settings.masterSettings.trimSettings[channelIndex];
             if (currentSettings) {
@@ -96,30 +116,60 @@ class UnifiedSequencerSettings {
     }
     
     getTrimSettings(channelIndex) {
+        if (channelIndex < 1) {
+        console.log("getTrimSettings", channelIndex);
+        }
         const trimSettings = this.settings.masterSettings.trimSettings[channelIndex];
         return trimSettings || { startSliderValue: 0.01, endSliderValue: 100.00 };
+    }
+
+    updateTrimSettingsUI(trimSettings) {
+        console.log("updateTrimSettingsUI", trimSettings);
+        // Implement logic to update UI for trim settings
+        console.log("Trim settings UI updated:", trimSettings);
+        // Example: Update each trim setting input field
+        trimSettings.forEach((setting, index) => {
+            const startSlider = document.getElementById(`start-slider-${index}`);
+            const endSlider = document.getElementById(`end-slider-${index}`);
+            if (startSlider && endSlider) {
+                startSlider.value = setting.startSliderValue;
+                endSlider.value = setting.endSliderValue;
+            }
+        });
     }
 
 
     // Example of a method that changes settings
     setProjectName(channelIndex, name) {
+        if (channelIndex < 1) {
+        console.log("setProjectName", channelIndex, name);
+        }
         this.settings.masterSettings.projectName[channelIndex] = name;
         this.notifyObservers(); // Notify observers about the change
     }
 
     // Method to update the current sequence
     setCurrentSequence(sequenceNumber) {
+        if (channelIndex < 1) {
+        console.log("setCurrentSequence", sequenceNumber);
+        }
         this.settings.currentSequence = sequenceNumber;
         console.log(`[setCurrentSequence] Current sequence set to: ${sequenceNumber}`);
     }
 
     // Method to get the current sequence
     getCurrentSequence() {
+        if (channelIndex < 1) {
+        console.log("getCurrentSequence");
+        }
         return this.settings.currentSequence;
     }
 
 
     getSettings(key) {
+    
+        console.log("getSettings", key);
+        
         if (key === 'masterSettings') {
             console.log("[getSettings] Retrieved all masterSettings:", this.settings.masterSettings);
             return this.settings.masterSettings;
@@ -135,12 +185,18 @@ class UnifiedSequencerSettings {
 
     // Nested function for manual checking
     checkSettings() {
+        if (channelIndex < 1) {
+        console.log("checkSettings"); 
+        } 
         console.log("[checkSettings] Current masterSettings:", this.settings.masterSettings);
         return this.settings.masterSettings;
     }
 
    
     updateProjectSequencesUI() {
+        if (channelIndex < 1) {
+        console.log("updateProjectSequencesUI");
+        }
         const projectSequences = this.getSettings('projectSequences');
         // Assuming you have a method to update the UI for each sequence
         projectSequences.forEach((sequence, index) => {
@@ -150,7 +206,9 @@ class UnifiedSequencerSettings {
 
     
     updateStepState(sequenceNumber, channelIndex, stepIndex, state) {
+        if (channelIndex < 1) {
         console.log(`[updateStepState] Called with Sequence: ${sequenceNumber}, Channel: ${channelIndex}, Step: ${stepIndex}, State: ${state}`);
+        }
         const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber}`];
         const channel = sequence && sequence[`ch${channelIndex}`];
         if (channel && stepIndex < channel.steps.length) {
@@ -162,7 +220,9 @@ class UnifiedSequencerSettings {
     
     
     getStepState(sequenceNumber, channelIndex, stepIndex) {
+        if (channelIndex < 1) {
         console.log(`[getStepState] Called with Sequence: ${sequenceNumber}, Channel: ${channelIndex}, Step: ${stepIndex}`);
+        }
         const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber}`];
         const channel = sequence && sequence[`ch${channelIndex}`];
         if (channel && stepIndex < channel.steps.length) {
@@ -177,7 +237,9 @@ class UnifiedSequencerSettings {
     
 
     updateSetting(key, value, channelIndex = null) {
+        if (channelIndex < 1) {
         console.log(`[updateSetting] Called with key: ${key}, value: ${value}, channelIndex: ${channelIndex}`);
+        }
         if (channelIndex !== null && Array.isArray(this.settings.masterSettings[key])) {
             this.settings.masterSettings[key][channelIndex] = value;
         } else if (key in this.settings.masterSettings) {
@@ -188,6 +250,9 @@ class UnifiedSequencerSettings {
     }
 
     updateSampleDuration(duration, channelIndex) {
+        if (channelIndex < 1) {
+            console.log(`[updateSampleDuration] Called with duration: ${duration}, channelIndex: ${channelIndex}`);
+        }
         if (this.isValidIndex(channelIndex)) {
             this.settings.masterSettings.trimSettings[channelIndex].totalSampleDuration = duration;
         } else {

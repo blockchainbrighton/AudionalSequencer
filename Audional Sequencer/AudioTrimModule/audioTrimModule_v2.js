@@ -14,8 +14,10 @@ class AudioTrimmer {
         this.initializeSliderTrack(channelIndex);
 
         const trimSettings = getTrimSettings(this.channelIndex);
+        console.log("getSettings read into trimSettings in AudioTrimmer class constructor", trimSettings);
         this.startSliderValue = trimSettings.startSliderValue;
         this.endSliderValue = trimSettings.endSliderValue;
+        console.log("startSliderValue and endSliderValue in AudioTrimmer class constructor", this.startSliderValue, this.endSliderValue);
 
         this.displayTimeout = null;
 
@@ -72,7 +74,9 @@ displayValues() {
 
         this.audioBuffer = audioBuffer;
         this.drawWaveform();
+        console.log(" updateDimmedAreas method called from setAudioBuffer");
         this.updateDimmedAreas();
+        this.updateSliderValues();
     }
 
     drawWaveform() {
@@ -101,7 +105,7 @@ displayValues() {
         async initialize() {
             console.log("[Class Functions] initialize");
         
-            const elementIds = ['ordinalIdInput', 'loadSampleButton', 'waveformCanvas', 'playbackCanvas', 'playButton', 'stopButton', 'loopButton', 'startDimmed', 'endDimmed', 'startSlider', 'endSlider'];
+            const elementIds = ['ordinalIdInput', 'loadSampleButton', 'waveformCanvas', 'playbackCanvas', 'trimmerPlayButton', 'trimmerStopButton', 'loopButton', 'startDimmed', 'endDimmed', 'startSlider', 'endSlider'];
             let allElementsAvailable = true;
         
             elementIds.forEach(id => {
@@ -115,7 +119,11 @@ displayValues() {
             if (allElementsAvailable) {
                 this.ctx = this.waveformCanvas.getContext('2d');
                 this.addEventListeners();
+                console.log(" updateDimmedAreas method called from initialize");
+
                 this.updateDimmedAreas();
+                this.updateSliderValues();
+
             } else {
                 console.log("[Class Functions] initialize - Waiting for elements to be available");
                 setTimeout(() => this.initialize(), 500); // Retry initialization after a delay
@@ -128,14 +136,36 @@ displayValues() {
             this.isLooping = trimSettings.isLooping;
             this.updateLoopButtonState();
             this.updateDimmedAreas();
+            this.updateSliderValues();
+
         
+        }
+
+
+
+        updateSliderValues() {
+            // Assuming the slider values are stored as percentages
+            const startLeft = (this.startSliderValue / 100) * this.sliderTrack.offsetWidth;
+            const endLeft = (this.endSliderValue / 100) * this.sliderTrack.offsetWidth;
+        
+            // Update the visual position of the sliders
+            this.startSlider.style.left = `${startLeft}px`;
+            this.endSlider.style.left = `${endLeft}px`;
+        
+            // Update the dimmed areas based on the new slider positions
+            this.updateDimmedAreas();
+        
+            console.log("updateDimmedAreas method called from updateSliderValues");
+            this.updateTrimmedSampleDuration();
+            this.debounceDisplayValues();
         }
         
         updateDimmedAreas() {
-            console.log("[Class Functions] updateDimmedAreas");
+            console.log("[Class Functions] updateDimmedAreas function entered into");
         
-            const startSliderValue = parseFloat(this.startSlider.value);
-            const endSliderValue = parseFloat(this.endSlider.value);
+            // Use the internal state values instead of the slider element values
+            const startSliderValue = this.startSliderValue;
+            const endSliderValue = this.endSliderValue;
         
             const startDimmedWidth = `${startSliderValue}%`;
             const endDimmedWidth = `${100 - endSliderValue}%`;
@@ -146,19 +176,29 @@ displayValues() {
             this.endDimmed.style.left = `${endSliderValue}%`; // Position the end dimmed area correctly
         }
         
-        updateSliderValues() {
-            this.startSliderValue = parseFloat(this.startSlider.value);
-            this.endSliderValue = parseFloat(this.endSlider.value);
-            this.updateDimmedAreas(); // This will update the dimmed areas based on the sliders
-            this.updateTrimmedSampleDuration();
-            this.debounceDisplayValues();
-        }
+        
+        
 
         
   
 
         addEventListeners() {
             console.log("[Class Functions] addEventListeners");
+        
+            // Bind the methods to ensure the correct 'this' context
+            this.boundPlayTrimmedAudio = this.playTrimmedAudio.bind(this);
+            this.boundStopAudio = this.stopAudio.bind(this);
+        
+            // Remove existing listeners to avoid duplicates
+            this.trimmerPlayButton.removeEventListener('click', this.boundPlayTrimmedAudio);
+            this.trimmerStopButton.removeEventListener('click', this.boundStopAudio);
+        
+            // Attach new event listeners
+            this.trimmerPlayButton.addEventListener('click', this.boundPlayTrimmedAudio);
+            this.trimmerStopButton.addEventListener('click', this.boundStopAudio);
+        
+        
+
         
             const sliderMouseDown = (event, isStartSlider) => {
                 const slider = isStartSlider ? this.startSlider : this.endSlider;
@@ -180,23 +220,24 @@ displayValues() {
                     let newLeft = e.clientX - shiftX - this.sliderTrack.getBoundingClientRect().left;
                     newLeft = Math.max(0, Math.min(newLeft, this.sliderTrack.offsetWidth - slider.offsetWidth));
         
+                    const newValue = (newLeft / this.sliderTrack.offsetWidth) * 100; // Assuming the newValue is a percentage
                     if (isStartSlider) {
-                        if (!this.endSlider) {
-                            console.error('End slider element is undefined');
-                            return;
-                        }
-                        const endSliderLeft = this.endSlider.getBoundingClientRect().left - this.sliderTrack.getBoundingClientRect().left;
-                        newLeft = Math.min(newLeft, endSliderLeft - slider.offsetWidth);
+                        this.startSliderValue = newValue;
                     } else {
-                        if (!this.startSlider) {
-                            console.error('Start slider element is undefined');
-                            return;
-                        }
-                        const startSliderRight = this.startSlider.getBoundingClientRect().right - this.sliderTrack.getBoundingClientRect().left;
-                        newLeft = Math.max(newLeft, startSliderRight);
+                        this.endSliderValue = newValue;
                     }
         
-                    slider.style.left = `${newLeft}px`;
+                    // Update the global settings with the new slider values
+                    let updatedTrimSettings = unifiedSequencerSettings.settings.masterSettings.trimSettings;
+                    updatedTrimSettings[this.channelIndex] = {
+                        ...updatedTrimSettings[this.channelIndex],
+                        startSliderValue: this.startSliderValue,
+                        endSliderValue: this.endSliderValue
+                    };
+        
+                    // Call the function to update the UI
+                    updateTrimSettingsUI(updatedTrimSettings);
+        
                     this.updateSliderValues();
                 };
         
@@ -220,6 +261,9 @@ displayValues() {
             this.audioBuffer = await fetchAudio(`https://ordinals.com/content/${this.ordinalIdInput.value}`);
             this.trimSettings = getTrimSettings(this.channelIndex);
             this.drawWaveform();
+            console.log(" updateDimmedAreas method called from loadSample");
+            this.updateSliderValues();
+
             this.updateDimmedAreas();
         } catch (error) {
             console.error('Error loading audio:', error);
@@ -259,16 +303,31 @@ displayValues() {
         }
         
         playTrimmedAudio() {
-            console.log("[Class Functions] playTrimmedAudio");
+            console.log("[playTrimmedAudio] [Class Functions] playTrimmedAudio");
         
-            if (!this.audioBuffer) {
-                console.error("No audio buffer loaded");
+            // If audio is already playing, return without starting new playback
+            if (this.isPlaying) {
+                console.log("[playTrimmedAudio] Audio is already playing, not starting new playback");
                 return;
             }
         
-            // Convert slider values to timecodes
-            const startTime = this.sliderValueToTimecode(this.startSlider.value, this.audioBuffer.duration);
-            const endTime = this.sliderValueToTimecode(this.endSlider.value, this.audioBuffer.duration);
+            if (!this.audioBuffer) {
+                console.error("[playTrimmedAudio] No audio buffer loaded");
+                return;
+            }
+        
+            // Set isPlaying to true immediately to block concurrent playbacks
+            this.isPlaying = true;
+            console.log("[playTrimmedAudio] isPlaying set to true, starting new playback");
+        
+            // Convert internal state slider values to timecodes
+            const startTime = this.sliderValueToTimecode(this.startSliderValue, this.audioBuffer.duration);
+            const endTime = this.sliderValueToTimecode(this.endSliderValue, this.audioBuffer.duration);
+        
+            // Disconnect any existing source node
+            if (this.sourceNode) {
+                this.sourceNode.disconnect();
+            }
         
             // Create and configure the audio source node
             this.sourceNode = this.audioContext.createBufferSource();
@@ -284,27 +343,36 @@ displayValues() {
         
             // Start playback
             this.sourceNode.start(0, startTime, endTime - startTime);
-            this.isPlaying = true;
+            console.log("[playTrimmedAudio] Playback started");
         
             // Handle the end of playback
             this.sourceNode.onended = () => {
                 this.isPlaying = false;
-                if (this.isLooping) this.playTrimmedAudio(); // Restart if looping
+                console.log("[playTrimmedAudio] Playback ended, isPlaying set to false");
+                if (this.isLooping) {
+                    console.log("[playTrimmedAudio] Looping enabled, restarting playback");
+                    this.playTrimmedAudio(); // Restart if looping
+                }
             };
         }
+        
+        
+        
+        
+        
 
         stopAudio() {
             console.log("[Class Functions] stopAudio");
-        
+            this.isLooping = false;
+
             if (this.isPlaying && this.sourceNode) {
                 this.sourceNode.stop(); // Stop the audio playback
                 this.sourceNode.disconnect();
                 this.sourceNode = null;
                 this.isPlaying = false;
             }
-            // Reset looping state if needed
-            this.isLooping = false;
         }
+        
 
     toggleLoop() {
         console.log("[Class Functions] toggleLoop");
