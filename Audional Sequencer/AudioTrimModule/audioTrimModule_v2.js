@@ -203,36 +203,23 @@ displayValues() {
                     let newLeft = e.clientX - shiftX - this.sliderTrack.getBoundingClientRect().left;
                     newLeft = Math.max(0, Math.min(newLeft, this.sliderTrack.offsetWidth - slider.offsetWidth));
         
-                    if (isStartSlider) {
-                        if (!this.endSlider) {
-                            console.error('End slider element is undefined');
-                            return;
-                        }
-                        const endSliderLeft = this.endSlider.getBoundingClientRect().left - this.sliderTrack.getBoundingClientRect().left;
-                        newLeft = Math.min(newLeft, endSliderLeft - slider.offsetWidth);
-                    } else {
-                        if (!this.startSlider) {
-                            console.error('Start slider element is undefined');
-                            return;
-                        }
-                        const startSliderRight = this.startSlider.getBoundingClientRect().right - this.sliderTrack.getBoundingClientRect().left;
-                        newLeft = Math.max(newLeft, startSliderRight);
-                    }
-        
-                    slider.style.left = `${newLeft}px`;
-        
-                    // Update internal state and global settings
-                    // Placeholder for newValue calculation:
                     const newValue = (newLeft / this.sliderTrack.offsetWidth) * 100; // Assuming the newValue is a percentage
                     if (isStartSlider) {
                         this.startSliderValue = newValue;
-                        // Update global settings for start slider
-                        updateGlobalSettings('startSliderValue', this.channelIndex, newValue);
                     } else {
                         this.endSliderValue = newValue;
-                        // Update global settings for end slider
-                        updateGlobalSettings('endSliderValue', this.channelIndex, newValue);
                     }
+        
+                    // Update the global settings with the new slider values
+                    let updatedTrimSettings = unifiedSequencerSettings.settings.masterSettings.trimSettings;
+                    updatedTrimSettings[this.channelIndex] = {
+                        ...updatedTrimSettings[this.channelIndex],
+                        startSliderValue: this.startSliderValue,
+                        endSliderValue: this.endSliderValue
+                    };
+        
+                    // Call the function to update the UI
+                    updateTrimSettingsUI(updatedTrimSettings);
         
                     this.updateSliderValues();
                 };
@@ -245,6 +232,7 @@ displayValues() {
             this.startSlider.addEventListener('mousedown', (event) => sliderMouseDown(event, true));
             this.endSlider.addEventListener('mousedown', (event) => sliderMouseDown(event, false));
         }
+        
         
       
 
