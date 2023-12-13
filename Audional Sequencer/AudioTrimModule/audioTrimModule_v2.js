@@ -167,11 +167,18 @@ displayValues() {
             const startSliderValue = this.startSliderValue;
             const endSliderValue = this.endSliderValue;
         
+            // Calculate the width of the start dimmed area based on the position of the start slider
+            // Assuming the slider position is a percentage of the total width
             const startDimmedWidth = `${startSliderValue}%`;
+        
+            // Calculate the width of the end dimmed area
             const endDimmedWidth = `${100 - endSliderValue}%`;
         
+            // Update the start dimmed area
             this.startDimmed.style.width = startDimmedWidth;
-            this.startDimmed.style.left = '0';
+            this.startDimmed.style.left = '0'; // Align with the left edge of the waveform container
+        
+            // Update the end dimmed area
             this.endDimmed.style.width = endDimmedWidth;
             this.endDimmed.style.left = `${endSliderValue}%`; // Position the end dimmed area correctly
         }
@@ -203,52 +210,61 @@ displayValues() {
             const sliderMouseDown = (event, isStartSlider) => {
                 const slider = isStartSlider ? this.startSlider : this.endSlider;
                 console.log(`[Slider Mouse Down] Slider: ${isStartSlider ? 'Start' : 'End'}`);
-        
+            
                 if (!slider) {
                     console.error('Slider element is undefined');
                     return;
                 }
-        
+            
                 const shiftX = event.clientX - slider.getBoundingClientRect().left;
-        
+            
                 document.onmousemove = (e) => {
                     if (!this.sliderTrack) {
                         console.error('Slider track is undefined');
                         return;
                     }
-        
+            
                     let newLeft = e.clientX - shiftX - this.sliderTrack.getBoundingClientRect().left;
                     newLeft = Math.max(0, Math.min(newLeft, this.sliderTrack.offsetWidth - slider.offsetWidth));
-        
-                    const newValue = (newLeft / this.sliderTrack.offsetWidth) * 100; // Assuming the newValue is a percentage
+            
+                    // Prevent sliders from overlapping
+                    if (isStartSlider) {
+                        const endSliderPosition = this.endSlider.getBoundingClientRect().left - this.sliderTrack.getBoundingClientRect().left;
+                        newLeft = Math.min(newLeft, endSliderPosition - slider.offsetWidth);
+                    } else {
+                        const startSliderPosition = this.startSlider.getBoundingClientRect().right - this.sliderTrack.getBoundingClientRect().left;
+                        newLeft = Math.max(newLeft, startSliderPosition);
+                    }
+            
+                    slider.style.left = `${newLeft}px`;
+            
+                    // Update slider values and UI
+                    const newValue = (newLeft / this.sliderTrack.offsetWidth) * 100;
                     if (isStartSlider) {
                         this.startSliderValue = newValue;
                     } else {
                         this.endSliderValue = newValue;
                     }
-        
-                    // Update the global settings with the new slider values
+            
                     let updatedTrimSettings = unifiedSequencerSettings.settings.masterSettings.trimSettings;
                     updatedTrimSettings[this.channelIndex] = {
                         ...updatedTrimSettings[this.channelIndex],
                         startSliderValue: this.startSliderValue,
                         endSliderValue: this.endSliderValue
                     };
-        
-                    // Call the function to update the UI
+            
                     updateTrimSettingsUI(updatedTrimSettings);
-        
                     this.updateSliderValues();
                 };
-        
+            
                 document.onmouseup = () => {
                     document.onmousemove = document.onmouseup = null;
                 };
             };
-        
+            
             this.startSlider.addEventListener('mousedown', (event) => sliderMouseDown(event, true));
             this.endSlider.addEventListener('mousedown', (event) => sliderMouseDown(event, false));
-        }
+        }            
         
         
       

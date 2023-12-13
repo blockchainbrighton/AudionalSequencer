@@ -35,7 +35,9 @@
     background-color: blue;
     left: 0; /* Initial position */
     z-index: 100;
+    transform: translateX(-100%); /* Shift to the left by its own width */
 }
+
 
 #endSlider {
     background-color: red;
