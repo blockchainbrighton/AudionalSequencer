@@ -161,10 +161,11 @@ displayValues() {
         }
         
         updateDimmedAreas() {
-            console.log("[Class Functions] updateDimmedAreas funtion entered into");
+            console.log("[Class Functions] updateDimmedAreas function entered into");
         
-            const startSliderValue = parseFloat(this.startSlider.value);
-            const endSliderValue = parseFloat(this.endSlider.value);
+            // Use the internal state values instead of the slider element values
+            const startSliderValue = this.startSliderValue;
+            const endSliderValue = this.endSliderValue;
         
             const startDimmedWidth = `${startSliderValue}%`;
             const endDimmedWidth = `${100 - endSliderValue}%`;
@@ -174,6 +175,7 @@ displayValues() {
             this.endDimmed.style.width = endDimmedWidth;
             this.endDimmed.style.left = `${endSliderValue}%`; // Position the end dimmed area correctly
         }
+        
         
         
 
