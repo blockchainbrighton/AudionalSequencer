@@ -33,6 +33,14 @@ function playTrimmedAudioForChannel(channelIndex) {
     }
 }
 
+function stopAudioForChannel(channelIndex) {
+    if (currentTrimmerInstance && currentTrimmerInstance.channelIndex === channelIndex) {
+        currentTrimmerInstance.stopAudio();
+    } else {
+        console.error('No active trimmer instance for the channel or channel index mismatch');
+    }
+}
+
 
 document.addEventListener('DOMContentLoaded', function() {
 

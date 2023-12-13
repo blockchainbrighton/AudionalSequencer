@@ -213,14 +213,16 @@
             // Logic to close the left-click modal if the click is outside
             const modal = document.querySelector('.load-sample-buttor'); // Replace with your actual modal selector
             if (modal && !modal.contains(event.target) && !loadSampleButton.contains(event.target)) {
-                closeModal(modal); // Replace with your function to close the modal
+                closeModal(modal, channelIndex); // Replace with your function to close the modal
             }
         });
 
         // Function to close the modal
-        function closeModal(modal) {
+        function closeModal(modal, channelIndex) {
             // Add logic to close the modal, e.g., hide it or remove it from the DOM
             modal.style.display = 'none'; // Example: hide the modal
+            stopAudioForChannel(channelIndex);
+
         }
 
     

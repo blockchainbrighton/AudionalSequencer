@@ -184,6 +184,16 @@ displayValues() {
 
         addEventListeners() {
             console.log("[Class Functions] addEventListeners");
+
+            // Event listener for the play button
+            this.playButton.addEventListener('click', () => {
+                this.playTrimmedAudio();
+            });
+
+             // Event listener for the stop button
+             this.stopButton.addEventListener('click', () => {
+                this.stopAudio();
+            });
         
             const sliderMouseDown = (event, isStartSlider) => {
                 const slider = isStartSlider ? this.startSlider : this.endSlider;
@@ -295,9 +305,9 @@ displayValues() {
                 return;
             }
         
-            // Convert slider values to timecodes
-            const startTime = this.sliderValueToTimecode(this.startSlider.value, this.audioBuffer.duration);
-            const endTime = this.sliderValueToTimecode(this.endSlider.value, this.audioBuffer.duration);
+            // Convert internal state slider values to timecodes
+            const startTime = this.sliderValueToTimecode(this.startSliderValue, this.audioBuffer.duration);
+            const endTime = this.sliderValueToTimecode(this.endSliderValue, this.audioBuffer.duration);
         
             // Create and configure the audio source node
             this.sourceNode = this.audioContext.createBufferSource();
@@ -321,6 +331,7 @@ displayValues() {
                 if (this.isLooping) this.playTrimmedAudio(); // Restart if looping
             };
         }
+        
 
         stopAudio() {
             console.log("[Class Functions] stopAudio");
@@ -334,6 +345,7 @@ displayValues() {
             // Reset looping state if needed
             this.isLooping = false;
         }
+        
 
     toggleLoop() {
         console.log("[Class Functions] toggleLoop");
