@@ -61,7 +61,7 @@ function openAudioTrimmerModal(channelIndex) {
                 currentTrimmerInstance.initialize(); // Call initialize which should call addEventListeners
             
                 if (document.getElementById('waveformCanvas')) {
-                    currentTrimmerInstance.initialize();
+                    // currentTrimmerInstance.initialize();
         
                     // Retrieve trim settings for the channel from the global object
                     const trimSettings = getTrimSettings(channelIndex);

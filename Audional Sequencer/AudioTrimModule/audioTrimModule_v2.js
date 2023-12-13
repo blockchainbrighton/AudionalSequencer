@@ -303,21 +303,31 @@ displayValues() {
         }
         
         playTrimmedAudio() {
-            console.log("[Class Functions] playTrimmedAudio");
+            console.log("[playTrimmedAudio] [Class Functions] playTrimmedAudio");
         
-            // Stop any currently playing audio first
+            // If audio is already playing, return without starting new playback
             if (this.isPlaying) {
-                this.stopAudio();
+                console.log("[playTrimmedAudio] Audio is already playing, not starting new playback");
+                return;
             }
         
             if (!this.audioBuffer) {
-                console.error("No audio buffer loaded");
+                console.error("[playTrimmedAudio] No audio buffer loaded");
                 return;
             }
+        
+            // Set isPlaying to true immediately to block concurrent playbacks
+            this.isPlaying = true;
+            console.log("[playTrimmedAudio] isPlaying set to true, starting new playback");
         
             // Convert internal state slider values to timecodes
             const startTime = this.sliderValueToTimecode(this.startSliderValue, this.audioBuffer.duration);
             const endTime = this.sliderValueToTimecode(this.endSliderValue, this.audioBuffer.duration);
+        
+            // Disconnect any existing source node
+            if (this.sourceNode) {
+                this.sourceNode.disconnect();
+            }
         
             // Create and configure the audio source node
             this.sourceNode = this.audioContext.createBufferSource();
@@ -333,28 +343,34 @@ displayValues() {
         
             // Start playback
             this.sourceNode.start(0, startTime, endTime - startTime);
-            this.isPlaying = true;
+            console.log("[playTrimmedAudio] Playback started");
         
             // Handle the end of playback
             this.sourceNode.onended = () => {
                 this.isPlaying = false;
-                if (this.isLooping) this.playTrimmedAudio(); // Restart if looping
+                console.log("[playTrimmedAudio] Playback ended, isPlaying set to false");
+                if (this.isLooping) {
+                    console.log("[playTrimmedAudio] Looping enabled, restarting playback");
+                    this.playTrimmedAudio(); // Restart if looping
+                }
             };
         }
+        
+        
+        
         
         
 
         stopAudio() {
             console.log("[Class Functions] stopAudio");
-        
+            this.isLooping = false;
+
             if (this.isPlaying && this.sourceNode) {
                 this.sourceNode.stop(); // Stop the audio playback
                 this.sourceNode.disconnect();
                 this.sourceNode = null;
                 this.isPlaying = false;
             }
-            // Reset looping state if needed
-            this.isLooping = false;
         }
         
 
