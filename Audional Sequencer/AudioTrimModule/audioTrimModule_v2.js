@@ -184,20 +184,20 @@ displayValues() {
 
         addEventListeners() {
             console.log("[Class Functions] addEventListeners");
-
-          // Event listener for the play button
-            this.trimmerPlayButton.addEventListener('click', () => {
-                const elementId = this.trimmerPlayButton.id; // Capture the play button's element ID
-                console.log(`Play button clicked. Element ID: ${elementId}`);
-                this.playTrimmedAudio();
-            });
-
-            // Event listener for the stop button
-            this.trimmerStopButton.addEventListener('click', () => {
-                const elementId = this.trimmerStopButton.id; // Capture the stop button's element ID
-                console.log(`Stop button clicked. Element ID: ${elementId}`);
-                this.stopAudio();
-            });
+        
+            // Bind the methods to ensure the correct 'this' context
+            this.boundPlayTrimmedAudio = this.playTrimmedAudio.bind(this);
+            this.boundStopAudio = this.stopAudio.bind(this);
+        
+            // Remove existing listeners to avoid duplicates
+            this.trimmerPlayButton.removeEventListener('click', this.boundPlayTrimmedAudio);
+            this.trimmerStopButton.removeEventListener('click', this.boundStopAudio);
+        
+            // Attach new event listeners
+            this.trimmerPlayButton.addEventListener('click', this.boundPlayTrimmedAudio);
+            this.trimmerStopButton.addEventListener('click', this.boundStopAudio);
+        
+        
 
         
             const sliderMouseDown = (event, isStartSlider) => {
