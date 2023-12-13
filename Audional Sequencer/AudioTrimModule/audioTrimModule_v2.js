@@ -14,8 +14,10 @@ class AudioTrimmer {
         this.initializeSliderTrack(channelIndex);
 
         const trimSettings = getTrimSettings(this.channelIndex);
+        console.log("getSettings read into trimSettings in AudioTrimmer class constructor", trimSettings);
         this.startSliderValue = trimSettings.startSliderValue;
         this.endSliderValue = trimSettings.endSliderValue;
+        console.log("startSliderValue and endSliderValue in AudioTrimmer class constructor", this.startSliderValue, this.endSliderValue);
 
         this.displayTimeout = null;
 
@@ -72,7 +74,9 @@ displayValues() {
 
         this.audioBuffer = audioBuffer;
         this.drawWaveform();
+        console.log(" updateDimmedAreas method called from setAudioBuffer");
         this.updateDimmedAreas();
+        this.updateSliderValues();
     }
 
     drawWaveform() {
@@ -115,7 +119,11 @@ displayValues() {
             if (allElementsAvailable) {
                 this.ctx = this.waveformCanvas.getContext('2d');
                 this.addEventListeners();
+                console.log(" updateDimmedAreas method called from initialize");
+
                 this.updateDimmedAreas();
+                this.updateSliderValues();
+
             } else {
                 console.log("[Class Functions] initialize - Waiting for elements to be available");
                 setTimeout(() => this.initialize(), 500); // Retry initialization after a delay
@@ -128,11 +136,32 @@ displayValues() {
             this.isLooping = trimSettings.isLooping;
             this.updateLoopButtonState();
             this.updateDimmedAreas();
+            this.updateSliderValues();
+
         
+        }
+
+
+
+        updateSliderValues() {
+            // Assuming the slider values are stored as percentages
+            const startLeft = (this.startSliderValue / 100) * this.sliderTrack.offsetWidth;
+            const endLeft = (this.endSliderValue / 100) * this.sliderTrack.offsetWidth;
+        
+            // Update the visual position of the sliders
+            this.startSlider.style.left = `${startLeft}px`;
+            this.endSlider.style.left = `${endLeft}px`;
+        
+            // Update the dimmed areas based on the new slider positions
+            this.updateDimmedAreas();
+        
+            console.log("updateDimmedAreas method called from updateSliderValues");
+            this.updateTrimmedSampleDuration();
+            this.debounceDisplayValues();
         }
         
         updateDimmedAreas() {
-            console.log("[Class Functions] updateDimmedAreas");
+            console.log("[Class Functions] updateDimmedAreas funtion entered into");
         
             const startSliderValue = parseFloat(this.startSlider.value);
             const endSliderValue = parseFloat(this.endSlider.value);
@@ -146,13 +175,7 @@ displayValues() {
             this.endDimmed.style.left = `${endSliderValue}%`; // Position the end dimmed area correctly
         }
         
-        updateSliderValues() {
-            this.startSliderValue = parseFloat(this.startSlider.value);
-            this.endSliderValue = parseFloat(this.endSlider.value);
-            this.updateDimmedAreas(); // This will update the dimmed areas based on the sliders
-            this.updateTrimmedSampleDuration();
-            this.debounceDisplayValues();
-        }
+        
 
         
   
@@ -197,6 +220,20 @@ displayValues() {
                     }
         
                     slider.style.left = `${newLeft}px`;
+        
+                    // Update internal state and global settings
+                    // Placeholder for newValue calculation:
+                    const newValue = (newLeft / this.sliderTrack.offsetWidth) * 100; // Assuming the newValue is a percentage
+                    if (isStartSlider) {
+                        this.startSliderValue = newValue;
+                        // Update global settings for start slider
+                        updateGlobalSettings('startSliderValue', this.channelIndex, newValue);
+                    } else {
+                        this.endSliderValue = newValue;
+                        // Update global settings for end slider
+                        updateGlobalSettings('endSliderValue', this.channelIndex, newValue);
+                    }
+        
                     this.updateSliderValues();
                 };
         
@@ -209,7 +246,6 @@ displayValues() {
             this.endSlider.addEventListener('mousedown', (event) => sliderMouseDown(event, false));
         }
         
-        
       
 
     async loadSample() {
@@ -220,6 +256,9 @@ displayValues() {
             this.audioBuffer = await fetchAudio(`https://ordinals.com/content/${this.ordinalIdInput.value}`);
             this.trimSettings = getTrimSettings(this.channelIndex);
             this.drawWaveform();
+            console.log(" updateDimmedAreas method called from loadSample");
+            this.updateSliderValues();
+
             this.updateDimmedAreas();
         } catch (error) {
             console.error('Error loading audio:', error);

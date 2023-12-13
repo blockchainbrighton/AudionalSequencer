@@ -225,7 +225,7 @@ function updateProjectSequencesUI(sequenceData) {
                     if (stepControl) {
                         if (step === true) {
                             if (!stepControl.classList.contains('selected')) {
-                                console.log(`[updateProjectSequencesUI] Adding 'selected' class to stepControl: ${stepControlId}`);
+                                // console.log(`[updateProjectSequencesUI] Adding 'selected' class to stepControl: ${stepControlId}`);
                                 stepControl.classList.add('selected');
                             }
                         } else {

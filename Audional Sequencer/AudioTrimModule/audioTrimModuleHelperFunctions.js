@@ -19,6 +19,8 @@ function updateAudioTrimmerWithBuffer(audioBuffer) {
     if (currentTrimmerInstance) {
         currentTrimmerInstance.setAudioBuffer(audioBuffer);
         currentTrimmerInstance.drawWaveform();
+        console.log(" updateDimmedAreas method called from updateaudioTrimmerWithBuffer");
+        currentTrimmerInstance.updateSliderValues();
         currentTrimmerInstance.updateDimmedAreas();
     }
 }
