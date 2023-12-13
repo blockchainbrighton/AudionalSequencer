@@ -167,18 +167,11 @@ displayValues() {
             const startSliderValue = this.startSliderValue;
             const endSliderValue = this.endSliderValue;
         
-            // Calculate the width of the start dimmed area based on the position of the start slider
-            // Assuming the slider position is a percentage of the total width
             const startDimmedWidth = `${startSliderValue}%`;
-        
-            // Calculate the width of the end dimmed area
             const endDimmedWidth = `${100 - endSliderValue}%`;
         
-            // Update the start dimmed area
             this.startDimmed.style.width = startDimmedWidth;
-            this.startDimmed.style.left = '0'; // Align with the left edge of the waveform container
-        
-            // Update the end dimmed area
+            this.startDimmed.style.left = '0';
             this.endDimmed.style.width = endDimmedWidth;
             this.endDimmed.style.left = `${endSliderValue}%`; // Position the end dimmed area correctly
         }
@@ -226,16 +219,16 @@ displayValues() {
             
                     let newLeft = e.clientX - shiftX - this.sliderTrack.getBoundingClientRect().left;
                     newLeft = Math.max(0, Math.min(newLeft, this.sliderTrack.offsetWidth - slider.offsetWidth));
-            
-                    // Prevent sliders from overlapping
+
+                    // Adjust this logic to allow sliders to meet
                     if (isStartSlider) {
-                        const endSliderPosition = this.endSlider.getBoundingClientRect().left - this.sliderTrack.getBoundingClientRect().left;
-                        newLeft = Math.min(newLeft, endSliderPosition - slider.offsetWidth);
+                        const endSliderLeft = this.endSlider.getBoundingClientRect().left - this.sliderTrack.getBoundingClientRect().left;
+                        newLeft = Math.min(newLeft, endSliderLeft); // Allow startSlider to meet endSlider
                     } else {
-                        const startSliderPosition = this.startSlider.getBoundingClientRect().right - this.sliderTrack.getBoundingClientRect().left;
-                        newLeft = Math.max(newLeft, startSliderPosition);
+                        const startSliderRight = this.startSlider.getBoundingClientRect().right - this.sliderTrack.getBoundingClientRect().left;
+                        newLeft = Math.max(newLeft, startSliderRight); // Allow endSlider to meet startSlider
                     }
-            
+
                     slider.style.left = `${newLeft}px`;
             
                     // Update slider values and UI
