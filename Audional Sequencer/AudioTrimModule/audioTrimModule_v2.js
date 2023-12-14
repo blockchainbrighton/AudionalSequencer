@@ -218,14 +218,10 @@ displayValues() {
                     }
             
                     let newLeft = e.clientX - shiftX - this.sliderTrack.getBoundingClientRect().left;
-
-                    // Adjust the maximum position for the endSlider
-                    if (!isStartSlider) {
-                        // Allow the endSlider to move to the right edge of the slider track
-                        const maxPosition = this.sliderTrack.offsetWidth;
-                        newLeft = Math.min(newLeft, maxPosition);
-                    }
-
+            
+                    // Constrain the slider within the bounds of the slider track
+                    newLeft = Math.max(0, Math.min(newLeft, this.sliderTrack.offsetWidth - slider.offsetWidth));
+            
                     // Adjust this logic to allow sliders to meet
                     if (isStartSlider) {
                         const endSliderLeft = this.endSlider.getBoundingClientRect().left - this.sliderTrack.getBoundingClientRect().left;
@@ -234,7 +230,7 @@ displayValues() {
                         const startSliderRight = this.startSlider.getBoundingClientRect().right - this.sliderTrack.getBoundingClientRect().left;
                         newLeft = Math.max(newLeft, startSliderRight); // Allow endSlider to meet startSlider
                     }
-
+            
                     slider.style.left = `${newLeft}px`;
             
                     // Update slider values and UI
@@ -263,6 +259,7 @@ displayValues() {
             
             this.startSlider.addEventListener('mousedown', (event) => sliderMouseDown(event, true));
             this.endSlider.addEventListener('mousedown', (event) => sliderMouseDown(event, false));
+            
         }            
         
         
