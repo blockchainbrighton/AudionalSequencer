@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Logic to copy the sequence settings
             copiedData = {
                 type: 'sequence',
-                sequenceNumber: currentSequence,
+                currentSequence: currentSequence,
                 bpm: document.getElementById('bpm-slider').value,
                 channelSettings: [...channelSettings],
                 channelURLs: channelURLs[currentSequence]
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            if (currentSequence === copiedData.sequenceNumber) {
+            if (currentSequence === copiedData.currentSequence) {
                 alert('Please select a different sequence to paste the settings.');
                 return;
             }

@@ -13,41 +13,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function loadSequence(sequenceNumber) {
+function loadSequence(currentSequence) {
     // Retrieve the sequence from the global object
-    let sequence = window.unifiedSequencerSettings.getSettings('projectSequences')[`Sequence${sequenceNumber}`];
+    let sequence = window.unifiedSequencerSettings.getSettings('projectSequences')[`Sequence${currentSequence}`];
 
     // Initialize the sequence if it doesn't exist
     if (!sequence) {
         // Initialize a new sequence with default values
         const newSequence = window.unifiedSequencerSettings.initializeSequences(1, 16, 64);
         window.unifiedSequencerSettings.setProjectSequences({ ...window.unifiedSequencerSettings.getSettings('projectSequences'), ...newSequence });
-        sequence = newSequence[`Sequence${sequenceNumber}`];
+        sequence = newSequence[`Sequence${currentSequence}`];
     }
 
     // Update the currentSequence in the global object
-    window.unifiedSequencerSettings.setCurrentSequence(sequenceNumber);
+    window.unifiedSequencerSettings.setCurrentSequence(currentSequence);
 
     // Check if sequence is an object
     if (typeof sequence !== 'object') {
-        console.error(`Sequence ${sequenceNumber} is not an object.`, sequence);
+        console.error(`Sequence ${currentSequence} is not an object.`, sequence);
         return;
     }
 
     // Update the UI to reflect the loaded sequence
-    updateUIForSequence(sequenceNumber);
+    updateUIForSequence(currentSequence);
 
     // Iterate over each channel in the sequence
     Object.entries(sequence).forEach(([channelKey, channelData]) => {
         const channelIndex = parseInt(channelKey.replace('ch', ''), 10);
         const currentUrl = channelData.url; // Assuming the URL is stored in the channelData object
         const channelElement = document.querySelector(`.channel[data-id="Channel-${channelIndex + 1}"]`);
-        const previousUrl = channelElement.dataset.originalUrl;
+        // const previousUrl = channelElement.dataset.originalUrl;
 
-        if (currentUrl && currentUrl !== previousUrl) {
-            const loadSampleButton = channelElement.querySelector('.load-sample-button');
-            fetchAudio(currentUrl, channelIndex, loadSampleButton);
-        }
+       
+            // const loadSampleButton = channelElement.querySelector('.load-sample-button');
+            fetchAudio(currentUrl, channelIndex);
+        
     });
 }
 
@@ -84,37 +84,37 @@ function loadNextSequence() {
     }
 }
 
-function initializeNewSequence(sequenceNumber) {
+function initializeNewSequence(currentSequence) {
     // Initialize the sequence with default settings
     let sequenceChannels = Array(16).fill().map(() => [null].concat(Array(64).fill(false)));
-    window.unifiedSequencerSettings.setCurrentSequence(sequenceNumber, sequenceChannels);
+    window.unifiedSequencerSettings.setCurrentSequence(currentSequence, sequenceChannels);
 }
 
-function updateSequenceDisplay(sequenceNumber) {
+function updateSequenceDisplay(currentSequence) {
     const sequenceDisplayElement = document.getElementById('current-sequence-display');
     if (sequenceDisplayElement) {
-        sequenceDisplayElement.textContent = 'Sequence ' + sequenceNumber;
+        sequenceDisplayElement.textContent = 'Sequence ' + currentSequence;
     }
     updateActiveQuickPlayButton();
 }
 
-function updateUIForSequence(sequenceNumber) {
-    console.log(`[updateUIForSequence] Updating UI for Sequence ${sequenceNumber}`);
+function updateUIForSequence(currentSequence) {
+    console.log(`[updateUIForSequence] Updating UI for Sequence ${currentSequence}`);
     const masterSettings = window.unifiedSequencerSettings.getSettings('masterSettings');
-    const sequenceSettings = masterSettings.projectSequences[`Sequence${sequenceNumber}`];
+    const sequenceSettings = masterSettings.projectSequences[`Sequence${currentSequence}`];
 
-    console.log("[debugging Step Button IDs] Updating UI for Sequence:", sequenceNumber);
+    console.log("[debugging Step Button IDs] Updating UI for Sequence:", currentSequence);
 
-    if (sequenceNumber >= 0 && sequenceNumber < masterSettings.projectSequences.length) {
+    if (currentSequence >= 0 && currentSequence < 64) {
 
         // Mark the sequence as active
-        markSequenceAsLive(sequenceNumber);
+          // markSequenceAsLive(currentSequence);
 
         channels.forEach((channel, index) => {
             const stepButtons = channel.querySelectorAll('.step-button');
             const toggleMuteButtons = channel.querySelectorAll('.toggle-mute');
 
-            console.log(`[debugging Step Button IDs] Processing Channel: ${index}, Step Buttons Found: ${stepButtons.length}`);
+            console.log(`[debugging Step Button IDs][updateUIForSequence] Processing Channel: ${index}, Step Buttons Found: ${stepButtons.length}`);
 
             // Clear all step buttons and toggle mute states
             stepButtons.forEach(button => button.classList.remove('selected'));
@@ -122,14 +122,14 @@ function updateUIForSequence(sequenceNumber) {
 
             // Update the steps based on the sequence settings
             sequenceSettings[`ch${index}`].steps.forEach((stepState, pos) => {
-                console.log(`[debugging Step Button IDs] Channel: ${index}, Position: ${pos}, Step State: ${stepState}`);
+                console.log(`[debugging Step Button IDs] [updateUIForSequence] Channel: ${index}, Position: ${pos}, Step State: ${stepState}`);
 
                 if (stepState) {
                     if (stepButtons[pos]) {
                         stepButtons[pos].classList.add('selected');
-                        console.log(`[debugging Step Button IDs] Adding 'selected' class to Step Button at Position: ${pos} in Channel: ${index}`);
+                        console.log(`[debugging Step Button IDs][updateUIForSequence] Adding 'selected' class to Step Button at Position: ${pos} in Channel: ${index}`);
                     } else {
-                        console.error(`[debugging Step Button IDs] Step Button not found at Position: ${pos} in Channel: ${index}`);
+                        console.error(`[debugging Step Button IDs][updateUIForSequence] Step Button not found at Position: ${pos} in Channel: ${index}`);
                     }
                 }
             });
@@ -137,7 +137,7 @@ function updateUIForSequence(sequenceNumber) {
             // Additional logic for updating other UI elements like toggle mute states, volume, etc.
         });
     } else {
-        console.error("[debugging Step Button IDs] Invalid sequence number:", sequenceNumber);
+        console.error("[debugging Step Button IDs] [updateUIForSequence] Invalid sequence number:", currentSequence);
     }
 }
 
@@ -196,6 +196,9 @@ document.getElementById('prev-sequence').addEventListener('click', function() {
     }
 });
 
+console.log("Initial channel settings:", window.unifiedSequencerSettings.getSettings('projectSequences'));
+
+
   //function loadChannelSettingsFromPreset(preset) {
   //  preset.channels.forEach((channelData, channelIndex) => {
   //      let stepSettings = [null].concat(Array(64).fill(false));  // Add placeholder for 0th index
@@ -219,5 +222,4 @@ document.getElementById('prev-sequence').addEventListener('click', function() {
 //
 //}
 
-console.log("Initial channel settings:", window.unifiedSequencerSettings.getSettings('projectSequences'));
 

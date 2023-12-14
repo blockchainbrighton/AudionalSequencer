@@ -84,6 +84,7 @@ quickPlayButtons.forEach((button) => {
 
 function loadAndDisplaySequence(sequenceIndex) {
     currentSequence = sequenceIndex;
+    console.log(`[loadAndDisplaySequence] currentSequence updated to:  ${sequenceIndex}`);
     loadSequence(sequenceIndex);
 
     // Update the display and highlight the active button

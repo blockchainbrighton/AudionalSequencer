@@ -99,8 +99,8 @@
     
                 button.addEventListener('click', () => {
                     // Retrieve the current sequence number dynamically if needed
-                    let currentSequence = 0; // Replace with dynamic sequence number if applicable
-    
+                    // let currentSequence = 0; // Replace with dynamic sequence number if applicable
+                    let currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
                     // Toggle the step state in the global object
                     let currentStepState = window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, i);
                     window.unifiedSequencerSettings.updateStepState(currentSequence, channelIndex, i, !currentStepState);

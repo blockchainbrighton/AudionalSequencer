@@ -149,19 +149,16 @@ class UnifiedSequencerSettings {
     }
 
     // Method to update the current sequence
-    setCurrentSequence(sequenceNumber) {
-        if (channelIndex < 1) {
-        console.log("setCurrentSequence", sequenceNumber);
-        }
-        this.settings.currentSequence = sequenceNumber;
-        console.log(`[setCurrentSequence] Current sequence set to: ${sequenceNumber}`);
+    setCurrentSequence(currentSequence) {
+        console.log("setCurrentSequence called with: ", currentSequence);
+        
+        this.settings.currentSequence = currentSequence;
+        console.log(`[setCurrentSequence] currentSequence set to: ${currentSequence}`);
     }
 
     // Method to get the current sequence
     getCurrentSequence() {
-        if (channelIndex < 1) {
         console.log("getCurrentSequence");
-        }
         return this.settings.currentSequence;
     }
 
@@ -205,11 +202,11 @@ class UnifiedSequencerSettings {
     }
 
     
-    updateStepState(sequenceNumber, channelIndex, stepIndex, state) {
+    updateStepState(currentSequence, channelIndex, stepIndex, state) {
         if (channelIndex < 1) {
-        console.log(`[updateStepState] Called with Sequence: ${sequenceNumber}, Channel: ${channelIndex}, Step: ${stepIndex}, State: ${state}`);
+        console.log(`[updateStepState] Called with Sequence: ${currentSequence}, Channel: ${channelIndex}, Step: ${stepIndex}, State: ${state}`);
         }
-        const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber}`];
+        const sequence = this.settings.masterSettings.projectSequences[`Sequence${currentSequence}`];
         const channel = sequence && sequence[`ch${channelIndex}`];
         if (channel && stepIndex < channel.steps.length) {
             channel.steps[stepIndex] = state;
@@ -219,11 +216,11 @@ class UnifiedSequencerSettings {
     }
     
     
-    getStepState(sequenceNumber, channelIndex, stepIndex) {
+    getStepState(currentSequence, channelIndex, stepIndex) {
         if (channelIndex < 1) {
-        console.log(`[getStepState] Called with Sequence: ${sequenceNumber}, Channel: ${channelIndex}, Step: ${stepIndex}`);
+        console.log(`[getStepState] Called with Sequence: ${currentSequence}, Channel: ${channelIndex}, Step: ${stepIndex}`);
         }
-        const sequence = this.settings.masterSettings.projectSequences[`Sequence${sequenceNumber}`];
+        const sequence = this.settings.masterSettings.projectSequences[`Sequence${currentSequence}`];
         const channel = sequence && sequence[`ch${channelIndex}`];
         if (channel && stepIndex < channel.steps.length) {
             return channel.steps[stepIndex];

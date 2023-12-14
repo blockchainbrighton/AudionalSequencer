@@ -115,13 +115,13 @@ function updateProjectNameUI(projectName) {
 // 
 // // Utility Functions
 // 
-function updateSpecificStepUI(sequenceNumber, channelIndex, stepIndex) {
+function updateSpecificStepUI(currentSequence, channelIndex, stepIndex) {
     // Use the correct ID format to match the updated step button IDs
-    const stepButtonId = `Sequence${sequenceNumber}-ch${channelIndex}-step-${stepIndex}`;
+    const stepButtonId = `Sequence${currentSequence}-ch${channelIndex}-step-${stepIndex}`;
     const stepButton = document.getElementById(stepButtonId);
 
     if (stepButton) {
-        let currentStepState = window.unifiedSequencerSettings.getStepState(sequenceNumber, channelIndex, stepIndex);
+        let currentStepState = window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, stepIndex);
         if (currentStepState) {
             stepButton.classList.add('selected');
         } else {
@@ -250,9 +250,9 @@ function updateProjectSequencesUI(sequenceData) {
 
 
 
-// function reflectStepStateInUI(sequenceNumber, channelIndex, stepIndex) {
-//     const state = window.unifiedSequencerSettings.getStepState(sequenceNumber, channelIndex, stepIndex);
-//     const stepButtonId = `${sequenceNumber}-ch${channelIndex}-step-${stepIndex}`;
+// function reflectStepStateInUI(currentSequence, channelIndex, stepIndex) {
+//     const state = window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, stepIndex);
+//     const stepButtonId = `${currentSequence}-ch${channelIndex}-step-${stepIndex}`;
 //     const stepButton = document.getElementById(stepButtonId);
 //     
 //     if (stepButton) {
