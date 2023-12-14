@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadSequence(currentSequence) {
     // Retrieve the sequence from the global object
     let sequence = window.unifiedSequencerSettings.getSettings('projectSequences')[`Sequence${currentSequence}`];
+    console.log (`[loadSequence] Loading sequence ${currentSequence}...`);
 
     // Initialize the sequence if it doesn't exist
     if (!sequence) {

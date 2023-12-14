@@ -8,7 +8,7 @@ class UnifiedSequencerSettings {
             masterSettings: {
                 projectName: 'New Audx Project', // Set the project name placeholder
                 projectBPM: 120,
-                currentSequence: 1, // Initialize with a default value
+                currentSequence: 0, // Initialize with a default value
                 projectURLs: new Array(16).fill(''), 
                 trimSettings: Array.from({ length: 16 }, () => ({
                     startSliderValue: 0.01,
@@ -73,6 +73,7 @@ class UnifiedSequencerSettings {
 
 
     initializeTrimSettings(numSettings) {
+        console.log("initializeTrimSettings entered");
         if (channelIndex < 1) {
         console.log("initializeTrimSettings", numSettings);
         }
@@ -100,6 +101,7 @@ class UnifiedSequencerSettings {
     }
 
     setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
+        console.log("setTrimSettings entered");
         if (channelIndex < 1) {
             console.log("setTrimSettings", channelIndex, startSliderValue, endSliderValue);
         }
@@ -116,6 +118,7 @@ class UnifiedSequencerSettings {
     }
     
     getTrimSettings(channelIndex) {
+        console.log("getTrimSettings entered");
         if (channelIndex < 1) {
         console.log("getTrimSettings", channelIndex);
         }
@@ -154,6 +157,7 @@ class UnifiedSequencerSettings {
         
         this.settings.currentSequence = currentSequence;
         console.log(`[setCurrentSequence] currentSequence set to: ${currentSequence}`);
+        console.log(`[setCurrentSequence] Object currentSequence set to: ${this.settings.currentSequence}`);
     }
 
     // Method to get the current sequence
@@ -182,6 +186,7 @@ class UnifiedSequencerSettings {
 
     // Nested function for manual checking
     checkSettings() {
+        console.log("checkSettings entered");
         if (channelIndex < 1) {
         console.log("checkSettings"); 
         } 
@@ -191,6 +196,7 @@ class UnifiedSequencerSettings {
 
    
     updateProjectSequencesUI() {
+        console.log("updateProjectSequencesUI entered");
         if (channelIndex < 1) {
         console.log("updateProjectSequencesUI");
         }
@@ -203,6 +209,7 @@ class UnifiedSequencerSettings {
 
     
     updateStepState(currentSequence, channelIndex, stepIndex, state) {
+        console.log("updateStepState entered");
         if (channelIndex < 1) {
         console.log(`[updateStepState] Called with Sequence: ${currentSequence}, Channel: ${channelIndex}, Step: ${stepIndex}, State: ${state}`);
         }
@@ -217,6 +224,7 @@ class UnifiedSequencerSettings {
     
     
     getStepState(currentSequence, channelIndex, stepIndex) {
+        console.log("getStepState entered");
         if (channelIndex < 1) {
         console.log(`[getStepState] Called with Sequence: ${currentSequence}, Channel: ${channelIndex}, Step: ${stepIndex}`);
         }
@@ -234,6 +242,7 @@ class UnifiedSequencerSettings {
     
 
     updateSetting(key, value, channelIndex = null) {
+        console.log("updateSetting entered");
         if (channelIndex < 1) {
         console.log(`[updateSetting] Called with key: ${key}, value: ${value}, channelIndex: ${channelIndex}`);
         }
@@ -247,6 +256,7 @@ class UnifiedSequencerSettings {
     }
 
     updateSampleDuration(duration, channelIndex) {
+        console.log("updateSampleDuration entered");
         if (channelIndex < 1) {
             console.log(`[updateSampleDuration] Called with duration: ${duration}, channelIndex: ${channelIndex}`);
         }
@@ -269,15 +279,18 @@ class UnifiedSequencerSettings {
    
 
     getprojectUrlforChannel(channelIndex) {
+        console.log("getprojectUrlforChannel entered");
         return this.settings.masterSettings.projectURLs[channelIndex];
     }
 
     setProjectName(name) {
+        console.log("setProjectName entered");
         this.settings.masterSettings.projectName = name;
         console.log(`[setProjectName] Project name set to: ${name}`);
     }
 
     setProjectURLs(urls) {
+        console.log("setProjectURLs entered");
         this.settings.masterSettings.projectURLs = urls;
         console.log(`[setProjectURLs] Project URLs set:`, urls);
         updateAllLoadSampleButtonTexts();
@@ -291,6 +304,7 @@ class UnifiedSequencerSettings {
 
         // Method to update the name of a specific channel
     setProjectChannelName(channelIndex, name) {
+        console.log("setProjectChannelName entered");
         if (this.isValidIndex(channelIndex)) {
             // Update only if the name is different
             if (this.settings.masterSettings.projectChannelNames[channelIndex] !== name) {
@@ -305,12 +319,15 @@ class UnifiedSequencerSettings {
 
 
     setProjectSequences(sequenceData) {
+        console.log("setProjectSequences entered");
         this.settings.masterSettings.projectSequences = sequenceData;
         console.log(`[setProjectSequences] Project sequences set:`, sequenceData);
+        console.log ('[setProjectSequences] currentSequence set to:', this.settings.masterSettings.currentSequence)
     }
 
 
     loadSettings(jsonSettings) {
+        console.log("loadSettings entered");
         try {
             console.log("[loadSettings] Received JSON Settings:", jsonSettings);
             const parsedSettings = typeof jsonSettings === 'string' ? JSON.parse(jsonSettings) : jsonSettings;
@@ -319,7 +336,9 @@ class UnifiedSequencerSettings {
             // Update the masterSettings with the parsed settings
             this.settings.masterSettings.projectName = parsedSettings.projectName;
             this.settings.masterSettings.projectBPM = parsedSettings.projectBPM;
+            console.log("[loadSettings]  currentSettings before update:", this.settings.currentSettings);
             this.settings.masterSettings.currentSequence = parsedSettings.currentSequence;
+            console.log("[loadSettings]  currentSettings after update:", this.settings.currentSettings);
             this.settings.masterSettings.projectURLs = parsedSettings.projectURLs;
             this.settings.masterSettings.trimSettings = parsedSettings.trimSettings;
             this.settings.masterSettings.projectChannelNames = parsedSettings.projectChannelNames;
@@ -344,6 +363,7 @@ class UnifiedSequencerSettings {
         
         // Helper function to ensure array length
         ensureArrayLength(array, length, defaultValue) {
+            console.log("ensureArrayLength entered");
             while (array.length < length) {
                 array.push(defaultValue);
             }
@@ -351,6 +371,7 @@ class UnifiedSequencerSettings {
             
     
     updateAllLoadSampleButtonTexts() {
+        console.log("updateAllLoadSampleButtonTexts entered");
         const channels = document.querySelectorAll('.channel');
         channels.forEach((channel, index) => {
             const loadSampleButton = channel.querySelector('.load-sample-button');
@@ -363,6 +384,7 @@ class UnifiedSequencerSettings {
     
     
     updateLoadSampleButtonText(channelIndex, button) {
+        console.log("updateLoadSampleButtonText entered");
         let buttonText = 'Load New Audional'; // Default text
     
         // Accessing projectChannelNames and projectURLs from settings
@@ -383,17 +405,20 @@ class UnifiedSequencerSettings {
     }
     
     exportSettings() {
+        console.log("exportSettings entered");
         const exportedSettings = JSON.stringify(this.settings.masterSettings);
         console.log("[exportSettings] Exported Settings:", exportedSettings);
         return exportedSettings;
     }
   
     isValidIndex(index) {
+            console.log("isValidIndex entered");
         return index >= 0 && index < 16; // Directly checking against 16
     }
 
     // Additional methods for updating UI
     updateProjectNameUI(projectName) {
+        console.log("Project name UI updated:", projectName);
         const projectNameInput = document.getElementById('project-name');
         if (projectNameInput) {
             projectNameInput.value = projectName || "AUDX Project";
