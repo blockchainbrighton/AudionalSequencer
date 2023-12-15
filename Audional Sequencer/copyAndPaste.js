@@ -73,9 +73,29 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function isValidSequence(seq) {
-    const isValid = seq && Array.isArray(seq.channels) && typeof seq.name === 'string';
-    console.log(`[copyPasteDebug] Sequence ${seq.name} is valid for paste: ${isValid}`);
-    return isValid;
+    if (!seq || typeof seq !== 'object') {
+        console.log('[copyPasteDebug] Sequence is not an object.');
+        return false;
+    }
+
+    // Check if all channels in the sequence are valid
+    for (let channelKey in seq) {
+        const channel = seq[channelKey];
+        if (!isValidChannel(channel)) {
+            console.log(`[copyPasteDebug] Invalid channel data in sequence: ${channelKey}`);
+            return false;
+        }
+    }
+
+    console.log('[copyPasteDebug] Sequence is valid for paste.');
+    return true;
+}
+
+function isValidChannel(channel) {
+    return channel 
+           && Array.isArray(channel.steps) 
+           && typeof channel.mute === 'boolean' 
+           && typeof channel.url === 'string';
 }
 
 function showConfirmationTooltip(message) {
