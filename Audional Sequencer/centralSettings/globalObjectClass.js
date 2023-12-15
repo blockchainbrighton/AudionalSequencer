@@ -199,9 +199,7 @@ class UnifiedSequencerSettings {
     // Nested function for manual checking
     checkSettings() {
         console.log("checkSettings entered");
-        if (channelIndex < 1) {
-        console.log("checkSettings"); 
-        } 
+        
         console.log("[checkSettings] Current masterSettings:", this.settings.masterSettings);
         return this.settings.masterSettings;
     }
