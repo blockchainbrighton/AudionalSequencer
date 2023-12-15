@@ -83,45 +83,7 @@
         
 
 
-    document.addEventListener('DOMContentLoaded', () => {
-        // Assuming 'channels' is a NodeList or array of channel elements
-        channels.forEach((channel, channelIndex) => {
-            const stepsContainer = channel.querySelector('.steps-container');
-            stepsContainer.innerHTML = '';
-    
-            for (let i = 0; i < 64; i++) {
-                const button = document.createElement('button');
-                button.classList.add('step-button');
-    
-                // Update the ID assignment to match the format used in the rest of the application
-                // Replace 'currentSequence' with a default sequence number or a dynamic one, if needed
-                button.id = `Sequence0-ch${channelIndex}-step-${i}`;
-    
-                button.addEventListener('click', () => {
-                    // Retrieve the current sequence number dynamically if needed
-                    // let currentSequence = 0; // Replace with dynamic sequence number if applicable
-                    let currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
-                    // Toggle the step state in the global object
-                    let currentStepState = window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, i);
-                    console.log(`[setting currentStepState using getStepState to: ${currentSequence}, Channel ${channelIndex}, Step ${i}, New State: ${!currentStepState}`);
-                    window.unifiedSequencerSettings.updateStepState(currentSequence, channelIndex, i, !currentStepState);
-    
-                    console.log(`[calling - updateSpecificStepUI] Step button clicked: Sequence ${currentSequence}, Channel ${channelIndex}, Step ${i}, New State: ${!currentStepState}`);
-    
-                    // Update the UI for the specific step
-                    updateSpecificStepUI(currentSequence, channelIndex, i);
-                });
-    
-                stepsContainer.appendChild(button);
-            }
-    
-            // Add other channel elements like load buttons, mute, solo, clear, etc., if they are not already present
-        });
-    });
-    
-    
-
-
+        
     const loadSampleButton = channel.querySelector('.load-sample-button');
 
     

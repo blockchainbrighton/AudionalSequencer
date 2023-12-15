@@ -33,6 +33,7 @@ class UnifiedSequencerSettings {
             this.settings.masterSettings = {
                 projectName: '',
                 projectBPM: 120,
+                currentSequence: 0, // Initialize with a default value
                 projectURLs: new Array(16).fill(''),
                 trimSettings: Array.from({ length: 16 }, () => ({
                     startSliderValue: 0.01,

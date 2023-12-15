@@ -114,6 +114,8 @@ function playStep() {
             window.unifiedSequencerSettings.setCurrentSequence(updatedSequence);
             console.log(`[playStep-count] Current sequence after increment: ${updatedSequence}`);
 
+            createStepButtonsForSequence()
+
             // Update the UI for the new sequence
             updateUIForSequence(updatedSequence);
         }
