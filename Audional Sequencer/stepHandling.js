@@ -33,7 +33,7 @@ function renderPlayhead(buttons, currentStep) {
 
 function playStep() {
     console.log("[playStep] Function called");
-    
+
     // Retrieve the updated current sequence number
     const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
 
@@ -110,11 +110,12 @@ function playStep() {
             console.log(`[playStep-count] Current sequence: ${currentSequence}`);
 
             // Increment the sequence number and update it
-            window.unifiedSequencerSettings.setCurrentSequence(currentSequence + 1);
-
-            // Retrieve the updated sequence number for logging
-            const updatedSequence = window.unifiedSequencerSettings.getCurrentSequence();
+            const updatedSequence = currentSequence + 1;
+            window.unifiedSequencerSettings.setCurrentSequence(updatedSequence);
             console.log(`[playStep-count] Current sequence after increment: ${updatedSequence}`);
+
+            // Update the UI for the new sequence
+            updateUIForSequence(updatedSequence);
         }
     }
     nextStepTime += stepDuration;

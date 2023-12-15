@@ -119,20 +119,26 @@ function updateProjectNameUI(projectName) {
 function updateSpecificStepUI(currentSequence, channelIndex, stepIndex) {
     // Use the correct ID format to match the updated step button IDs
     const stepButtonId = `Sequence${currentSequence}-ch${channelIndex}-step-${stepIndex}`;
+    console.log(`Looking for step button with ID: ${stepButtonId}`);
+
     const stepButton = document.getElementById(stepButtonId);
 
     if (stepButton) {
         let currentStepState = window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, stepIndex);
-        console.log(`[updateSpecificStepUI] [getStepDtate applied to currentStepState] Step button clicked: Sequence ${currentSequence}, Channel ${channelIndex}, Step ${stepIndex}, Current State: ${currentStepState}`);
+        console.log(`[updateSpecificStepUI] Step button found: Sequence ${currentSequence}, Channel ${channelIndex}, Step ${stepIndex}, Current State: ${currentStepState}`);
+
         if (currentStepState) {
             stepButton.classList.add('selected');
+            console.log(`[updateSpecificStepUI] Added 'selected' class to step button with ID: ${stepButtonId}`);
         } else {
             stepButton.classList.remove('selected');
+            console.log(`[updateSpecificStepUI] Removed 'selected' class from step button with ID: ${stepButtonId}`);
         }
     } else {
         console.error(`Step button not found for the given IDs: ${stepButtonId}`);
     }
 }
+
 
 function getProjectSequences() {
     const globalObject = window.unifiedSequencerSettings; // Assuming global object is accessible via window
