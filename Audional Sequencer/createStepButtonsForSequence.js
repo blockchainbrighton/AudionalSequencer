@@ -13,7 +13,7 @@ function createStepButtonsForSequence() {
             button.classList.add('step-button');
             button.id = `Sequence${currentSequence}-ch${channelIndex}-step-${i}`;
             
-            console.log(`[createStepButtonsForSequence] Creating button with ID: ${button.id}`);
+            // console.log(`[createStepButtonsForSequence] Creating button with ID: ${button.id}`);
             
             button.addEventListener('click', () => {
                 let currentSequence = window.unifiedSequencerSettings.settings.masterSettings.currentSequence;
