@@ -48,16 +48,12 @@ function playStep() {
         const channel = channels[channelIndex];
         const buttons = channel.querySelectorAll('.step-button');
         let channelData = presetData.channels[channelIndex];
-        console.log(`[playStep] Channel data for channel index ${channelIndex}:`, channelData);
-
-        const defaultStepsArray = Array(4096).fill(false);
-        renderPlayhead(buttons, currentStep, channel.dataset.muted === 'true');
 
         // If no channelData is found for the current channel, use a default set of values
         if (!channelData) {
             console.warn(`No preset data for channel index: ${channelIndex}`);
             channelData = {
-                steps: defaultStepsArray.slice(),
+                steps: Array(4096).fill(false),
                 mute: false,
                 url: null
             };
@@ -69,25 +65,25 @@ function playStep() {
 
         playSound(currentSequence, channel, currentStep);
         console.log(`[playStep] Playing sound for current sequence: ${currentSequence}, channel index: ${channelIndex}, current step: ${currentStep}`);
-        // Increment step counters and emit beats/bars if needed
     }
 
-        // Handle moving to the next sequence if needed
-        incrementStepCounters();
+    // Increment step counters
+    incrementStepCounters();
 
-        // Check if continuous play is enabled
-        const continuousPlayCheckbox = document.getElementById('continuous-play');
-        let isContinuousPlay = continuousPlayCheckbox.checked;
+    // Check if continuous play is enabled
+    const continuousPlayCheckbox = document.getElementById('continuous-play');
+    let isContinuousPlay = continuousPlayCheckbox.checked;
 
-            
-        // If the currentStep is 0 (meaning step 63 has just played), move to the next sequence
-        if (isContinuousPlay && currentStep === 63) {
-            let nextSequence = (currentSequence + 1) % totalNumberOfSequences; // Assuming totalNumberOfSequences is defined
-            handleSequenceTransition(nextSequence);
-        }
-
-                // displayUpdatedValues();
+    // If the currentStep is 63 (meaning the last step has just played), move to the next sequence
+    if (isContinuousPlay && currentStep === 0) {
+        let nextSequence = (currentSequence + 1) % totalNumberOfSequences; // Assuming totalNumberOfSequences is defined
+        handleSequenceTransition(nextSequence);
     }
+
+    // Optionally: Update display values
+    // displayUpdatedValues();
+}
+
 
 function incrementStepCounters() {
     currentStep = (currentStep + 1) % 64;
@@ -118,10 +114,16 @@ function handleSequenceTransition(targetSequence) {
     // Inside handleSequenceTransition
     console.log(`[SeqDebug] handleSequenceTransition called with sequence: ${targetSequence}`);
 
-
     // Set the target sequence
     window.unifiedSequencerSettings.setCurrentSequence(targetSequence);
     console.log(`[SeqDebug][stepHandling] Sequence set to ${targetSequence} at ${new Date().toLocaleTimeString()}`);
+
+    // Update the current-sequence-display element with the new sequence number
+    const currentSequenceDisplay = document.getElementById('current-sequence-display');
+    if (currentSequenceDisplay) {
+        currentSequenceDisplay.innerHTML = `Sequence: ${targetSequence}`;
+    }
+
 
     // Reset counters, recreate step buttons, and update UI
     resetCountersForNewSequence();
@@ -133,6 +135,7 @@ function handleSequenceTransition(targetSequence) {
         console.log(`[SeqDebug][handleSequenceTransition][stepHandling] UI updated for sequence ${targetSequence} at ${new Date().toLocaleTimeString()}`);
     }, 100); // Adjust delay as needed
 }
+
 
 
 
