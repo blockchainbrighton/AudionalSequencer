@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.addEventListener('click', () => {
                     // Toggle the step state in the global object
                     let currentStepState = window.unifiedSequencerSettings.getStepState(seq, ch, step);
-                    console.log(`[updateSpecificStepUI] [getStepDtate applied] Step button clicked: Sequence ${seq}, Channel ${ch}, Step ${step}, Current State: ${currentStepState}`);
+                    console.log(`[updateSpecificStepUI] [getStepState applied] Step button clicked: Sequence ${seq}, Channel ${ch}, Step ${step}, Current State: ${currentStepState}`);
                     window.unifiedSequencerSettings.updateStepState(seq, ch, step, !currentStepState);
 
                     console.log(`[updateSpecificStepUI] Step button clicked: Sequence ${seq}, Channel ${ch}, Step ${step}, New State: ${!currentStepState}`);

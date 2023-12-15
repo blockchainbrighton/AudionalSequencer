@@ -62,8 +62,8 @@ function playStep() {
         const isMuted = handleStep(channel, channelData, totalStepCount);
         console.log(`[playStep] Mute state for channel index ${channelIndex}: ${isMuted}`);
 
-        playSound(channel, currentStep, currentSequence);
-        console.log(`[playStep] Step ${currentStep} of sequence ${currentSequence} has been played on channel ${channelIndex}`);
+        playSound(currentSequence, channel, currentStep);
+        console.log(`[playStep] Playing sound for current sequence: ${currentSequence}, channel index: ${channelIndex}, current step: ${currentStep}`);
     }
 
     currentStep = (currentStep + 1) % 64;

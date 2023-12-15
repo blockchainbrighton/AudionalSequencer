@@ -98,11 +98,12 @@ function bufferToBase64(buffer) {
   return window.btoa(binary);
 }
 // Function to play sound
-function playSound(channel, currentStep) {
+function playSound(currentSequence, channel, currentStep) {
   const channelIndex = getChannelIndex(channel);
   console.log(`[playSound] Processing channel index: ${channelIndex}`);
 
   const stepState = getStepState(currentSequence, channelIndex, currentStep);
+  console.log(`[playSound] setting stepState using getStepState to: ${JSON.stringify(stepState)}`);
   if (!stepState) {
       console.log("[playSound] Current step is not selected. Skipping playback.");
       return;
@@ -123,6 +124,7 @@ function getChannelIndex(channel) {
 }
 
 function getStepState(currentSequence, channelIndex, currentStep) {
+  console.log(`[getStepState called] currentSequence: ${currentSequence}, channelIndex: ${channelIndex}, currentStep: ${currentStep}`);
   return window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, currentStep);
 }
 

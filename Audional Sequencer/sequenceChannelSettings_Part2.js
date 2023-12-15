@@ -57,29 +57,15 @@ stepButtons.forEach((button, index) => {
 }
 
 function loadNextSequence() {
+    console.log(`[loadNextSequence] Loading next sequence. Current sequence is: ${window.unifiedSequencerSettings.getCurrentSequence()}`);
     let currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
 
-    if (currentSequence < totalSequenceCount) {
-        // Save current sequence's settings
-
+    if (currentSequence < totalSequenceCount - 1) {
         // Increment the current sequence number
         const newSequence = currentSequence + 1;
         window.unifiedSequencerSettings.setCurrentSequence(newSequence);
 
         // Load the next sequence's settings
-        loadSequence(newSequence);
-
-        // Update the displayed number and UI
-        updateSequenceDisplay(newSequence);
-    } else if (isContinuousPlay) {
-        // Create a new sequence if continuous play is active and we're at the last sequence
-        const newSequence = totalSequenceCount + 1;
-        totalSequenceCount++; // Increment the total sequence count
-
-        // Initialize the new sequence
-        initializeNewSequence(newSequence);
-
-        // Load the new sequence
         loadSequence(newSequence);
 
         // Update the displayed number and UI
