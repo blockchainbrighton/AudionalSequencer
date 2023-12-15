@@ -72,7 +72,7 @@ function playStep() {
 
         // Handle moving to the next sequence if needed
         incrementStepCounters();
-        handleSequenceTransition();
+        handleSequenceTransition(currentSequence);
         // displayUpdatedValues();
     }
 
@@ -100,33 +100,27 @@ function incrementStepCounters() {
 }
 
 // Check if we need to switch to the next sequence (continuous play logic)
-function handleSequenceTransition() {
+function handleSequenceTransition(targetSequence) {
     console.log("[SeqDebug][stepHandling] handleSequenceTransition entered");
-    const continuousPlayCheckbox = document.getElementById('continuous-play');
-    if (continuousPlayCheckbox && continuousPlayCheckbox.checked && currentStep === 0) {
-        console.log(`[SeqDebug][stepHandling] Continuous play enabled, moving to the next sequence at ${new Date().toLocaleTimeString()}`);
+    // Inside handleSequenceTransition
+    console.log(`[SeqDebug] handleSequenceTransition called with sequence: ${targetSequence}`);
 
-        // Increment and update the sequence number
-        const updatedSequence = (window.unifiedSequencerSettings.getCurrentSequence() + 1);
-        window.unifiedSequencerSettings.setCurrentSequence(updatedSequence);
 
-        console.log(`[SeqDebug][stepHandling] Updated sequence number to ${updatedSequence} at ${new Date().toLocaleTimeString()}`);
+    // Set the target sequence
+    window.unifiedSequencerSettings.setCurrentSequence(targetSequence);
+    console.log(`[SeqDebug][stepHandling] Sequence set to ${targetSequence} at ${new Date().toLocaleTimeString()}`);
 
-        // Reset counters
-        resetCountersForNewSequence();
-        console.log(`[SeqDebug][handleSequenceTransition][stepHandling] Counters reset at ${new Date().toLocaleTimeString()}`);
-        
-        // Recreate step buttons
-        createStepButtonsForSequence();
-        console.log(`[SeqDebug][handleSequenceTransition][stepHandling] Step buttons recreated at ${new Date().toLocaleTimeString()}`);
-        
-        // Delay updating the UI to ensure DOM has updated
-        setTimeout(() => {
-            updateUIForSequence(updatedSequence);
-            console.log(`[SeqDebug][handleSequenceTransition][stepHandling] UI updated for sequence ${updatedSequence} at ${new Date().toLocaleTimeString()}`);
-        }, 100); // Delay of 100 milliseconds
-    }
+    // Reset counters, recreate step buttons, and update UI
+    resetCountersForNewSequence();
+    createStepButtonsForSequence();
+
+    // Delay updating the UI to ensure DOM has updated
+    setTimeout(() => {
+        updateUIForSequence(targetSequence);
+        console.log(`[SeqDebug][handleSequenceTransition][stepHandling] UI updated for sequence ${targetSequence} at ${new Date().toLocaleTimeString()}`);
+    }, 100); // Adjust delay as needed
 }
+
 
 
 
