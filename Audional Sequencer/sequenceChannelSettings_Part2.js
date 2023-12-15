@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadSequence(currentSequence) {
+    console.log('loadSequence entered');
     // Retrieve the sequence from the global object
     let sequence = window.unifiedSequencerSettings.getSettings('projectSequences')[`Sequence${currentSequence}`];
     console.log(`[loadSequence] Loading sequence ${currentSequence}...`);
@@ -37,6 +38,7 @@ function loadSequence(currentSequence) {
 }
 
 function updateChannelUI(currentSequence, channelIndex, steps) {
+    console.log('updateChannelUI entered');
     console.log(`[SeqDebug] [updateChannelUI] Updating UI for sequence ${currentSequence} channel ${channelIndex}`);
     const channelElement = document.querySelector(`.channel[data-id="Channel-${channelIndex}"]`);
     if (!channelElement) {
@@ -57,6 +59,7 @@ function updateChannelUI(currentSequence, channelIndex, steps) {
 
 
 function loadNextSequence() {
+    console.log('loadNextSequence entered');
     console.log(`[SeqDebug] [loadNextSequence] Loading next sequence. Current sequence is: ${window.unifiedSequencerSettings.getCurrentSequence()}`);
     let currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
 
@@ -76,6 +79,7 @@ function loadNextSequence() {
 }
 
 function initializeNewSequence(currentSequence) {
+    console.log('initializeNewSequence entered');
     console.log(`[initializeNewSequence] Initializing new sequence. Current sequence: ${currentSequence}`);
     // Initialize the sequence with default settings
     let sequenceChannels = Array(16).fill().map(() => [null].concat(Array(64).fill(false)));
@@ -92,6 +96,7 @@ function initializeNewSequence(currentSequence) {
 }
 
 function updateSequenceDisplay(currentSequence) {
+    // console.log('updateSequenceDisplay entered');
     const sequenceDisplayElement = document.getElementById('current-sequence-display');
     if (sequenceDisplayElement) {
         sequenceDisplayElement.textContent = 'Sequence ' + currentSequence;
@@ -100,6 +105,7 @@ function updateSequenceDisplay(currentSequence) {
 }
 
 function updateUIForSequence(currentSequence) {
+    console.log('updateUIForSequence entered');
     console.log(`[SeqDebug] [updateUIForSequence] Updating UI for Sequence ${currentSequence}`);
     const masterSettings = window.unifiedSequencerSettings.getSettings('masterSettings');
     const sequenceSettings = masterSettings.projectSequences[`Sequence${currentSequence}`];
@@ -148,6 +154,7 @@ function updateUIForSequence(currentSequence) {
 
 // Call this function whenever the sequence changes
 function changeSequence(seq) {
+    console.log('changeSequence entered');
     currentSequence = seq;
     onSequenceOrDataChange();
   }
@@ -159,6 +166,7 @@ function changeSequence(seq) {
  * @param {boolean} state - The new state of the step (true for on, false for off).
  */
 function updateStep(channelIndex, stepIndex, state) {
+    console.log('updateStep entered');
     // Existing code to update channelSettings
     channelSettings[channelIndex][stepIndex] = state;
     

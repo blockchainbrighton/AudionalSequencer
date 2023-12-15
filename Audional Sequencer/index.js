@@ -61,6 +61,7 @@ let clearConfirmTimeout = Array(channels.length).fill(null);
 
     // Function to update the actual volume
     function updateVolume(channel, index) {
+        console.log('updateVolume entered');
         if (soloedChannels.some(state => state)) {
             gainNodes[index].gain.value = soloedChannels[index] ? 1 : 0;
         } else {
@@ -71,6 +72,7 @@ let clearConfirmTimeout = Array(channels.length).fill(null);
     
     // Function to update the dim state based on gain value
     function updateDimState(channel, index) {
+        console.log('updateDimState entered');
         console.log(`updateDimState called for channel ${index}`);
 
         // Retrieve the current sequence number from the global settings
@@ -215,6 +217,7 @@ if (playButton && stopButton) {
 
 
         const loadPreset = (preset) => {
+            console.log('index.js loadPresetentered');
             console.log(`index.js loadPreset: Loading preset: ${preset}`);
             const presetData = presets[preset];
             if (!presetData) {
@@ -274,6 +277,7 @@ if (playButton && stopButton) {
 
  
 function updateLoadSampleButtonText(channelIndex, button) {
+    console.log('updateLoadSampleButtonText entered');
     console.log(`[updateLoadSampleButtonText] Called for channel index: ${channelIndex}`);
 
     const loadedUrl = window.unifiedSequencerSettings.getprojectUrlforChannel(channelIndex);
@@ -292,7 +296,7 @@ function updateLoadSampleButtonText(channelIndex, button) {
 
 // Function to test updating the text of all loadSampleButton elements
 function testUpdateLoadSampleButtonText() {
-    console.log("[testUpdateLoadSampleButtonText] Function called");
+    console.log("[testUpdateLoadSampleButtonText] Function entered");
 
     const channels = document.querySelectorAll('.channel');
     channels.forEach((channel, index) => {

@@ -1,6 +1,7 @@
 // globalObjectHelperFunctions_v2.js
 
 function updateProjectURLsUI(urls) {
+    console.log("debugGlobalObjectToUI - entered");
     console.log("{debugGlobalObjectToUI} updateProjectURLsUI: updating with URLs", urls);
 
     urls.forEach((url, index) => {
@@ -15,11 +16,13 @@ function updateProjectURLsUI(urls) {
 
 // Helper function to get the project URL for a channel
 function getProjectUrlForChannel(channelIndex) {
+    cons
     return window.unifiedSequencerSettings.getprojectUrlforChannel(channelIndex);
 }
 
 // 
 function updateTrimSettingsUI(trimSettings) {
+    console.log("debugGlobalObjectToUI - entered");
     console.log("{debugGlobalObjectToUI} updateTrimSettingsUI: updating with trimSettings", trimSettings);
 
     // Implement logic to update UI for trim settings
@@ -36,6 +39,7 @@ function updateTrimSettingsUI(trimSettings) {
 }
 // 
 function updateProjectChannelNamesUI(urlNames) {
+    console.log("debugGlobalObjectToUI - entered");
     console.log("{debugGlobalObjectToUI} updateProjectChannelNamesUI: updating with URL names", urlNames); 
     // Implement logic to update UI for project URL names
     console.log("Project URL names UI updated:", urlNames);
@@ -98,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function updateBPMUI(bpm) {
+    console.log("debugGlobalObjectToUI - entered");
     const bpmSlider = document.getElementById('bpm-slider');
     const bpmDisplay = document.getElementById('bpm-display');
     if (bpmSlider && bpmDisplay) {
@@ -107,6 +112,7 @@ function updateBPMUI(bpm) {
 }
 
 function updateProjectNameUI(projectName) {
+    console.log("debugGlobalObjectToUI - entered");
     const projectNameInput = document.getElementById('project-name');
     if (projectNameInput) {
         projectNameInput.value = projectName;
@@ -117,6 +123,7 @@ function updateProjectNameUI(projectName) {
 // // Utility Functions
 // 
 function updateSpecificStepUI(currentSequence, channelIndex, stepIndex) {
+    console.log("debugGlobalObjectToUI - entered");
     // Use the correct ID format to match the updated step button IDs
     const stepButtonId = `Sequence${currentSequence}-ch${channelIndex}-step-${stepIndex}`;
     console.log(`Looking for step button with ID: ${stepButtonId}`);
@@ -141,6 +148,7 @@ function updateSpecificStepUI(currentSequence, channelIndex, stepIndex) {
 
 
 function getProjectSequences() {
+    console.log("debugGlobalObjectToUI - entered");
     const globalObject = window.unifiedSequencerSettings; // Assuming global object is accessible via window
     return window.unifiedSequencerSettings.getSettings('projectSequences');
 }
@@ -158,6 +166,7 @@ function getProjectSequences() {
 // }
 // 
 function setGlobalProjectURLs(urls) {
+    console.log("debugGlobalObjectToUI - entered");
     window.unifiedSequencerSettings.setProjectURLs(urls);
     console.log(`[setGlobalProjectURLs] Project URLs updated:`, urls);
 }
@@ -207,6 +216,7 @@ function setTrimSettings(channelIndex, startSliderValue, endSliderValue) {
 
 
 function updateProjectSequencesUI(sequenceData) {
+    console.log("debugGlobalObjectToUI - entered");
     console.log("{debugGlobalObjectToUI} [updateProjectSequencesUI] updateProjectSequencesUI: updating with sequences", sequenceData);
 
     // Log the total number of sequences being processed
@@ -297,6 +307,7 @@ function updateProjectSequencesUI(sequenceData) {
 // 
    // Function to get trim settings
    function getTrimSettings(channelIndex) {
+    console.log("debugGlobalObjectToUI - entered");
        return window.unifiedSequencerSettings.getTrimSettings(channelIndex);
    }
 // 

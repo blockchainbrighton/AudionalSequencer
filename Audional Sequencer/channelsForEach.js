@@ -1,7 +1,7 @@
 // channelsForeach.js
 
     import { setupLoadSampleModalButton } from './loadSampleModalButton_v2.js';
-
+console.log("channelsForeach.js entered");
     channels.forEach((channel, index) => {
         channel.dataset.id = `Channel-${index}`;
     

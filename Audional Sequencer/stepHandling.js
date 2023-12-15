@@ -1,21 +1,23 @@
 // stepHandling.js
 
 function handleStep(channel, channelData, totalStepCount) {
+    console.log('handleStep entered');
     let isMuted = channel.dataset.muted === 'true';
     const isToggleMuteStep = channelData.toggleMuteSteps.includes(totalStepCount);
 
     if (isToggleMuteStep) {
-      isMuted = !isMuted;
-      channel.dataset.muted = isMuted ? 'true' : 'false';
-      // Update the mute state in the DOM
-      updateMuteState(channel, isMuted);
-      console.log('Mute toggled by the handleStep function');
+        isMuted = !isMuted;
+        channel.dataset.muted = isMuted ? 'true' : 'false';
+        // Update the mute state in the DOM
+        updateMuteState(channel, isMuted);
+        console.log('Mute toggled by the handleStep function');
     }
 
     return isMuted;
 }
 
 function renderPlayhead(buttons, currentStep) {
+    console.log('renderPlayhead entered');
     buttons.forEach((button, buttonIndex) => {
         button.classList.remove('playing');
         button.classList.remove('triggered');
@@ -30,17 +32,14 @@ function renderPlayhead(buttons, currentStep) {
     });
 }
 
-
 function playStep() {
-    console.log("[playStep] Function called");
+    console.log("[stepHandling][playStep] Function entered");
 
-    // Retrieve the updated current sequence number
+    // Current sequence number and preset data
     const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
-
-
     const presetData = presets.preset1;
 
-    // Iterate over all 16 channels
+    // Iterate over all channels
     for (let channelIndex = 0; channelIndex < 16; channelIndex++) {
         console.log(`[playStep] Processing channel index: ${channelIndex}`);
 
@@ -68,87 +67,61 @@ function playStep() {
 
         playSound(currentSequence, channel, currentStep);
         console.log(`[playStep] Playing sound for current sequence: ${currentSequence}, channel index: ${channelIndex}, current step: ${currentStep}`);
+        // Increment step counters and emit beats/bars if needed
     }
 
+        // Handle moving to the next sequence if needed
+        incrementStepCounters();
+        handleSequenceTransition();
+        // displayUpdatedValues();
+    }
+
+function incrementStepCounters() {
     currentStep = (currentStep + 1) % 64;
     totalStepCount = (totalStepCount + 1);
-    console.log(`[playStep-count] Total steps count: ${totalStepCount}`);
+    nextStepTime += stepDuration;
 
 
     if (currentStep % 4 === 0) {
-        beatCount++;  
-        console.log(`[playStep-count] Beat count: ${beatCount}`);
+        beatCount++;
         emitBeat(beatCount);
     }
 
     if (currentStep % 16 === 0) {
         barCount = (barCount + 1);
-        console.log(`[playStep-count] Bar count: ${barCount}`);
         emitBar(barCount);
     }
 
     if (currentStep % 64 === 0) {
         sequenceCount++;
         console.log(`[playStep-count] Sequence count: ${sequenceCount}`);
-
-        
-    
-        
-
-       // Check if we need to switch to the next sequence (continuous play logic)
-        const continuousPlayCheckbox = document.getElementById('continuous-play');
-        if (continuousPlayCheckbox && continuousPlayCheckbox.checked) {
-            // Reset counters for the next sequence
-            beatCount = 0;
-            barCount = 0;
-            currentStep = 0;
-            totalStepCount = 0;
-            console.log("[SeqDebug] [playStep-count] Continuous play enabled, moving to the next sequence");
-
-            // Retrieve the current sequence number
-            const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
-            console.log(`[SeqDebug] [playStep-count] Current sequence: ${currentSequence}`);
-
-            // Increment the sequence number and update it
-            const updatedSequence = currentSequence + 1;
-            window.unifiedSequencerSettings.setCurrentSequence(updatedSequence);
-            console.log(`[SeqDebug] [playStep-count] Current sequence after increment: ${updatedSequence}`);
-
-            createStepButtonsForSequence()
-
-            // Update the UI for the new sequence
-            updateUIForSequence(updatedSequence);
-        }
     }
-    nextStepTime += stepDuration;
     console.log(`[SeqDebug][playStep-count] Next step time: ${nextStepTime}`);
-
-    displayUpdatedValues();
 }
 
-// function updateStepButtonsUI() {
-//     console.log("[updateStepButtonsUI] Function called");
-//     const currentSequence = sequences[sequenceCount]; // Get the current sequence based on sequenceCount
-//     const stepButtons = document.querySelectorAll('.step-button');
-//     
-//     stepButtons.forEach((button, index) => {
-//         // Determine the channel index from the button's parent container
-//         let channelElement = button.closest('.channel');
-//         let channelIndex = parseInt(channelElement.id.split('-')[1]); // Assuming the id is in the format 'channel-x'
-// 
-//         // Update each button's state based on the currentSequence
-//         let stepState = currentSequence[index];
-//         if (stepState) {
-//             button.classList.add('selected');
-//         } else {
-//             button.classList.remove('selected');
-//         }
-// 
-//         // Update the global object
-//         window.unifiedSequencerSettings.updateStepState(sequenceCount, channelIndex, index, stepState);
-// 
-//         // Optional: Log for debugging
-//         console.log(`Updated global object for sequence: ${sequenceCount}, channelIndex: ${channelIndex}, stepIndex: ${index}, state: ${stepState}`);
-//     });
-// }
-// 
+// Check if we need to switch to the next sequence (continuous play logic)
+function handleSequenceTransition() {
+    const continuousPlayCheckbox = document.getElementById('continuous-play');
+    if (continuousPlayCheckbox && continuousPlayCheckbox.checked && currentStep === 0) {
+        console.log("[SeqDebug][stepHandling] Continuous play enabled, moving to the next sequence");
+
+        // Increment and update the sequence number
+        const updatedSequence = (window.unifiedSequencerSettings.getCurrentSequence() + 1);
+        window.unifiedSequencerSettings.setCurrentSequence(updatedSequence);
+
+        // Reset counters and update UI
+        resetCountersForNewSequence();
+        createStepButtonsForSequence();
+        updateUIForSequence(updatedSequence);
+    }
+}
+
+function resetCountersForNewSequence() {
+    beatCount = 0;
+    barCount = 0;
+    currentStep = 0;
+    totalStepCount = 0;
+}
+
+
+// displayUpdatedValues();
