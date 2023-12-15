@@ -32,29 +32,28 @@ function loadSequence(currentSequence) {
         const channelIndex = parseInt(channelKey.replace('ch', ''), 10);
 
         // Update the UI for each channel based on the step states in the sequence
-        updateChannelUI(channelIndex, channelData.steps);
+        updateChannelUI(currentSequence, channelIndex, channelData.steps);
     });
 }
 
-function updateChannelUI(channelIndex, steps) {
-    // Corrected to use backticks for template literal
+function updateChannelUI(currentSequence, channelIndex, steps) {
     const channelElement = document.querySelector(`.channel[data-id="Channel-${channelIndex}"]`);
     if (!channelElement) {
         console.error(`Channel element not found for index: ${channelIndex}`);
         return;
     }
 
-
-// Update step buttons based on the step states
-const stepButtons = channelElement.querySelectorAll('.step-button');
-stepButtons.forEach((button, index) => {
-    if (steps[index]) {
-        button.classList.add('selected');
-    } else {
-        button.classList.remove('selected');
-    }
-});
+    const stepButtons = channelElement.querySelectorAll(`.step-button[id^="Sequence${currentSequence}-ch${channelIndex}"]`);
+    stepButtons.forEach((button, index) => {
+        if (steps[index]) {
+            button.classList.add('selected');
+        } else {
+            button.classList.remove('selected');
+        }
+    });
 }
+
+
 
 function loadNextSequence() {
     console.log(`[loadNextSequence] Loading next sequence. Current sequence is: ${window.unifiedSequencerSettings.getCurrentSequence()}`);

@@ -72,13 +72,19 @@ let clearConfirmTimeout = Array(channels.length).fill(null);
     // Function to update the dim state based on gain value
     function updateDimState(channel, index) {
         console.log(`updateDimState called for channel ${index}`);
-        const stepButtons = channel.querySelectorAll('.step-button');
+
+        // Retrieve the current sequence number from the global settings
+        const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
+
+        // Select step buttons for the current sequence and channel
+        const stepButtons = channel.querySelectorAll(`.step-button[id^="Sequence${currentSequence}-ch${index}"]`);
         if (gainNodes[index].gain.value === 0) {
             stepButtons.forEach(button => button.classList.add('dimmed'));
         } else {
             stepButtons.forEach(button => button.classList.remove('dimmed'));
         }
     }
+
     
 
 // Global document click listener for clear buttons
