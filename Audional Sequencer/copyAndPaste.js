@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const pasteButton = document.getElementById('paste-button');
 
     if (copyButton) {
+        console.log('[SeqDebug] Copy button clicked.');
         copyButton.addEventListener('click', function() {
             // Inside the event listener for the copy button
             const currentSequenceIndex = window.unifiedSequencerSettings.getCurrentSequence();
@@ -21,16 +22,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 sequenceSettings: sequenceSettings
             };
 
-            console.log('Sequence step settings copied:', copiedData);
+            console.log('[SeqDebug] Sequence step settings copied:', copiedData);
 
             if (pasteButton) {
                 pasteButton.classList.add('flashing');
             }
-            showConfirmationTooltip('Copied sequence step settings. Select another sequence to paste to.');
+            showConfirmationTooltip('[SeqDebug] Copied sequence step settings. Select another sequence to paste to.');
         });
     }
 
     if (pasteButton) {
+        console.log('[SeqDebug] pasteButton clicked');
         pasteButton.addEventListener('click', function() {
             if (!copiedData) {
                 alert('No data copied to paste!');
@@ -39,8 +41,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Inside the event listener for the paste button
         const currentSequenceIndex = window.unifiedSequencerSettings.getCurrentSequence();
+        console.log(`[SeqDebug] Current sequence index: ${currentSequenceIndex}`);
         window.unifiedSequencerSettings.setSequenceSettings(currentSequenceIndex, copiedData.sequenceSettings);
+        console.log(`[SeqDebug] Sequence step settings pasted: ${copiedData}`);
         updateUIForSequence(currentSequenceIndex);
+        console.log(`[SeqDebug] Sequence step settings pasted: ${window.unifiedSequencerSettings.getSequenceSettings(currentSequenceIndex)}`);
 
 
             this.classList.remove('flashing');

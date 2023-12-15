@@ -2,6 +2,7 @@
 
 // Function to create step buttons for a given sequence
 function createStepButtonsForSequence() {
+    console.log("[createStepButtonsForSequence] [SeqDebug] entered");
     channels.forEach((channel, channelIndex) => {
         const stepsContainer = channel.querySelector('.steps-container');
         stepsContainer.innerHTML = '';
@@ -20,10 +21,10 @@ function createStepButtonsForSequence() {
                
                         // Toggle the step state in the global object
                         let currentStepState = window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, i);
-                        console.log(`[setting currentStepState using getStepState to: ${currentSequence}, Channel ${channelIndex}, Step ${i}, New State: ${!currentStepState}`);
+                        console.log(`[SeqDebug] [setting currentStepState using getStepState to: ${currentSequence}, Channel ${channelIndex}, Step ${i}, New State: ${!currentStepState}`);
                         window.unifiedSequencerSettings.updateStepState(currentSequence, channelIndex, i, !currentStepState);
                     
-                        console.log(`[calling - updateSpecificStepUI] Step button clicked: Sequence ${currentSequence}, Channel ${channelIndex}, Step ${i}, New State: ${!currentStepState}`);
+                        console.log(`[SeqDebug] [calling - updateSpecificStepUI] Step button clicked: Sequence ${currentSequence}, Channel ${channelIndex}, Step ${i}, New State: ${!currentStepState}`);
                     
                         // Update the UI for the specific step
                         updateSpecificStepUI(currentSequence, channelIndex, i);

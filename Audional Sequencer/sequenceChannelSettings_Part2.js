@@ -56,7 +56,7 @@ function updateChannelUI(currentSequence, channelIndex, steps) {
 
 
 function loadNextSequence() {
-    console.log(`[loadNextSequence] Loading next sequence. Current sequence is: ${window.unifiedSequencerSettings.getCurrentSequence()}`);
+    console.log(`[SeqDebug] [loadNextSequence] Loading next sequence. Current sequence is: ${window.unifiedSequencerSettings.getCurrentSequence()}`);
     let currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
 
     if (currentSequence < totalSequenceCount - 1) {
@@ -86,7 +86,7 @@ function initializeNewSequence(currentSequence) {
 
     // Set the new sequence with incremented number
     window.unifiedSequencerSettings.setCurrentSequence(newSequenceNumber, sequenceChannels);
-    console.log(`[initializeNewSequence] newSequenceCreated ${currentSequence} ${sequenceChannels}`);
+    console.log(`[SeqDebug] [initializeNewSequence] newSequenceCreated ${currentSequence} ${sequenceChannels}`);
 
 }
 
