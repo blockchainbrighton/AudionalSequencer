@@ -16,18 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadSequence(currentSequence) {
     // Retrieve the sequence from the global object
     let sequence = window.unifiedSequencerSettings.getSettings('projectSequences')[`Sequence${currentSequence}`];
-    console.log (`[loadSequence] Loading sequence ${currentSequence}...`);
-
-    // Initialize the sequence if it doesn't exist
-    if (!sequence) {
-        // Initialize a new sequence with default values
-        const newSequence = window.unifiedSequencerSettings.initializeSequences(1, 16, 64);
-        window.unifiedSequencerSettings.setProjectSequences({ ...window.unifiedSequencerSettings.getSettings('projectSequences'), ...newSequence });
-        sequence = newSequence[`Sequence${currentSequence}`];
-    }
-
-    // Update the currentSequence in the global object
-    window.unifiedSequencerSettings.setCurrentSequence(currentSequence);
+    console.log(`[loadSequence] Loading sequence ${currentSequence}...`);
 
     // Check if sequence is an object
     if (typeof sequence !== 'object') {
@@ -41,15 +30,30 @@ function loadSequence(currentSequence) {
     // Iterate over each channel in the sequence
     Object.entries(sequence).forEach(([channelKey, channelData]) => {
         const channelIndex = parseInt(channelKey.replace('ch', ''), 10);
-        const currentUrl = channelData.url; // Assuming the URL is stored in the channelData object
-        const channelElement = document.querySelector(`.channel[data-id="Channel-${channelIndex + 1}"]`);
-        // const previousUrl = channelElement.dataset.originalUrl;
 
-       
-            // const loadSampleButton = channelElement.querySelector('.load-sample-button');
-            fetchAudio(currentUrl, channelIndex);
-        
+        // Update the UI for each channel based on the step states in the sequence
+        updateChannelUI(channelIndex, channelData.steps);
     });
+}
+
+function updateChannelUI(channelIndex, steps) {
+    const channelElement = document.querySelector('.channel[data-id="Channel-${channelIndex + 1}"]');
+    if (!channelElement) {
+        console.error(`Channel element not found for index: ${channelIndex}`);
+        return;
+    }
+
+
+
+// Update step buttons based on the step states
+const stepButtons = channelElement.querySelectorAll('.step-button');
+stepButtons.forEach((button, index) => {
+    if (steps[index]) {
+        button.classList.add('selected');
+    } else {
+        button.classList.remove('selected');
+    }
+});
 }
 
 function loadNextSequence() {
