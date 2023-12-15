@@ -1,6 +1,6 @@
 // sequenceChannelSettings_Part2.js
 
-let totalSequenceCount = 1;
+let totalSequenceCount = 16;
 
 let isContinuousPlay = false;
 
@@ -37,12 +37,12 @@ function loadSequence(currentSequence) {
 }
 
 function updateChannelUI(channelIndex, steps) {
-    const channelElement = document.querySelector('.channel[data-id="Channel-${channelIndex + 1}"]');
+    // Corrected to use backticks for template literal
+    const channelElement = document.querySelector(`.channel[data-id="Channel-${channelIndex}"]`);
     if (!channelElement) {
         console.error(`Channel element not found for index: ${channelIndex}`);
         return;
     }
-
 
 
 // Update step buttons based on the step states
@@ -178,15 +178,27 @@ window.addEventListener('setupComplete', function() {
 });
 
 // Use loadNextSequence inside the event listener
-document.getElementById('next-sequence').addEventListener('click', loadNextSequence);
-
+document.getElementById('next-sequence').addEventListener('click', function() {
+    console.log("Next sequence button clicked.");
+    loadNextSequence();
+});
 
 document.getElementById('prev-sequence').addEventListener('click', function() {
-    if (currentSequence > 1) {
-        // Save current sequence's settings
+    console.log("Previous sequence button clicked.");
 
-        // Decrement the current sequence number and load its settings
+    // Fetch the current sequence number from the global settings
+    let currentSequence = window.unifiedSequencerSettings.settings.masterSettings.currentSequence;
+    console.log(`Current sequence before decrement: ${currentSequence}`);
+
+    if (currentSequence > 0) {
+        // Decrement the current sequence number
         currentSequence--;
+
+        // Update the global settings with the new current sequence number
+        window.unifiedSequencerSettings.settings.masterSettings.currentSequence = currentSequence;
+        console.log(`Current sequence after decrement: ${currentSequence}`);
+
+        // Load the previous sequence's settings
         loadSequence(currentSequence);
         
         // Update the display and highlight the active button
@@ -196,6 +208,8 @@ document.getElementById('prev-sequence').addEventListener('click', function() {
         console.warn("You're already on the first sequence.");
     }
 });
+
+
 
 console.log("Initial channel settings:", window.unifiedSequencerSettings.getSettings('projectSequences'));
 

@@ -6,19 +6,22 @@ let isCopyPasteEvent = false;
 let copiedData = null; // This will hold the copied data
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Assuming this is the ID of your copy button
     const copyButton = document.getElementById('copy-sequence-settings');
     const pasteButton = document.getElementById('paste-button');
 
     if (copyButton) {
         copyButton.addEventListener('click', function() {
+            // Retrieve the current settings from the global object
+            const currentSequence = window.unifiedSequencerSettings.settings.masterSettings.currentSequence;
+            const masterSettings = window.unifiedSequencerSettings.settings.masterSettings;
+
             // Logic to copy the sequence settings
             copiedData = {
                 type: 'sequence',
                 currentSequence: currentSequence,
-                bpm: document.getElementById('bpm-slider').value,
-                channelSettings: [...channelSettings],
-                channelURLs: channelURLs[currentSequence]
+                bpm: masterSettings.projectBPM,
+                channelSettings: masterSettings.projectSequences[`Sequence${currentSequence}`], // Assuming channel settings are stored per sequence
+                channelURLs: masterSettings.projectURLs[currentSequence]
             };
             console.log('Sequence settings copied:', copiedData);
 
@@ -39,91 +42,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
+            const currentSequence = window.unifiedSequencerSettings.settings.masterSettings.currentSequence;
             if (currentSequence === copiedData.currentSequence) {
                 alert('Please select a different sequence to paste the settings.');
                 return;
             }
 
             pasteSettings();
-            // Stop the flashing animation after pasting the settings
             this.classList.remove('flashing');
         });
     }
 });
 
-function showConfirmationTooltip(message) {
-    const tooltip = document.createElement('div');
-    tooltip.innerText = message;
-    tooltip.style.position = 'absolute';
-    tooltip.style.background = '#333';
-    tooltip.style.color = 'white';
-    tooltip.style.padding = '5px';
-    tooltip.style.borderRadius = '5px';
-    tooltip.style.top = '50%';
-    tooltip.style.left = '50%';
-    tooltip.style.transform = 'translate(-50%, -50%)';
-    tooltip.style.zIndex = '1000';
-
-    document.body.appendChild(tooltip);
-
-    setTimeout(() => {
-        tooltip.remove();
-    }, 3000);
-}
-
 
 function pasteSettings() {
-    let settingsToImport;
-
-    // Check if the current sequence is empty and add a new sequence if needed
-    if (!sequences[currentSequence]) {
-        sequences[currentSequence] = Array(16).fill().map(() => [null].concat(Array(64).fill(false)));
+    if (!copiedData) {
+        console.error('No data copied to paste!');
+        return;
     }
+
+    const currentSequence = window.unifiedSequencerSettings.settings.masterSettings.currentSequence;
     console.log("P1 Copied data:", copiedData);
 
     if (copiedData.type === 'sequence') {
-        settingsToImport = [{
-            name: `Sequence_${currentSequence}`,
-            bpm: copiedData.bpm,
-            channels: copiedData.channelSettings.map((channel, index) => {
-                return {
-                    url: copiedData.channelURLs[index],
-                    steps: channel.map((step, stepIndex) => step ? stepIndex : null).filter(Boolean)
-                };
-            })
-        }];
-        // Update collectedURLsForSequences with the copied URLs for the current sequence
-        collectedURLsForSequences[currentSequence] = copiedData.channelURLs;
-
         // Update the BPM for the current sequence
-        sequenceBPMs[currentSequence] = copiedData.bpm;
+        window.unifiedSequencerSettings.settings.masterSettings.projectBPM = copiedData.bpm;
 
+        // Update the channel settings and URLs for the current sequence
+        window.unifiedSequencerSettings.settings.masterSettings.projectSequences[`Sequence${currentSequence}`] = copiedData.channelSettings;
+        window.unifiedSequencerSettings.settings.masterSettings.projectURLs[currentSequence] = copiedData.channelURLs;
     } else if (copiedData.type === 'channel') {
-        // Update the specific channel's URL in collectedURLsForSequences
-        collectedURLsForSequences[currentSequence][copiedData.channelIndex] = copiedData.channelURL;
-
-        // Get the current sequence settings
-        settingsToImport = [{
-            name: `Sequence_${currentSequence}`,
-            bpm: document.getElementById('bpm-slider').value,
-            channels: sequences[currentSequence].map((channel, index) => {
-                if (index === copiedData.channelIndex) {
-                    return {
-                        url: copiedData.channelURL,
-                        steps: copiedData.channelSetting.map((step, stepIndex) => step ? stepIndex : null).filter(Boolean)
-                    };
-                } else {
-                    return {
-                        url: channel[0],
-                        steps: channel.map((step, stepIndex) => step ? stepIndex : null).filter(Boolean)
-                    };
-                }
-            })
-        }];
+        // Update the specific channel's settings in the current sequence
+        window.unifiedSequencerSettings.settings.masterSettings.projectSequences[`Sequence${currentSequence}`][copiedData.channelIndex] = copiedData.channelSetting;
+        window.unifiedSequencerSettings.settings.masterSettings.projectURLs[currentSequence][copiedData.channelIndex] = copiedData.channelURL;
     }
-    pasteSequenceSettings(JSON.stringify(settingsToImport));
-    console.log("P1 Settings to import:", settingsToImport);
+
     console.log('P1 Data pasted:', copiedData);
+    updateUIForSequence(currentSequence);
 }
 
 function pasteSequenceSettings(settings) {
@@ -180,4 +135,24 @@ function pasteSequenceSettings(settings) {
     loadAndDisplaySequence(currentSequence);
 
     console.log("Paste sequence settings completed.");
+}
+
+function showConfirmationTooltip(message) {
+    const tooltip = document.createElement('div');
+    tooltip.innerText = message;
+    tooltip.style.position = 'absolute';
+    tooltip.style.background = '#333';
+    tooltip.style.color = 'white';
+    tooltip.style.padding = '5px';
+    tooltip.style.borderRadius = '5px';
+    tooltip.style.top = '50%';
+    tooltip.style.left = '50%';
+    tooltip.style.transform = 'translate(-50%, -50%)';
+    tooltip.style.zIndex = '1000';
+
+    document.body.appendChild(tooltip);
+
+    setTimeout(() => {
+        tooltip.remove();
+    }, 3000);
 }
