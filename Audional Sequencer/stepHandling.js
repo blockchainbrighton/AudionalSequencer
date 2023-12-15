@@ -1,5 +1,7 @@
 // stepHandling.js
 
+let totalNumberOfSequences = 16;
+
 function handleStep(channel, channelData, totalStepCount) {
     console.log('handleStep entered');
     let isMuted = channel.dataset.muted === 'true';
@@ -72,8 +74,19 @@ function playStep() {
 
         // Handle moving to the next sequence if needed
         incrementStepCounters();
-        handleSequenceTransition(currentSequence);
-        // displayUpdatedValues();
+
+        // Check if continuous play is enabled
+        const continuousPlayCheckbox = document.getElementById('continuous-play');
+        let isContinuousPlay = continuousPlayCheckbox.checked;
+
+            
+        // If the currentStep is 0 (meaning step 63 has just played), move to the next sequence
+        if (isContinuousPlay && currentStep === 63) {
+            let nextSequence = (currentSequence + 1) % totalNumberOfSequences; // Assuming totalNumberOfSequences is defined
+            handleSequenceTransition(nextSequence);
+        }
+
+                // displayUpdatedValues();
     }
 
 function incrementStepCounters() {
