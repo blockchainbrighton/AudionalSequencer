@@ -167,6 +167,17 @@ class UnifiedSequencerSettings {
         return this.settings.masterSettings.currentSequence;
     }
 
+    getSequenceSettings(sequenceIndex) {
+        const sequenceKey = `Sequence${sequenceIndex}`;
+        return this.settings.masterSettings.projectSequences[sequenceKey];
+    }
+
+    setSequenceSettings(sequenceIndex, sequenceSettings) {
+        const sequenceKey = `Sequence${sequenceIndex}`;
+        this.settings.masterSettings.projectSequences[sequenceKey] = sequenceSettings;
+    }
+    
+
 
     getSettings(key) {
     
