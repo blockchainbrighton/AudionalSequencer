@@ -8,7 +8,7 @@ class UnifiedSequencerSettings {
             masterSettings: {
                 projectName: 'New Audx Project', // Set the project name placeholder
                 projectBPM: 120,
-                currentSequence: 1, // Initialize with a default value
+                currentSequence: 0, // Initialize with a default value
                 projectURLs: new Array(16).fill(''), 
                 trimSettings: Array.from({ length: 16 }, () => ({
                     startSliderValue: 0.01,
@@ -155,15 +155,15 @@ class UnifiedSequencerSettings {
     setCurrentSequence(currentSequence) {
         console.log("setCurrentSequence called with: ", currentSequence);
         
-        this.settings.currentSequence = currentSequence;
+        this.settings.masterSettings.currentSequence = currentSequence;
         console.log(`[setCurrentSequence] currentSequence set to: ${currentSequence}`);
-        console.log(`[setCurrentSequence] Object currentSequence set to: ${this.settings.currentSequence}`);
+        console.log(`[setCurrentSequence] Object currentSequence set to: ${this.settings.masterSettings.currentSequence}`);
     }
 
     // Method to get the current sequence
     getCurrentSequence() {
         console.log("getCurrentSequence");
-        return this.settings.currentSequence;
+        return this.settings.masterSettings.currentSequence;
     }
 
 

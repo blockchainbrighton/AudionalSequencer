@@ -7,7 +7,7 @@ let totalStepCount = 0
 let beatCount = 1; // individual steps
 let barCount = 1; // bars
 
-let sequenceCount = 0;
+let sequenceCount = 1;
 let currentSequence = 0;
 
 const sequenceLength = 64;

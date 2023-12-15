@@ -103,7 +103,7 @@ function playSound(currentSequence, channel, currentStep) {
   console.log(`[playSound] Processing channel index: ${channelIndex}`);
 
   const stepState = getStepState(currentSequence, channelIndex, currentStep);
-  console.log(`[playSound] setting stepState using getStepState to: ${JSON.stringify(stepState)}`);
+  console.log(`[playSound] setting stepState using getStepState to: ${stepState}`);
   if (!stepState) {
       console.log("[playSound] Current step is not selected. Skipping playback.");
       return;

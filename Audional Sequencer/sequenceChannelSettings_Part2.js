@@ -76,14 +76,19 @@ function loadNextSequence() {
 }
 
 function initializeNewSequence(currentSequence) {
+    console.log(`[initializeNewSequence] Initializing new sequence. Current sequence: ${currentSequence}`);
     // Initialize the sequence with default settings
     let sequenceChannels = Array(16).fill().map(() => [null].concat(Array(64).fill(false)));
 
     // Increment the currentSequence by 1 for the new sequence
-    let newSequenceNumber = currentSequence;
+    let newSequenceNumber = currentSequence + 1;
+    console.log(`[initializeNewSequence] New sequence: ${currentSequence}`);
+
 
     // Set the new sequence with incremented number
     window.unifiedSequencerSettings.setCurrentSequence(newSequenceNumber, sequenceChannels);
+    console.log(`[initializeNewSequence] newSequenceCreated ${currentSequence} ${sequenceChannels}`);
+
 }
 
 function updateSequenceDisplay(currentSequence) {

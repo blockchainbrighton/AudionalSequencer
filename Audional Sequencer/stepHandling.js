@@ -33,6 +33,10 @@ function renderPlayhead(buttons, currentStep) {
 
 function playStep() {
     console.log("[playStep] Function called");
+    
+    // Retrieve the updated current sequence number
+    const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
+
 
     const presetData = presets.preset1;
 
@@ -91,7 +95,7 @@ function playStep() {
     
         
 
-        // Check if we need to switch to the next sequence (continuous play logic)
+       // Check if we need to switch to the next sequence (continuous play logic)
         const continuousPlayCheckbox = document.getElementById('continuous-play');
         if (continuousPlayCheckbox && continuousPlayCheckbox.checked) {
             // Reset counters for the next sequence
@@ -101,11 +105,18 @@ function playStep() {
             totalStepCount = 0;
             console.log("[playStep-count] Continuous play enabled, moving to the next sequence");
 
-            // Use the next-sequence button logic to move to the next sequence
-            document.getElementById('next-sequence').click();
+            // Retrieve the current sequence number
+            const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
+            console.log(`[playStep-count] Current sequence: ${currentSequence}`);
+
+            // Increment the sequence number and update it
+            window.unifiedSequencerSettings.setCurrentSequence(currentSequence + 1);
+
+            // Retrieve the updated sequence number for logging
+            const updatedSequence = window.unifiedSequencerSettings.getCurrentSequence();
+            console.log(`[playStep-count] Current sequence after increment: ${updatedSequence}`);
         }
     }
-
     nextStepTime += stepDuration;
     console.log(`[playStep-count] Next step time: ${nextStepTime}`);
 
