@@ -174,13 +174,6 @@ function updateStep(channelIndex, stepIndex, state) {
     console.log('updateStep entered');
     // Existing code to update channelSettings
     channelSettings[channelIndex][stepIndex] = state;
-    
-    // // Log updated settings for the specific channel after the update
-    // updateSequenceData({
-    //     channelIndex: channelIndex,
-    //     stepSettings: channelSettings[channelIndex]
-    // });
-    // console.log(`Updated settings for Channel-${channelIndex + 1}:`, channelSettings[channelIndex]);
 
     // Update the global object
     window.unifiedSequencerSettings.updateStepState(currentSequence, channelIndex, stepIndex, state);
