@@ -101,20 +101,34 @@ function incrementStepCounters() {
 
 // Check if we need to switch to the next sequence (continuous play logic)
 function handleSequenceTransition() {
+    console.log("[SeqDebug][stepHandling] handleSequenceTransition entered");
     const continuousPlayCheckbox = document.getElementById('continuous-play');
     if (continuousPlayCheckbox && continuousPlayCheckbox.checked && currentStep === 0) {
-        console.log("[SeqDebug][stepHandling] Continuous play enabled, moving to the next sequence");
+        console.log(`[SeqDebug][stepHandling] Continuous play enabled, moving to the next sequence at ${new Date().toLocaleTimeString()}`);
 
         // Increment and update the sequence number
         const updatedSequence = (window.unifiedSequencerSettings.getCurrentSequence() + 1);
         window.unifiedSequencerSettings.setCurrentSequence(updatedSequence);
 
-        // Reset counters and update UI
+        console.log(`[SeqDebug][stepHandling] Updated sequence number to ${updatedSequence} at ${new Date().toLocaleTimeString()}`);
+
+        // Reset counters
         resetCountersForNewSequence();
+        console.log(`[SeqDebug][handleSequenceTransition][stepHandling] Counters reset at ${new Date().toLocaleTimeString()}`);
+        
+        // Recreate step buttons
         createStepButtonsForSequence();
-        updateUIForSequence(updatedSequence);
+        console.log(`[SeqDebug][handleSequenceTransition][stepHandling] Step buttons recreated at ${new Date().toLocaleTimeString()}`);
+        
+        // Delay updating the UI to ensure DOM has updated
+        setTimeout(() => {
+            updateUIForSequence(updatedSequence);
+            console.log(`[SeqDebug][handleSequenceTransition][stepHandling] UI updated for sequence ${updatedSequence} at ${new Date().toLocaleTimeString()}`);
+        }, 100); // Delay of 100 milliseconds
     }
 }
+
+
 
 function resetCountersForNewSequence() {
     beatCount = 0;
