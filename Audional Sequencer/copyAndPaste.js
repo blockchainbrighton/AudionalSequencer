@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const pasteButton = document.getElementById('paste-button');
 
     if (copyButton) {
+        console.log('[SeqDebug] Copy button clicked.');
         copyButton.addEventListener('click', function() {
             // Inside the event listener for the copy button
             const currentSequenceIndex = window.unifiedSequencerSettings.getCurrentSequence();
@@ -21,16 +22,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 sequenceSettings: sequenceSettings
             };
 
-            console.log('Sequence step settings copied:', copiedData);
+            console.log('[SeqDebug] Sequence step settings copied:', copiedData);
 
             if (pasteButton) {
                 pasteButton.classList.add('flashing');
             }
-            showConfirmationTooltip('Copied sequence step settings. Select another sequence to paste to.');
+            showConfirmationTooltip('[SeqDebug] Copied sequence step settings. Select another sequence to paste to.');
         });
     }
 
     if (pasteButton) {
+        console.log('[SeqDebug] pasteButton clicked');
         pasteButton.addEventListener('click', function() {
             if (!copiedData) {
                 alert('No data copied to paste!');
@@ -39,8 +41,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Inside the event listener for the paste button
         const currentSequenceIndex = window.unifiedSequencerSettings.getCurrentSequence();
+        console.log(`[SeqDebug] Current sequence index: ${currentSequenceIndex}`);
         window.unifiedSequencerSettings.setSequenceSettings(currentSequenceIndex, copiedData.sequenceSettings);
+        console.log(`[SeqDebug] Sequence step settings pasted: ${copiedData}`);
         updateUIForSequence(currentSequenceIndex);
+        console.log(`[SeqDebug] updteUIForSequence called with sequence index: ${currentSequenceIndex}`);
+        console.log(`[SeqDebug] Current sequence index according to the global object is now: ${window.unifiedSequencerSettings.getCurrentSequence()}`);
 
 
             this.classList.remove('flashing');
@@ -50,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function isValidSequence(seq) {
     const isValid = seq && Array.isArray(seq.channels) && typeof seq.name === 'string';
-    console.log(`Sequence ${seq.name} is valid for paste: ${isValid}`);
+    console.log(`[SeqDebug] Sequence ${seq.name} is valid for paste: ${isValid}`);
     return isValid;
 }
 

@@ -7,6 +7,7 @@ let currentTrimmerChannelIndex = null; // Define at a higher scope
 
 // Helper function to update the audio trimmer with the buffer
 function updateAudioTrimmerWithBufferHelper(url, channelIndex) {
+    console.log("updateAudioTrimmerWithBufferHelper entered");
     if (audioBuffers.has(url)) {
         const audioBuffer = audioBuffers.get(url);
         updateAudioTrimmerWithBuffer(audioBuffer, channelIndex);
@@ -16,6 +17,7 @@ function updateAudioTrimmerWithBufferHelper(url, channelIndex) {
 }
 
 function updateAudioTrimmerWithBuffer(audioBuffer) {
+    console.log("updateAudioTrimmerWithBuffer entered");
     if (currentTrimmerInstance) {
         currentTrimmerInstance.setAudioBuffer(audioBuffer);
         currentTrimmerInstance.drawWaveform();
@@ -26,6 +28,7 @@ function updateAudioTrimmerWithBuffer(audioBuffer) {
 }
 
 function playTrimmedAudioForChannel(channelIndex) {
+    console.log("playTrimmedAudioForChannel entered");
     if (currentTrimmerInstance && currentTrimmerChannelIndex === channelIndex) {
         currentTrimmerInstance.playTrimmedAudio();
     } else {
@@ -45,6 +48,7 @@ function stopAudioForChannel(channelIndex) {
 document.addEventListener('DOMContentLoaded', function() {
 
 function openAudioTrimmerModal(channelIndex) {
+    console.log('openAudioTrimmerModal entered');
     console.log('channelIndex:', channelIndex); // Log the channel index
     currentTrimmerChannelIndex = channelIndex; // Store the channel index
 
@@ -127,6 +131,7 @@ document.querySelector('.close-button').addEventListener('click', function() {
 
 
 function createAudioTrimmer(channelIndex) {
+    console.log('createAudioTrimmer method entered');
     const trimmer = new AudioTrimmer(channelIndex);
     trimmer.initialize();
     console.log('createAudioTrimmer method called');
