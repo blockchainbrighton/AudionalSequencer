@@ -11,24 +11,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (copyButton) {
         copyButton.addEventListener('click', function() {
-            const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
-            const masterSettings = window.unifiedSequencerSettings.settings.masterSettings;
+            const currentSequenceIndex = window.unifiedSequencerSettings.getCurrentSequence();
+            const sequenceSettings = window.unifiedSequencerSettings.getSequenceSettings(currentSequenceIndex);
     
+            // Assuming sequenceSettings contains the step settings for the current sequence
             copiedData = {
                 type: 'sequence',
-                currentSequence: currentSequence,
-                bpm: masterSettings.projectBPM,
-                channelSettings: masterSettings.projectSequences[`Sequence${currentSequence}`], // Assuming channel settings are stored per sequence
-                channelURLs: masterSettings.projectURLs[currentSequence]
+                currentSequenceIndex: currentSequenceIndex,
+                sequenceSettings: sequenceSettings
             };
-            console.log('Sequence settings copied:', copiedData);
+            console.log('Sequence step settings copied:', copiedData);
     
             if (pasteButton) {
                 pasteButton.classList.add('flashing');
             }
-            showConfirmationTooltip('Copied sequence settings. Select another sequence to paste to.');
+            showConfirmationTooltip('Copied sequence step settings. Select another sequence to paste to.');
         });
     }
+    
     
 
     if (pasteButton) {
@@ -37,45 +37,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('No data copied to paste!');
                 return;
             }
-            const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
-            if (currentSequence === copiedData.currentSequence) {
+    
+            const currentSequenceIndex = window.unifiedSequencerSettings.getCurrentSequence();
+            if (currentSequenceIndex === copiedData.currentSequenceIndex) {
                 alert('Please select a different sequence to paste the settings.');
                 return;
             }
-            pasteSettings();
+    
+            window.unifiedSequencerSettings.setSequenceSettings(currentSequenceIndex, copiedData.sequenceSettings);
+            updateUIForSequence(currentSequenceIndex);
+    
             this.classList.remove('flashing');
         });
-    }    
+    } 
 });
 
 
-function pasteSettings() {
-    if (!copiedData) {
-        console.error('No data copied to paste!');
-        return;
-    }
-    const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
-    
-    if (copiedData.type === 'sequence') {
-        window.unifiedSequencerSettings.setBPM(copiedData.bpm);
-        window.unifiedSequencerSettings.setProjectSequences(copiedData.channelSettings);
-        window.unifiedSequencerSettings.setProjectURLs(copiedData.channelURLs);
-    }
-    updateUIForSequence(currentSequence);
-}
-
-function pasteSequenceSettings(settings) {
-    console.log("Pasting sequence settings...");
-
-    let parsedSettings;
-
-    try {
-        parsedSettings = JSON.parse(settings);
-        console.log("P1 Parsed settings for paste:", parsedSettings);
-    } catch (error) {
-        console.error("Error parsing settings for paste:", error);
-        return;
-    }
+// function pasteSettings() {
+//     if (!copiedData) {
+//         console.error('No data copied to paste!');
+//         return;
+//     }
+//     const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
+//     
+//     if (copiedData.type === 'sequence') {
+//         window.unifiedSequencerSettings.setBPM(copiedData.bpm);
+//         window.unifiedSequencerSettings.setProjectSequences(copiedData.channelSettings);
+//         window.unifiedSequencerSettings.setProjectURLs(copiedData.channelURLs);
+//     }
+//     updateUIForSequence(currentSequence);
+// }
+// 
+// function pasteSequenceSettings(settings) {
+//     console.log("Pasting sequence settings...");
+// 
+//     let parsedSettings;
+// 
+//     try {
+//         parsedSettings = JSON.parse(settings);
+//         console.log("P1 Parsed settings for paste:", parsedSettings);
+//     } catch (error) {
+//         console.error("Error parsing settings for paste:", error);
+//         return;
+//     }
 
     function isValidSequence(seq) {
         const isValid = seq && Array.isArray(seq.channels) && typeof seq.name === 'string';

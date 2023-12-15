@@ -106,16 +106,21 @@ function updateUIForSequence(currentSequence) {
 
     console.log("[debugging Step Button IDs] Updating UI for Sequence:", currentSequence);
 
+    // Additional logging to check the format of the sequenceSettings
+    console.log(`[debugging Step Button IDs] Sequence Settings for Sequence ${currentSequence}:`, sequenceSettings);
+
     if (currentSequence >= 0 && currentSequence < 64) {
-
-        // Mark the sequence as active
-          // markSequenceAsLive(currentSequence);
-
         channels.forEach((channel, index) => {
             const stepButtons = channel.querySelectorAll('.step-button');
             const toggleMuteButtons = channel.querySelectorAll('.toggle-mute');
 
             console.log(`[debugging Step Button IDs][updateUIForSequence] Processing Channel: ${index}, Step Buttons Found: ${stepButtons.length}`);
+
+            // Validate that the sequence settings for the channel exist
+            if (!sequenceSettings || !sequenceSettings[`ch${index}`] || !sequenceSettings[`ch${index}`].steps) {
+                console.error(`[debugging Step Button IDs][updateUIForSequence] Missing step data for Channel: ${index} in Sequence: ${currentSequence}`);
+                return;
+            }
 
             // Clear all step buttons and toggle mute states
             stepButtons.forEach(button => button.classList.remove('selected'));
@@ -141,6 +146,7 @@ function updateUIForSequence(currentSequence) {
         console.error("[debugging Step Button IDs] [updateUIForSequence] Invalid sequence number:", currentSequence);
     }
 }
+
 
 // Call this function whenever the sequence changes
 function changeSequence(seq) {

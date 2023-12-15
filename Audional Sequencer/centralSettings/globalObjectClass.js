@@ -294,9 +294,11 @@ class UnifiedSequencerSettings {
         console.log("setProjectURLs entered");
         this.settings.masterSettings.projectURLs = urls;
         console.log(`[setProjectURLs] Project URLs set:`, urls);
-        updateAllLoadSampleButtonTexts();
-
+    
+        // Correctly calling the method within the same class
+        this.updateAllLoadSampleButtonTexts();
     }
+    
 
     // setTrimSettings(settings) {
     //     this.settings.masterSettings.trimSettings = settings;
