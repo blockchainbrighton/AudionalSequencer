@@ -103,16 +103,16 @@ function playStep() {
             barCount = 0;
             currentStep = 0;
             totalStepCount = 0;
-            console.log("[playStep-count] Continuous play enabled, moving to the next sequence");
+            console.log("[SeqDebug] [playStep-count] Continuous play enabled, moving to the next sequence");
 
             // Retrieve the current sequence number
             const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
-            console.log(`[playStep-count] Current sequence: ${currentSequence}`);
+            console.log(`[SeqDebug] [playStep-count] Current sequence: ${currentSequence}`);
 
             // Increment the sequence number and update it
             const updatedSequence = currentSequence + 1;
             window.unifiedSequencerSettings.setCurrentSequence(updatedSequence);
-            console.log(`[playStep-count] Current sequence after increment: ${updatedSequence}`);
+            console.log(`[SeqDebug] [playStep-count] Current sequence after increment: ${updatedSequence}`);
 
             createStepButtonsForSequence()
 
@@ -121,7 +121,7 @@ function playStep() {
         }
     }
     nextStepTime += stepDuration;
-    console.log(`[playStep-count] Next step time: ${nextStepTime}`);
+    console.log(`[SeqDebug][playStep-count] Next step time: ${nextStepTime}`);
 
     displayUpdatedValues();
 }

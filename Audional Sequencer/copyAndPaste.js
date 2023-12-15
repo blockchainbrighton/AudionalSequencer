@@ -45,7 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
         window.unifiedSequencerSettings.setSequenceSettings(currentSequenceIndex, copiedData.sequenceSettings);
         console.log(`[SeqDebug] Sequence step settings pasted: ${copiedData}`);
         updateUIForSequence(currentSequenceIndex);
-        console.log(`[SeqDebug] Sequence step settings pasted: ${window.unifiedSequencerSettings.getSequenceSettings(currentSequenceIndex)}`);
+        console.log(`[SeqDebug] updteUIForSequence called with sequence index: ${currentSequenceIndex}`);
+        console.log(`[SeqDebug] Current sequence index according to the global object is now: ${window.unifiedSequencerSettings.getCurrentSequence()}`);
 
 
             this.classList.remove('flashing');
@@ -55,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function isValidSequence(seq) {
     const isValid = seq && Array.isArray(seq.channels) && typeof seq.name === 'string';
-    console.log(`Sequence ${seq.name} is valid for paste: ${isValid}`);
+    console.log(`[SeqDebug] Sequence ${seq.name} is valid for paste: ${isValid}`);
     return isValid;
 }
 

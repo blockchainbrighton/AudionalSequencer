@@ -37,6 +37,7 @@ function loadSequence(currentSequence) {
 }
 
 function updateChannelUI(currentSequence, channelIndex, steps) {
+    console.log(`[SeqDebug] [updateChannelUI] Updating UI for sequence ${currentSequence} channel ${channelIndex}`);
     const channelElement = document.querySelector(`.channel[data-id="Channel-${channelIndex}"]`);
     if (!channelElement) {
         console.error(`Channel element not found for index: ${channelIndex}`);
@@ -99,25 +100,23 @@ function updateSequenceDisplay(currentSequence) {
 }
 
 function updateUIForSequence(currentSequence) {
-    console.log(`[updateUIForSequence] Updating UI for Sequence ${currentSequence}`);
+    console.log(`[SeqDebug] [updateUIForSequence] Updating UI for Sequence ${currentSequence}`);
     const masterSettings = window.unifiedSequencerSettings.getSettings('masterSettings');
     const sequenceSettings = masterSettings.projectSequences[`Sequence${currentSequence}`];
 
-    console.log("[debugging Step Button IDs] Updating UI for Sequence:", currentSequence);
-
     // Additional logging to check the format of the sequenceSettings
-    console.log(`[debugging Step Button IDs] Sequence Settings for Sequence ${currentSequence}:`, sequenceSettings);
+    console.log(`[SeqDebug] [debugging Step Button IDs] Sequence Settings for Sequence ${currentSequence}:`, sequenceSettings);
 
     if (currentSequence >= 0 && currentSequence < 64) {
         channels.forEach((channel, index) => {
             const stepButtons = channel.querySelectorAll('.step-button');
             const toggleMuteButtons = channel.querySelectorAll('.toggle-mute');
 
-            console.log(`[debugging Step Button IDs][updateUIForSequence] Processing Channel: ${index}, Step Buttons Found: ${stepButtons.length}`);
+            console.log(`[SeqDebug] [debugging Step Button IDs][updateUIForSequence] Processing Channel: ${index}, Step Buttons Found: ${stepButtons.length}`);
 
             // Validate that the sequence settings for the channel exist
             if (!sequenceSettings || !sequenceSettings[`ch${index}`] || !sequenceSettings[`ch${index}`].steps) {
-                console.error(`[debugging Step Button IDs][updateUIForSequence] Missing step data for Channel: ${index} in Sequence: ${currentSequence}`);
+                console.error(`[SeqDebug][debugging Step Button IDs][updateUIForSequence] Missing step data for Channel: ${index} in Sequence: ${currentSequence}`);
                 return;
             }
 
@@ -127,14 +126,14 @@ function updateUIForSequence(currentSequence) {
 
             // Update the steps based on the sequence settings
             sequenceSettings[`ch${index}`].steps.forEach((stepState, pos) => {
-                console.log(`[debugging Step Button IDs] [updateUIForSequence] Channel: ${index}, Position: ${pos}, Step State: ${stepState}`);
+                console.log(`[SeqDebug][debugging Step Button IDs] [updateUIForSequence] Channel: ${index}, Position: ${pos}, Step State: ${stepState}`);
 
                 if (stepState) {
                     if (stepButtons[pos]) {
                         stepButtons[pos].classList.add('selected');
-                        console.log(`[debugging Step Button IDs][updateUIForSequence] Adding 'selected' class to Step Button at Position: ${pos} in Channel: ${index}`);
+                        console.log(`[SeqDebug][debugging Step Button IDs][updateUIForSequence] Adding 'selected' class to Step Button at Position: ${pos} in Channel: ${index}`);
                     } else {
-                        console.error(`[debugging Step Button IDs][updateUIForSequence] Step Button not found at Position: ${pos} in Channel: ${index}`);
+                        console.error(`[SeqDebug][debugging Step Button IDs][updateUIForSequence] Step Button not found at Position: ${pos} in Channel: ${index}`);
                     }
                 }
             });
@@ -142,7 +141,7 @@ function updateUIForSequence(currentSequence) {
             // Additional logic for updating other UI elements like toggle mute states, volume, etc.
         });
     } else {
-        console.error("[debugging Step Button IDs] [updateUIForSequence] Invalid sequence number:", currentSequence);
+        console.error("[SeqDebug][debugging Step Button IDs] [updateUIForSequence] Invalid sequence number:", currentSequence);
     }
 }
 
