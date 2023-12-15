@@ -5,12 +5,28 @@ let isCopyPasteEvent = false;
 
 let copiedData = null; // This will hold the copied data
 
+// Add a function to validate the updates in the global object and UI
+function validateAndUpdateUI(sequenceIndex) {
+    const sequenceSettings = window.unifiedSequencerSettings.getSequenceSettings(sequenceIndex);
+    
+    if (!isValidSequence(sequenceSettings)) {
+        console.error(`[copyPasteDebug] Invalid sequence settings for sequence index: ${sequenceIndex}`);
+        return;
+    }
+
+    // Call UI update function with the new sequence settings
+    updateUIForSequence(sequenceIndex);
+    console.log(`[copyPasteDebug] UI updated for sequence index: ${sequenceIndex}`);
+
+    // Additional validation logic can be added here
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const copyButton = document.getElementById('copy-sequence-settings');
     const pasteButton = document.getElementById('paste-button');
 
     if (copyButton) {
-        console.log('[SeqDebug] Copy button clicked.');
+        console.log('[copyPasteDebug] Copy button clicked.');
         copyButton.addEventListener('click', function() {
             // Inside the event listener for the copy button
             const currentSequenceIndex = window.unifiedSequencerSettings.getCurrentSequence();
@@ -22,17 +38,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 sequenceSettings: sequenceSettings
             };
 
-            console.log('[SeqDebug] Sequence step settings copied:', copiedData);
+            console.log('[copyPasteDebug] Sequence step settings copied:', copiedData);
 
             if (pasteButton) {
                 pasteButton.classList.add('flashing');
             }
-            showConfirmationTooltip('[SeqDebug] Copied sequence step settings. Select another sequence to paste to.');
+            showConfirmationTooltip('[copyPasteDebug] Copied sequence step settings. Select another sequence to paste to.');
         });
     }
 
     if (pasteButton) {
-        console.log('[SeqDebug] pasteButton clicked');
+        console.log('[copyPasteDebug] pasteButton clicked');
         pasteButton.addEventListener('click', function() {
             if (!copiedData) {
                 alert('No data copied to paste!');
@@ -41,92 +57,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Inside the event listener for the paste button
         const currentSequenceIndex = window.unifiedSequencerSettings.getCurrentSequence();
-        console.log(`[SeqDebug] Current sequence index: ${currentSequenceIndex}`);
+        console.log(`[copyPasteDebug] Current sequence index: ${currentSequenceIndex}`);
         window.unifiedSequencerSettings.setSequenceSettings(currentSequenceIndex, copiedData.sequenceSettings);
-        console.log(`[SeqDebug] Sequence step settings pasted: ${copiedData}`);
+        console.log(`[copyPasteDebug] Sequence step settings pasted: ${copiedData}`);
         updateUIForSequence(currentSequenceIndex);
-        console.log(`[SeqDebug] updteUIForSequence called with sequence index: ${currentSequenceIndex}`);
-        console.log(`[SeqDebug] Current sequence index according to the global object is now: ${window.unifiedSequencerSettings.getCurrentSequence()}`);
+        console.log(`[copyPasteDebug] updteUIForSequence called with sequence index: ${currentSequenceIndex}`);
+        console.log(`[copyPasteDebug] Current sequence index according to the global object is now: ${window.unifiedSequencerSettings.getCurrentSequence()}`);
 
 
-            this.classList.remove('flashing');
-        });
+        this.classList.remove('flashing');
+        // New validation call after pasting settings
+        validateAndUpdateUI(currentSequenceIndex);
+    });
     }
 });
 
 function isValidSequence(seq) {
     const isValid = seq && Array.isArray(seq.channels) && typeof seq.name === 'string';
-    console.log(`[SeqDebug] Sequence ${seq.name} is valid for paste: ${isValid}`);
+    console.log(`[copyPasteDebug] Sequence ${seq.name} is valid for paste: ${isValid}`);
     return isValid;
 }
-
-
-// function pasteSettings() {
-//     if (!copiedData) {
-//         console.error('No data copied to paste!');
-//         return;
-//     }
-//     const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
-//     
-//     if (copiedData.type === 'sequence') {
-//         window.unifiedSequencerSettings.setBPM(copiedData.bpm);
-//         window.unifiedSequencerSettings.setProjectSequences(copiedData.channelSettings);
-//         window.unifiedSequencerSettings.setProjectURLs(copiedData.channelURLs);
-//     }
-//     updateUIForSequence(currentSequence);
-// }
-// 
-// function pasteSequenceSettings(settings) {
-//     console.log("Pasting sequence settings...");
-// 
-//     let parsedSettings;
-// 
-//     try {
-//         parsedSettings = JSON.parse(settings);
-//         console.log("P1 Parsed settings for paste:", parsedSettings);
-//     } catch (error) {
-//         console.error("Error parsing settings for paste:", error);
-//         return;
-//     }
-
-    
-//     console.log("P1 Parsed settings before conversion:", parsedSettings);
-// 
-//     // Update collectedURLsForSequences with the parsed URLs for the current sequence
-//     collectedURLsForSequences[currentSequence] = parsedSettings[0].channels.map(ch => ch.url);
-// 
-//     // Update the BPM for the current sequence
-//     sequenceBPMs[currentSequence] = parsedSettings[0].bpm;
-// 
-//     // Build the sequences array for paste
-//     let pastedSequences = parsedSettings.map((seqSettings, index) => {
-//         if (isValidSequence(seqSettings)) {
-//             return convertSequenceSettings(seqSettings);
-//         } else {
-//             return null;
-//         }
-//     }).filter(Boolean);
-// 
-//     // If the current sequence is beyond the length of the sequences array, append the pasted sequence
-//     if (currentSequence > sequences.length) {
-//         sequences.push(pastedSequences[0]);
-//     } else {
-//         sequences[currentSequence] = pastedSequences[0];
-//     }
-//     console.log("P1 Current sequence after paste:", sequences[currentSequence]);
-// 
-//     // Ensure channelSettings is initialized for the current sequence
-//     channelSettings = sequences[currentSequence];
-// 
-//     // Now, call functions that rely on channelSettings
-//     updateUIForSequence(currentSequence);
-// 
-//     console.log("P1 Pasted sequences array:", sequences);
-
-//     loadAndDisplaySequence(currentSequence);
-
-//     console.log("Paste sequence settings completed.");
-
 
 function showConfirmationTooltip(message) {
     const tooltip = document.createElement('div');
