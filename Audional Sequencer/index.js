@@ -209,6 +209,7 @@ if (playButton && stopButton) {
 
 
         const loadPreset = (preset) => {
+            console.log(`index.js loadPreset: Loading preset: ${preset}`);
             const presetData = presets[preset];
             if (!presetData) {
                 console.error('Preset not found:', preset);
