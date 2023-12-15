@@ -73,7 +73,7 @@ function loadNextSequence() {
         updateSequenceDisplay(newSequence);
     } else if (isContinuousPlay) {
         // Create a new sequence if continuous play is active and we're at the last sequence
-        const newSequence = totalSequenceCount;
+        const newSequence = totalSequenceCount + 1;
         totalSequenceCount++; // Increment the total sequence count
 
         // Initialize the new sequence
@@ -92,7 +92,12 @@ function loadNextSequence() {
 function initializeNewSequence(currentSequence) {
     // Initialize the sequence with default settings
     let sequenceChannels = Array(16).fill().map(() => [null].concat(Array(64).fill(false)));
-    window.unifiedSequencerSettings.setCurrentSequence(currentSequence, sequenceChannels);
+
+    // Increment the currentSequence by 1 for the new sequence
+    let newSequenceNumber = currentSequence;
+
+    // Set the new sequence with incremented number
+    window.unifiedSequencerSettings.setCurrentSequence(newSequenceNumber, sequenceChannels);
 }
 
 function updateSequenceDisplay(currentSequence) {

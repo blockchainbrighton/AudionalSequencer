@@ -102,7 +102,7 @@ function playSound(channel, currentStep) {
   const channelIndex = getChannelIndex(channel);
   console.log(`[playSound] Processing channel index: ${channelIndex}`);
 
-  const stepState = getStepState(channelIndex, currentStep);
+  const stepState = getStepState(currentSequence, channelIndex, currentStep);
   if (!stepState) {
       console.log("[playSound] Current step is not selected. Skipping playback.");
       return;
@@ -122,7 +122,7 @@ function getChannelIndex(channel) {
   return parseInt(channel.dataset.id.split('-')[1]);
 }
 
-function getStepState(channelIndex, currentStep) {
+function getStepState(currentSequence, channelIndex, currentStep) {
   return window.unifiedSequencerSettings.getStepState(currentSequence, channelIndex, currentStep);
 }
 

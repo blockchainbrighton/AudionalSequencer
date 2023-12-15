@@ -8,7 +8,7 @@ class UnifiedSequencerSettings {
             masterSettings: {
                 projectName: 'New Audx Project', // Set the project name placeholder
                 projectBPM: 120,
-                currentSequence: 0, // Initialize with a default value
+                currentSequence: 1, // Initialize with a default value
                 projectURLs: new Array(16).fill(''), 
                 trimSettings: Array.from({ length: 16 }, () => ({
                     startSliderValue: 0.01,
@@ -336,9 +336,9 @@ class UnifiedSequencerSettings {
             // Update the masterSettings with the parsed settings
             this.settings.masterSettings.projectName = parsedSettings.projectName;
             this.settings.masterSettings.projectBPM = parsedSettings.projectBPM;
-            console.log("[loadSettings]  currentSettings before update:", this.settings.currentSettings);
-            this.settings.masterSettings.currentSequence = parsedSettings.currentSequence;
-            console.log("[loadSettings]  currentSettings after update:", this.settings.currentSettings);
+            // console.log("[loadSettings]  currentSequence before update:", this.settings.currentSequence);
+            // this.settings.masterSettings.currentSequence = parsedSettings.currentSequence;
+            // console.log("[loadSettings]  currentSequence after update:", this.settings.currentSequence);
             this.settings.masterSettings.projectURLs = parsedSettings.projectURLs;
             this.settings.masterSettings.trimSettings = parsedSettings.trimSettings;
             this.settings.masterSettings.projectChannelNames = parsedSettings.projectChannelNames;
