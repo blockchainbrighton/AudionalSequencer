@@ -371,17 +371,19 @@ class UnifiedSequencerSettings {
         }
             
     
-    updateAllLoadSampleButtonTexts() {
-        console.log("updateAllLoadSampleButtonTexts entered");
-        const channels = document.querySelectorAll('.channel');
-        channels.forEach((channel, index) => {
-            const loadSampleButton = channel.querySelector('.load-sample-button');
-            if (loadSampleButton) {
-                // Call the modified updateLoadSampleButtonText function
-                this.updateLoadSampleButtonText(index, loadSampleButton);
-            }
-        });
-    }
+        updateAllLoadSampleButtonTexts() {
+            console.log("updateAllLoadSampleButtonTexts entered");
+            const channels = document.querySelectorAll('.channel');
+            channels.forEach((channel, index) => {
+                const loadSampleButton = channel.querySelector('.load-sample-button');
+                if (loadSampleButton) {
+                    // Use an arrow function to maintain 'this' context
+                    (() => {
+                        this.updateLoadSampleButtonText(index, loadSampleButton);
+                    })();
+                }
+            });
+        }
     
     
     updateLoadSampleButtonText(channelIndex, button) {

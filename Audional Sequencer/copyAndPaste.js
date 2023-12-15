@@ -11,11 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (copyButton) {
         copyButton.addEventListener('click', function() {
-            // Retrieve the current settings from the global object
-            const currentSequence = window.unifiedSequencerSettings.settings.masterSettings.currentSequence;
+            const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
             const masterSettings = window.unifiedSequencerSettings.settings.masterSettings;
-
-            // Logic to copy the sequence settings
+    
             copiedData = {
                 type: 'sequence',
                 currentSequence: currentSequence,
@@ -24,16 +22,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 channelURLs: masterSettings.projectURLs[currentSequence]
             };
             console.log('Sequence settings copied:', copiedData);
-
-            // Start flashing animation on the paste button
+    
             if (pasteButton) {
                 pasteButton.classList.add('flashing');
             }
-
-            // Show soft confirmation message
             showConfirmationTooltip('Copied sequence settings. Select another sequence to paste to.');
         });
     }
+    
 
     if (pasteButton) {
         pasteButton.addEventListener('click', function() {
@@ -41,17 +37,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('No data copied to paste!');
                 return;
             }
-
-            const currentSequence = window.unifiedSequencerSettings.settings.masterSettings.currentSequence;
+            const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
             if (currentSequence === copiedData.currentSequence) {
                 alert('Please select a different sequence to paste the settings.');
                 return;
             }
-
             pasteSettings();
             this.classList.remove('flashing');
         });
-    }
+    }    
 });
 
 
@@ -60,24 +54,13 @@ function pasteSettings() {
         console.error('No data copied to paste!');
         return;
     }
-
-    const currentSequence = window.unifiedSequencerSettings.settings.masterSettings.currentSequence;
-    console.log("P1 Copied data:", copiedData);
-
+    const currentSequence = window.unifiedSequencerSettings.getCurrentSequence();
+    
     if (copiedData.type === 'sequence') {
-        // Update the BPM for the current sequence
-        window.unifiedSequencerSettings.settings.masterSettings.projectBPM = copiedData.bpm;
-
-        // Update the channel settings and URLs for the current sequence
-        window.unifiedSequencerSettings.settings.masterSettings.projectSequences[`Sequence${currentSequence}`] = copiedData.channelSettings;
-        window.unifiedSequencerSettings.settings.masterSettings.projectURLs[currentSequence] = copiedData.channelURLs;
-    } else if (copiedData.type === 'channel') {
-        // Update the specific channel's settings in the current sequence
-        window.unifiedSequencerSettings.settings.masterSettings.projectSequences[`Sequence${currentSequence}`][copiedData.channelIndex] = copiedData.channelSetting;
-        window.unifiedSequencerSettings.settings.masterSettings.projectURLs[currentSequence][copiedData.channelIndex] = copiedData.channelURL;
+        window.unifiedSequencerSettings.setBPM(copiedData.bpm);
+        window.unifiedSequencerSettings.setProjectSequences(copiedData.channelSettings);
+        window.unifiedSequencerSettings.setProjectURLs(copiedData.channelURLs);
     }
-
-    console.log('P1 Data pasted:', copiedData);
     updateUIForSequence(currentSequence);
 }
 
