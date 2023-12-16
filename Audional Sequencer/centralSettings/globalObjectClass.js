@@ -47,7 +47,7 @@ class UnifiedSequencerSettings {
         }
 
         initializeSequences(numSequences, numChannels, numSteps) {
-            console.log("initializeSequences", numSequences, numChannels, numSteps);
+            console.log("initializeSequences entered", numSequences, numChannels, numSteps);
             
             let sequenceData = {};
             for (let seq = 0; seq < numSequences; seq++) {
@@ -57,7 +57,7 @@ class UnifiedSequencerSettings {
         }
         
         initializeChannels(numChannels, numSteps) {
-            console.log("initializeChannels", numChannels, numSteps);
+            console.log("initializeChannels entered", numChannels, numSteps);
             
             let channels = {};
             for (let ch = 0; ch < numChannels; ch++) {
@@ -128,7 +128,7 @@ class UnifiedSequencerSettings {
     }
 
     updateTrimSettingsUI(trimSettings) {
-        console.log("updateTrimSettingsUI", trimSettings);
+        console.log("updateTrimSettingsUI entered", trimSettings);
         // Implement logic to update UI for trim settings
         console.log("Trim settings UI updated:", trimSettings);
         // Example: Update each trim setting input field
@@ -145,6 +145,7 @@ class UnifiedSequencerSettings {
 
     // Example of a method that changes settings
     setProjectName(channelIndex, name) {
+        console.log("setProjectName entered");
         if (channelIndex < 1) {
         console.log("setProjectName", channelIndex, name);
         }
@@ -154,23 +155,36 @@ class UnifiedSequencerSettings {
 
     // Method to update the current sequence
     setCurrentSequence(currentSequence) {
-        console.log("setCurrentSequence called with: ", currentSequence);
+        console.log("[SeqDebug] setCurrentSequence entered with: ", currentSequence);
         
         this.settings.masterSettings.currentSequence = currentSequence;
-        console.log(`[setCurrentSequence] currentSequence set to: ${currentSequence}`);
-        console.log(`[setCurrentSequence] Object currentSequence set to: ${this.settings.masterSettings.currentSequence}`);
+        console.log(`[SeqDebug] [setCurrentSequence] currentSequence set to: ${currentSequence}`);
+        console.log(`[SeqDebug] [setCurrentSequence] Object currentSequence set to: ${this.settings.masterSettings.currentSequence}`);
     }
 
     // Method to get the current sequence
     getCurrentSequence() {
-        console.log("getCurrentSequence");
+        console.log("getCurrentSequence entered");
         return this.settings.masterSettings.currentSequence;
     }
+
+    getSequenceSettings(sequenceIndex) {
+        console.log("getSequenceSettings entered");
+        const sequenceKey = `Sequence${sequenceIndex}`;
+        return this.settings.masterSettings.projectSequences[sequenceKey];
+    }
+
+    setSequenceSettings(sequenceIndex, sequenceSettings) {
+        console.log("setSequenceSettings entered");
+        const sequenceKey = `Sequence${sequenceIndex}`;
+        this.settings.masterSettings.projectSequences[sequenceKey] = sequenceSettings;
+    }
+    
 
 
     getSettings(key) {
     
-        console.log("getSettings", key);
+        console.log("getSettings entered", key);
         
         if (key === 'masterSettings') {
             console.log("[getSettings] Retrieved all masterSettings:", this.settings.masterSettings);
@@ -188,9 +202,7 @@ class UnifiedSequencerSettings {
     // Nested function for manual checking
     checkSettings() {
         console.log("checkSettings entered");
-        if (channelIndex < 1) {
-        console.log("checkSettings"); 
-        } 
+        
         console.log("[checkSettings] Current masterSettings:", this.settings.masterSettings);
         return this.settings.masterSettings;
     }
@@ -294,9 +306,11 @@ class UnifiedSequencerSettings {
         console.log("setProjectURLs entered");
         this.settings.masterSettings.projectURLs = urls;
         console.log(`[setProjectURLs] Project URLs set:`, urls);
-        updateAllLoadSampleButtonTexts();
-
+    
+        // Correctly calling the method within the same class
+        this.updateAllLoadSampleButtonTexts();
     }
+    
 
     // setTrimSettings(settings) {
     //     this.settings.masterSettings.trimSettings = settings;
@@ -371,17 +385,19 @@ class UnifiedSequencerSettings {
         }
             
     
-    updateAllLoadSampleButtonTexts() {
-        console.log("updateAllLoadSampleButtonTexts entered");
-        const channels = document.querySelectorAll('.channel');
-        channels.forEach((channel, index) => {
-            const loadSampleButton = channel.querySelector('.load-sample-button');
-            if (loadSampleButton) {
-                // Call the modified updateLoadSampleButtonText function
-                this.updateLoadSampleButtonText(index, loadSampleButton);
-            }
-        });
-    }
+        updateAllLoadSampleButtonTexts() {
+            console.log("updateAllLoadSampleButtonTexts entered");
+            const channels = document.querySelectorAll('.channel');
+            channels.forEach((channel, index) => {
+                const loadSampleButton = channel.querySelector('.load-sample-button');
+                if (loadSampleButton) {
+                    // Use an arrow function to maintain 'this' context
+                    (() => {
+                        this.updateLoadSampleButtonText(index, loadSampleButton);
+                    })();
+                }
+            });
+        }
     
     
     updateLoadSampleButtonText(channelIndex, button) {
@@ -419,7 +435,7 @@ class UnifiedSequencerSettings {
 
     // Additional methods for updating UI
     updateProjectNameUI(projectName) {
-        console.log("Project name UI updated:", projectName);
+        console.log("Project name UI entered and updated:", projectName);
         const projectNameInput = document.getElementById('project-name');
         if (projectNameInput) {
             projectNameInput.value = projectName || "AUDX Project";
@@ -439,7 +455,7 @@ class UnifiedSequencerSettings {
 
     updateProjectURLsUI(urls) {
         // Implement logic to update UI for project URLs
-        console.log("Project URLs UI updated:", urls);
+        console.log("Project URLs UI entered and updated:", urls);
         // Example: Update each URL input field
         urls.forEach((url, index) => {
             const urlInput = document.getElementById(`url-input-${index}`);
@@ -451,7 +467,7 @@ class UnifiedSequencerSettings {
 
     updateTrimSettingsUI(trimSettings) {
         // Implement logic to update UI for trim settings
-        console.log("Trim settings UI updated:", trimSettings);
+        console.log("Trim settings UI entered and updated:", trimSettings);
         // Example: Update each trim setting input field
         trimSettings.forEach((setting, index) => {
             const startSlider = document.getElementById(`start-slider-${index}`);
@@ -465,7 +481,7 @@ class UnifiedSequencerSettings {
 
     updateProjectChannelNamesUI(urlNames) {
         // Implement logic to update UI for project URL names
-        console.log("Project URL names UI updated:", urlNames);
+        console.log("Project URL names UI entered and updated:", urlNames);
         // Example: Update each URL name display
         urlNames.forEach((name, index) => {
             const nameDisplay = document.getElementById(`url-name-${index}`);

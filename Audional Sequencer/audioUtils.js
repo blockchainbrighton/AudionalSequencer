@@ -3,12 +3,14 @@
 
 // Function to get the ID from a URL
 function getIDFromURL(url) {
+  console.log('getIDFromURL entered');
   const parts = url.split('/');
   return parts[parts.length - 1];
 }
 
 // Function to convert base64 to an array buffer
 function base64ToArrayBuffer(base64) {
+  console.log('base64ToArrayBuffer entered');
   const binaryString = atob(base64);
   const len = binaryString.length;
   const bytes = new Uint8Array(len);
@@ -20,6 +22,7 @@ function base64ToArrayBuffer(base64) {
 
 // Function to decode audio data
 const decodeAudioData = (audioData) => {
+  console.log('decodeAudioData entered');
   return new Promise((resolve, reject) => {
       audioContext.decodeAudioData(audioData, resolve, reject);
   });
@@ -27,6 +30,7 @@ const decodeAudioData = (audioData) => {
 
 // Function to fetch and parse the HTML to find the content type
 async function fetchAndParseContentType(url) {
+  console.log('fetchAndParseContentType entered');
   try {
       const response = await fetch(url);
       const html = await response.text();
@@ -45,6 +49,7 @@ async function fetchAndParseContentType(url) {
 
 // Function to fetch audio data
 const fetchAudio = async (url, channelIndex,) => {
+  console.log('fetchAudio entered');
   try {
       console.log(`[fetchAudio] Fetching audio from URL: ${url} for channel index: ${channelIndex}`);
 
@@ -89,6 +94,7 @@ const fetchAudio = async (url, channelIndex,) => {
 
 // Helper function to convert an ArrayBuffer to a Base64 string
 function bufferToBase64(buffer) {
+  console.log('bufferToBase64 entered');
   let binary = '';
   const bytes = new Uint8Array(buffer);
   const len = bytes.byteLength;
@@ -99,6 +105,7 @@ function bufferToBase64(buffer) {
 }
 // Function to play sound
 function playSound(currentSequence, channel, currentStep) {
+  console.log('playSound entered');
   const channelIndex = getChannelIndex(channel);
   console.log(`[playSound] Processing channel index: ${channelIndex}`);
 
@@ -137,7 +144,8 @@ function getAudioBuffer(url) {
 }
 
 function playTrimmedAudio(channelIndex, audioBuffer, url) {
-  console.log("[playSound] Audio buffer found for URL:", url);
+  console.log('playTrimmedAudio entered');
+  console.log("[playTrimmedAudio] Audio buffer found for URL:", url);
 
   const source = audioContext.createBufferSource();
   source.buffer = audioBuffer;
@@ -170,6 +178,7 @@ function calculateTrimValues(channelIndex, audioBuffer) {
 
 
 async function playAuditionedSample(url) {
+  console.log('playAuditionedSample entered');
   try {
     const response = await fetch(url);
     const data = await response.json();
@@ -203,6 +212,7 @@ async function playAuditionedSample(url) {
 
 // Function to toggle the play state
 function togglePlayState(isPlaying, startStopFunction, firstButton, secondButton) {
+  console.log('togglePlayState entered');
   if (!isPlaying) {
     isPlaying = true;
     startStopFunction();
@@ -213,6 +223,7 @@ function togglePlayState(isPlaying, startStopFunction, firstButton, secondButton
 
 // Function to update the mute state in a single function
 function updateMuteState(channel, isMuted) {
+  console.log('updateMuteState entered');
   console.log("updateMuteState - isMuted: " + isMuted);
   const channelIndex = parseInt(channel.dataset.id.split('-')[1]);
   channel.dataset.muted = isMuted ? 'true' : 'false';
@@ -241,6 +252,7 @@ function updateMuteState(channel, isMuted) {
 
 // Function to handle manual toggle of the mute button
 function toggleMute(channelElement) {
+  console.log('toggleMute entered');
   const channelIndex = parseInt(channelElement.dataset.id.split('-')[1]);
   const isMuted = channelMutes[channelIndex];
   updateMuteState(channelElement, !isMuted, channelIndex);
