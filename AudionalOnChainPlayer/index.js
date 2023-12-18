@@ -3,14 +3,15 @@ let audioContext;
 let audioBuffers = {};
 let playbackInterval;
 let currentStep = 0;
+let currentSequenceIndex = 0; // Current sequence index
 let sequenceData = {};
-let totalSequenceCount = 0;  // Variable to store the total number of sequences
+let totalSequenceCount = 0;
 
 document.getElementById('fileInput').addEventListener('change', async function(event) {
     const file = event.target.files[0];
     console.log("File selected:", file.name);
     sequenceData = await readJSONFile(file);
-    totalSequenceCount = Object.keys(sequenceData.projectSequences).length;  // Counting the sequences
+    totalSequenceCount = Object.keys(sequenceData.projectSequences).length;
     console.log(`Total sequences: ${totalSequenceCount}`);
     await initializeAudioContext();
     await loadAudioBuffers(sequenceData);
@@ -55,8 +56,8 @@ async function loadAudioBuffers(sequenceData) {
             console.log(`Fetching audio from URL: ${url}`);
             const response = await fetch(url);
             const arrayBuffer = await response.arrayBuffer();
-            audioBuffers[index] = await audioContext.decodeAudioData(arrayBuffer);
-            console.log(`Audio buffer loaded for URL: ${url}`);
+            audioBuffers[sequenceData.projectChannelNames[index]] = await audioContext.decodeAudioData(arrayBuffer);
+            console.log(`Audio buffer loaded for channel: ${sequenceData.projectChannelNames[index]}`);
         }
     });
 
@@ -69,17 +70,26 @@ async function loadAudioBuffers(sequenceData) {
 }
 
 function playSequence() {
-    console.log("playSequence called");
     currentStep = 0;
-    playbackInterval = setInterval(() => playStep(sequenceData), calculateStepInterval(sequenceData));
+    currentSequenceIndex = 0;
+    playbackInterval = setInterval(playStep, calculateStepInterval(sequenceData));
+    console.log("Playback started");
 }
 
 function stopSequence() {
     clearInterval(playbackInterval);
+    console.log("Playback stopped");
 }
 
-function playStep(sequenceData) {
-    const currentSequence = sequenceData.projectSequences['Sequence' + sequenceData.currentSequence];
+function playStep() {
+    if (currentSequenceIndex >= totalSequenceCount) {
+        stopSequence();
+        console.log("Completed all sequences");
+        return;
+    }
+
+    const sequenceKey = 'Sequence' + currentSequenceIndex;
+    const currentSequence = sequenceData.projectSequences[sequenceKey];
     Object.keys(currentSequence).forEach(channelKey => {
         const channel = currentSequence[channelKey];
         if (channel.steps[currentStep] && !channel.mute) {
@@ -89,7 +99,12 @@ function playStep(sequenceData) {
             source.start(0);
         }
     });
-    currentStep = (currentStep + 1) % 64;
+
+    currentStep++;
+    if (currentStep >= 64) { // Assuming each channel has 64 steps
+        currentStep = 0;
+        currentSequenceIndex++;
+    }
 }
 
 function calculateStepInterval(sequenceData) {
