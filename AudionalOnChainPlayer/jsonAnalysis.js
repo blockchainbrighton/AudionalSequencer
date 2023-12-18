@@ -55,5 +55,4 @@ function displayError(message) {
     }
 }
 
-// Add a div in your HTML where the structure will be displayed
-// For example: <div id="jsonStructureDisplay"></div>
+

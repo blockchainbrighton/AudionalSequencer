@@ -1,67 +1,63 @@
 // Define global variables
 let audioContext;
-let audioBuffers = {}; // To store loaded audio buffers
-let sequenceData; // To store JSON data
-let playbackInterval; // For timing control
-let currentStep = 0; // Current step in the sequence
+let audioBuffers = {};
+let playbackInterval;
+let currentStep = 0;
+let sequenceData = {};
+let totalSequenceCount = 0;  // Variable to store the total number of sequences
 
-document.getElementById('fileInput').addEventListener('change', function(event) {
+document.getElementById('fileInput').addEventListener('change', async function(event) {
     const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        // Assuming sequenceData is a global variable in your script
-        sequenceData = JSON.parse(e.target.result);
-        // You can call any function here to initialize audio after loading JSON
-    };
-    reader.readAsText(file);
+    console.log("File selected:", file.name);
+    sequenceData = await readJSONFile(file);
+    totalSequenceCount = Object.keys(sequenceData.projectSequences).length;  // Counting the sequences
+    console.log(`Total sequences: ${totalSequenceCount}`);
+    await initializeAudioContext();
+    await loadAudioBuffers(sequenceData);
 });
 
-
-
-// Initialize the Web Audio API
-function initAudioContext() {
-    console.log("Initializing AudioContext");
-    try {
-        window.AudioContext = window.AudioContext || window.webkitAudioContext;
-        audioContext = new AudioContext();
-        console.log("AudioContext initialized:", audioContext);
-    } catch (e) {
-        console.error('Error initializing Web Audio API:', e);
-        alert('Web Audio API is not supported in this browser');
-    }
+async function readJSONFile(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                console.log("JSON parsed:", data);
+                resolve(data);
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                reject(error);
+            }
+        };
+        reader.readAsText(file);
+    });
 }
 
-// Process JSON file selected by the user
-function processJSONFile(file) {
-    console.log("Processing JSON file:", file.name);
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        console.log("File read complete. Parsing JSON.");
-        sequenceData = JSON.parse(e.target.result);
-        console.log("JSON parsed:", sequenceData);
-        loadAudioFiles();
-    };
-    reader.readAsText(file);
-}
-
-// Load audio files
-async function loadAudioFiles() {
+async function initializeAudioContext() {
     if (!audioContext) {
-        console.log("AudioContext not initialized. Initializing now.");
-        initAudioContext();
+        try {
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioContext = new AudioContext();
+            console.log("AudioContext initialized:", audioContext);
+        } catch (e) {
+            console.error('Error initializing Web Audio API:', e);
+            alert('Web Audio API is not supported in this browser');
+        }
     }
-    console.log(`AudioContext state: ${audioContext.state}`);
     if (audioContext.state === 'suspended') {
-        console.log('Resuming AudioContext');
         await audioContext.resume();
     }
+}
+
+async function loadAudioBuffers(sequenceData) {
     const promises = sequenceData.projectURLs.map(async (url, index) => {
-        console.log(`Fetching audio from URL: ${url}`);
-        const response = await fetch(url);
-        const arrayBuffer = await response.arrayBuffer();
-        console.log(`Decoding audio data for URL: ${url}`);
-        audioBuffers[index] = await audioContext.decodeAudioData(arrayBuffer);
-        console.log(`Audio buffer loaded for URL: ${url}`);
+        if (!audioBuffers[index]) {
+            console.log(`Fetching audio from URL: ${url}`);
+            const response = await fetch(url);
+            const arrayBuffer = await response.arrayBuffer();
+            audioBuffers[index] = await audioContext.decodeAudioData(arrayBuffer);
+            console.log(`Audio buffer loaded for URL: ${url}`);
+        }
     });
 
     try {
@@ -72,69 +68,33 @@ async function loadAudioFiles() {
     }
 }
 
-// Play the sequence
 function playSequence() {
     console.log("playSequence called");
-    if (!audioContext) {
-        console.log("Initializing AudioContext");
-        initAudioContext();
-    }
-    console.log("Starting playback");
-    // Ensure we're starting from the first step
     currentStep = 0;
-    playbackInterval = setInterval(playStep, calculateStepInterval());
-    console.log("Playback interval set:", playbackInterval);
+    playbackInterval = setInterval(() => playStep(sequenceData), calculateStepInterval(sequenceData));
 }
 
-// Stop the sequence
 function stopSequence() {
-    console.log("Stopping sequence");
     clearInterval(playbackInterval);
 }
 
-// Function to play audio at a specific step
-function playStep() {
-    console.log(`Playing step: ${currentStep}`);
+function playStep(sequenceData) {
     const currentSequence = sequenceData.projectSequences['Sequence' + sequenceData.currentSequence];
-
     Object.keys(currentSequence).forEach(channelKey => {
         const channel = currentSequence[channelKey];
-        console.log(`Processing channel: ${channelKey}`);
         if (channel.steps[currentStep] && !channel.mute) {
-            console.log(`Creating audio source for channel: ${channelKey}`);
             const source = audioContext.createBufferSource();
             source.buffer = audioBuffers[channelKey];
             source.connect(audioContext.destination);
-            console.log(`Audio source connected for channel: ${channelKey}`);
-            source.onended = () => console.log(`Playback finished for channel: ${channelKey}`);
             source.start(0);
-            console.log(`Playback started for channel: ${channelKey}`);
-                    }
+        }
     });
-
-    currentStep = (currentStep + 1) % 64; // Assuming each channel has 64 steps
-    console.log(`Next step: ${currentStep}`);
+    currentStep = (currentStep + 1) % 64;
 }
 
-// Calculate the interval between steps based on BPM
-function calculateStepInterval() {
-    const interval = (60 / sequenceData.projectBPM) * 1000;
-    console.log(`Step interval calculated: ${interval}ms`);
-    return interval; // Interval in milliseconds
+function calculateStepInterval(sequenceData) {
+    return (60 / sequenceData.projectBPM) * 1000;
 }
 
-// UI Button Handlers
 document.getElementById('playButton').addEventListener('click', playSequence);
 document.getElementById('stopButton').addEventListener('click', stopSequence);
-console.log("UI button handlers set up");
-
-// File Input Handler
-document.getElementById('fileInput').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    console.log("File selected:", file.name);
-    processJSONFile(file);
-});
-
-// Initialize the Web Audio API
-document.getElementById('playButton').addEventListener('click', initAudioContext);
-console.log("Initialization complete");
