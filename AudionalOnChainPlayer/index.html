@@ -38,6 +38,11 @@
         #fileInput {
             margin: 15px;
         }
+        #jsonStructureDisplay {
+            text-align: left;
+            color: black;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -46,23 +51,9 @@
         <br>
         <button id="playButton">Play</button>
         <button id="stopButton">Stop</button>
-        <canvas id="jsonStructureDisplay"></canvas>
+        <div id="jsonStructureDisplay"></div>
     </div>
 
-    <script>
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // Assuming sequenceData is a global variable in your script
-                sequenceData = JSON.parse(e.target.result);
-                // You can call any function here to initialize audio after loading JSON
-            };
-            reader.readAsText(file);
-        });
-
-        // Your existing JavaScript code goes here...
-    </script>
     <script src="index.js"></script>
     <script src="jsonAnalysis.js"></script>
 </body>

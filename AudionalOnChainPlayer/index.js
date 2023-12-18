@@ -16,11 +16,7 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
     reader.readAsText(file);
 });
 
-console.log(`AudioContext state: ${audioContext.state}`);
-if (audioContext.state === 'suspended') {
-    console.log('Resuming AudioContext');
-    await audioContext.resume();
-}
+
 
 // Initialize the Web Audio API
 function initAudioContext() {
@@ -50,10 +46,14 @@ function processJSONFile(file) {
 
 // Load audio files
 async function loadAudioFiles() {
-    console.log("Loading audio files...");
     if (!audioContext) {
         console.log("AudioContext not initialized. Initializing now.");
         initAudioContext();
+    }
+    console.log(`AudioContext state: ${audioContext.state}`);
+    if (audioContext.state === 'suspended') {
+        console.log('Resuming AudioContext');
+        await audioContext.resume();
     }
     const promises = sequenceData.projectURLs.map(async (url, index) => {
         console.log(`Fetching audio from URL: ${url}`);
