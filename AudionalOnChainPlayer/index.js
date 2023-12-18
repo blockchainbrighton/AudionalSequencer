@@ -43,7 +43,9 @@ async function loadAudioFiles() {
 
 // Play the sequence
 function playSequence() {
+    console.log("playSequence called");
     if (!audioContext) {
+        console.log("Initializing AudioContext");
         initAudioContext();
     }
 
@@ -91,4 +93,4 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
 });
 
 // Initialize the Web Audio API
-initAudioContext();
+document.getElementById('playButton').addEventListener('click', initAudioContext);
